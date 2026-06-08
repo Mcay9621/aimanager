@@ -1,13 +1,13 @@
 <template>
   <div class="profile-page">
-    <el-card class="profile-card" shadow="never">
-      <template #header>
-        <div class="card-header">
-          <el-icon :size="24"><User /></el-icon>
-          <span>个人信息</span>
+    <div class="profile-card">
+      <div class="card-header">
+        <div class="card-header-icon">
+          <el-icon :size="20"><User /></el-icon>
         </div>
-      </template>
-      <el-form :model="profile" label-width="100px" v-loading="loading">
+        <span>个人信息</span>
+      </div>
+      <el-form :model="profile" label-width="100px" v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
         <el-form-item label="用户名">
           <el-input v-model="profile.username" disabled />
         </el-form-item>
@@ -18,18 +18,18 @@
           <el-input v-model="profile.phone" placeholder="请输入手机号" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :loading="saving" @click="saveProfile">保存修改</el-button>
+          <el-button type="primary" :loading="saving" @click="saveProfile" round>保存修改</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+    </div>
 
-    <el-card class="profile-card" shadow="never" style="margin-top: 20px;">
-      <template #header>
-        <div class="card-header">
-          <el-icon :size="24"><Lock /></el-icon>
-          <span>修改密码</span>
+    <div class="profile-card" style="margin-top: 20px;">
+      <div class="card-header">
+        <div class="card-header-icon lock-icon">
+          <el-icon :size="20"><Lock /></el-icon>
         </div>
-      </template>
+        <span>修改密码</span>
+      </div>
       <el-form :model="passwordForm" label-width="100px" :rules="passwordRules" ref="passwordFormRef">
         <el-form-item label="旧密码" prop="oldPassword">
           <el-input v-model="passwordForm.oldPassword" type="password" show-password />
@@ -41,10 +41,10 @@
           <el-input v-model="passwordForm.confirmPassword" type="password" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :loading="changingPassword" @click="changePassword">修改密码</el-button>
+          <el-button type="primary" :loading="changingPassword" @click="changePassword" round>修改密码</el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+    </div>
   </div>
 </template>
 
@@ -154,14 +154,51 @@ onMounted(fetchProfile)
   margin: 0 auto;
 }
 .profile-card {
-  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid rgba(74, 111, 165, 0.1);
+  border-radius: 16px;
+  padding: 28px;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+.profile-card:hover {
+  border-color: rgba(74, 111, 165, 0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(74, 111, 165, 0.03);
 }
 .card-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 16px;
-  font-weight: 600;
-  color: #1a1a2e;
+  font-weight: 500;
+  color: var(--accent-light);
+  letter-spacing: 0.5px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(74, 111, 165, 0.08);
+  margin-bottom: 24px;
+}
+.card-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #4a6fa5, #6b8fc9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a0a0f;
+}
+.card-header-icon.lock-icon {
+  background: linear-gradient(135deg, #4a80d4, #6a9be0);
+}
+.el-form-item :deep(.el-form-item__label) {
+  color: var(--text-secondary);
+}
+.el-form-item :deep(.el-input.is-disabled .el-input__wrapper) {
+  background: rgba(255,255,255,0.02) !important;
+  border-color: rgba(255,255,255,0.04) !important;
+}
+.el-form-item :deep(.el-input.is-disabled .el-input__inner) {
+  color: var(--text-muted) !important;
+  -webkit-text-fill-color: var(--text-muted);
 }
 </style>

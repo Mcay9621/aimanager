@@ -1,54 +1,49 @@
 <template>
-  <div class="user-manage">
-    <div class="header">
-      <h2>用户管理</h2>
-    </div>
-    <el-table :data="paginatedData" border stripe v-loading="loading">
-      <el-table-column prop="id" label="ID" width="60" />
-      <el-table-column prop="username" label="用户名" min-width="120" />
-      <el-table-column prop="email" label="邮箱" min-width="160" />
-      <el-table-column prop="phone" label="手机号" width="130" />
-      <el-table-column label="所属主账号" width="150">
-        <template #default="{ row }">
-          <span>{{ masterName(row.masterAccountId) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" width="80">
-        <template #default="{ row }">
-          <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-            {{ row.status === 1 ? '正常' : '禁用' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" width="170" />
-      <el-table-column label="操作" width="280">
-        <template #default="{ row }">
-          <el-button size="small" @click="handleAssignMaster(row)">
-            绑定主账号
-          </el-button>
-          <el-button type="primary" size="small" @click="handleAssignRole(row)">
-            分配角色
-          </el-button>
-          <el-button
-            :type="row.status === 1 ? 'danger' : 'success'"
-            size="small"
-            @click="handleToggleStatus(row)"
-          >
-            {{ row.status === 1 ? '禁用' : '启用' }}
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div class="page-container">
+    <div class="table-card">
+      <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
+        <el-table-column prop="id" label="ID" width="60" />
+        <el-table-column prop="username" label="用户名" min-width="120" />
+        <el-table-column prop="email" label="邮箱" min-width="160" />
+        <el-table-column prop="phone" label="手机号" width="130" />
+        <el-table-column label="所属主账号" width="150">
+          <template #default="{ row }">
+            <span>{{ masterName(row.masterAccountId) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="状态" width="80">
+          <template #default="{ row }">
+            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
+              {{ row.status === 1 ? '正常' : '禁用' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="创建时间" width="170" />
+        <el-table-column label="操作" width="280">
+          <template #default="{ row }">
+            <el-button size="small" @click="handleAssignMaster(row)">绑定主账号</el-button>
+            <el-button type="primary" size="small" @click="handleAssignRole(row)">分配角色</el-button>
+            <el-button
+              :type="row.status === 1 ? 'danger' : 'success'"
+              size="small"
+              @click="handleToggleStatus(row)"
+            >
+              {{ row.status === 1 ? '禁用' : '启用' }}
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <div class="pagination-wrapper" v-if="users.length > 0">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :total="users.length"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        background
-      />
+      <div class="pagination-wrapper" v-if="users.length > 0">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :total="users.length"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          background
+        />
+      </div>
     </div>
 
     <el-dialog v-model="roleDialogVisible" title="分配角色" width="400px">
@@ -66,7 +61,7 @@
     <el-dialog v-model="masterDialogVisible" title="绑定主账号" width="400px">
       <el-form label-width="100px">
         <el-form-item label="用户">
-          <span>{{ masterUser?.username }}</span>
+          <span style="color: var(--text-secondary)">{{ masterUser?.username }}</span>
         </el-form-item>
         <el-form-item label="主账号">
           <el-select v-model="selectedMasterId" placeholder="选择主账号" clearable style="width:100%">
@@ -98,7 +93,6 @@ const currentUser = ref(null)
 const currentPage = ref(1)
 const pageSize = ref(10)
 
-// Master account dialog
 const masterDialogVisible = ref(false)
 const masterUser = ref(null)
 const selectedMasterId = ref(null)
@@ -201,13 +195,27 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.header {
-  margin-bottom: 20px;
+.table-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
 }
-.el-checkbox { margin: 8px 0; display: flex; width: 100%; }
+.el-checkbox {
+  margin: 8px 0;
+  display: flex;
+  width: 100%;
+}
+.el-checkbox :deep(.el-checkbox__label) {
+  color: var(--text-secondary);
+}
 .pagination-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+.el-dialog :deep(.el-form-item__label) {
+  color: var(--text-secondary);
 }
 </style>

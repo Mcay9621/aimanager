@@ -1,20 +1,16 @@
 <template>
   <div class="dashboard">
-    <div class="header">
-      <h2>仪表盘</h2>
-    </div>
-
     <!-- 统计卡片 -->
-    <div class="stats-grid" v-loading="loading">
+    <div class="stats-grid" v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
       <div class="stat-card">
-        <div class="stat-icon user-icon"><el-icon :size="32"><User /></el-icon></div>
+        <div class="stat-icon user-icon"><el-icon :size="28"><User /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.userCount }}</span>
           <span class="stat-label">用户总数</span>
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon model-icon"><el-icon :size="32"><Grid /></el-icon></div>
+        <div class="stat-icon model-icon"><el-icon :size="28"><Grid /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.modelCount }}</span>
           <span class="stat-label">模型总数</span>
@@ -22,7 +18,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon chat-icon"><el-icon :size="32"><ChatDotSquare /></el-icon></div>
+        <div class="stat-icon chat-icon"><el-icon :size="28"><ChatDotSquare /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.sessionCount || 0 }}</span>
           <span class="stat-label">对话会话</span>
@@ -30,7 +26,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon cloud-icon"><el-icon :size="32"><Cloudy /></el-icon></div>
+        <div class="stat-icon cloud-icon"><el-icon :size="28"><Cloudy /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.cloudAccountCount || 0 }}</span>
           <span class="stat-label">云账号</span>
@@ -38,7 +34,7 @@
         </div>
       </div>
       <div class="stat-card">
-        <div class="stat-icon log-icon"><el-icon :size="32"><Document /></el-icon></div>
+        <div class="stat-icon log-icon"><el-icon :size="28"><Document /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.auditLogCount }}</span>
           <span class="stat-label">操作日志</span>
@@ -49,46 +45,52 @@
 
     <!-- 图表区域 -->
     <div class="charts-row" v-if="!loading">
-      <el-card class="chart-card" shadow="hover">
-        <template #header>
-          <span class="chart-title">模型使用分布</span>
-        </template>
-        <div ref="pieChartRef" class="chart-container" v-loading="chartLoading"></div>
-        <el-empty v-if="!chartLoading && modelUsage.length === 0" description="暂无对话数据" :image-size="50" />
-      </el-card>
-      <el-card class="chart-card" shadow="hover">
-        <template #header>
-          <span class="chart-title">最近7天消息趋势</span>
-        </template>
-        <div ref="lineChartRef" class="chart-container" v-loading="chartLoading"></div>
-        <el-empty v-if="!chartLoading && activityData.length === 0" description="暂无消息数据" :image-size="50" />
-      </el-card>
+      <div class="chart-card-wrapper">
+        <div class="chart-card-header">
+          <el-icon><PieChart /></el-icon>
+          <span>模型使用分布</span>
+        </div>
+        <div class="chart-card-body">
+          <div ref="pieChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="rgba(10,10,15,0.8)"></div>
+          <el-empty v-if="!chartLoading && modelUsage.length === 0" description="暂无对话数据" :image-size="50" />
+        </div>
+      </div>
+      <div class="chart-card-wrapper">
+        <div class="chart-card-header">
+          <el-icon><TrendCharts /></el-icon>
+          <span>最近7天消息趋势</span>
+        </div>
+        <div class="chart-card-body">
+          <div ref="lineChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="rgba(10,10,15,0.8)"></div>
+          <el-empty v-if="!chartLoading && activityData.length === 0" description="暂无消息数据" :image-size="50" />
+        </div>
+      </div>
     </div>
 
     <!-- 快捷入口 -->
     <div class="quick-links">
       <h3>快捷入口</h3>
       <div class="links-grid">
-        <el-card class="link-card" @click="$router.push('/admin/users')" shadow="hover">
-          <el-icon :size="24"><User /></el-icon>
+        <div class="link-card" @click="$router.push('/admin/users')">
+          <el-icon :size="22"><User /></el-icon>
           <span>用户管理</span>
-        </el-card>
-        <el-card class="link-card" @click="$router.push('/admin/roles')" shadow="hover">
-          <el-icon :size="24"><Avatar /></el-icon>
+        </div>
+        <div class="link-card" @click="$router.push('/admin/roles')">
+          <el-icon :size="22"><Avatar /></el-icon>
           <span>角色管理</span>
-        </el-card>
-        <el-card class="link-card" @click="$router.push('/admin/models')" shadow="hover">
-          <el-icon :size="24"><Grid /></el-icon>
+        </div>
+        <div class="link-card" @click="$router.push('/admin/models')">
+          <el-icon :size="22"><Grid /></el-icon>
           <span>模型管理</span>
-        </el-card>
-        <el-card class="link-card" @click="$router.push('/admin/cloud/resources')" shadow="hover">
-          <el-icon :size="24"><Cloudy /></el-icon>
+        </div>
+        <div class="link-card" @click="$router.push('/admin/cloud/resources')">
+          <el-icon :size="22"><Cloudy /></el-icon>
           <span>云资源总览</span>
-        </el-card>
-        <el-card class="link-card" @click="$router.push('/admin/audit-logs')" shadow="hover">
-          <el-icon :size="24"><Document /></el-icon>
+        </div>
+        <div class="link-card" @click="$router.push('/admin/audit-logs')">
+          <el-icon :size="22"><Document /></el-icon>
           <span>审计日志</span>
-        </el-card>
+        </div>
       </div>
     </div>
   </div>
@@ -134,49 +136,84 @@ const fetchStats = async () => {
 
 const renderCharts = () => {
   if (modelUsage.value.length > 0 && pieChartRef.value) {
-    pieChart = echarts.init(pieChartRef.value)
-    const colors = ['#409eff', '#67c23a', '#e6a23c', '#f56c6c', '#909399', '#9b59b6']
+    pieChart = echarts.init(pieChartRef.value, null, { renderer: 'canvas' })
+    const blueColors = ['#4a6fa5', '#6b8fc9', '#2d4a6e', '#4a80d4', '#6a9be0', '#3a9b9b']
     pieChart.setOption({
-      tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c} ({d}%)',
+        backgroundColor: 'rgba(18,18,26,0.95)',
+        borderColor: 'rgba(74,111,165,0.2)',
+        borderWidth: 1,
+        textStyle: { color: '#fff', fontSize: 12 }
+      },
       series: [{
         type: 'pie',
         radius: ['40%', '70%'],
         center: ['50%', '50%'],
         avoidLabelOverlap: true,
-        itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
-        label: { show: true, formatter: '{b}' },
-        emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' } },
+        itemStyle: { borderRadius: 6, borderColor: 'rgba(10,10,15,0.8)', borderWidth: 3 },
+        label: {
+          show: true,
+          formatter: '{b}',
+          color: 'rgba(255,255,255,0.8)',
+          fontSize: 12
+        },
+        labelLine: {
+          lineStyle: { color: 'rgba(74,111,165,0.2)' }
+        },
+        emphasis: {
+          label: { show: true, fontSize: 14, fontWeight: 'bold' },
+          itemStyle: { shadowBlur: 20, shadowColor: 'rgba(74,111,165,0.3)' }
+        },
         data: modelUsage.value.map((item, idx) => ({
           ...item,
-          itemStyle: { color: colors[idx % colors.length] }
+          itemStyle: { color: blueColors[idx % blueColors.length] }
         }))
       }]
     })
   }
 
   if (activityData.value.length > 0 && lineChartRef.value) {
-    lineChart = echarts.init(lineChartRef.value)
+    lineChart = echarts.init(lineChartRef.value, null, { renderer: 'canvas' })
     lineChart.setOption({
-      tooltip: { trigger: 'axis' },
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(18,18,26,0.95)',
+        borderColor: 'rgba(74,111,165,0.2)',
+        borderWidth: 1,
+        textStyle: { color: '#fff', fontSize: 12 }
+      },
       grid: { left: 40, right: 20, top: 20, bottom: 30 },
       xAxis: {
         type: 'category',
         data: activityData.value.map(d => d.date),
-        axisLabel: { fontSize: 12 }
+        axisLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 11 },
+        axisLine: { lineStyle: { color: 'rgba(74,111,165,0.1)' } },
+        axisTick: { lineStyle: { color: 'rgba(74,111,165,0.1)' } }
       },
-      yAxis: { type: 'value', minInterval: 1 },
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        axisLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 11 },
+        splitLine: { lineStyle: { color: 'rgba(74,111,165,0.06)', type: 'dashed' } }
+      },
       series: [{
         type: 'line',
         smooth: true,
         data: activityData.value.map(d => d.count),
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(64,158,255,0.3)' },
-            { offset: 1, color: 'rgba(64,158,255,0.05)' }
+            { offset: 0, color: 'rgba(74,111,165,0.25)' },
+            { offset: 1, color: 'rgba(74,111,165,0.02)' }
           ])
         },
-        lineStyle: { color: '#409eff', width: 3 },
-        itemStyle: { color: '#409eff' }
+        lineStyle: { color: '#4a6fa5', width: 2.5 },
+        itemStyle: { color: '#4a6fa5' },
+        symbol: 'circle',
+        symbolSize: 6
       }]
     })
   }
@@ -205,49 +242,120 @@ onBeforeUnmount(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
 }
 .stat-card {
-  background: #fff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 24px 20px;
+  padding: 22px 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  transition: transform 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
 }
-.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.stat-card:hover {
+  border-color: var(--border-color-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(74, 111, 165, 0.04);
+}
 .stat-icon {
-  width: 56px; height: 56px;
+  width: 52px; height: 52px;
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  color: #fff;
+  color: #0a0a0f;
   flex-shrink: 0;
 }
-.user-icon { background: linear-gradient(135deg, #409eff, #337ecc); }
-.model-icon { background: linear-gradient(135deg, #67c23a, #529b2e); }
-.log-icon { background: linear-gradient(135deg, #e6a23c, #cf9236); }
-.chat-icon { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-.cloud-icon { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+.user-icon { background: linear-gradient(135deg, #4a6fa5, #6b8fc9); }
+.model-icon { background: linear-gradient(135deg, #4a80d4, #6a9be0); }
+.log-icon { background: linear-gradient(135deg, #2d4a6e, #4a6fa5); }
+.chat-icon { background: linear-gradient(135deg, #3a7a7a, #4a6fa5); }
+.cloud-icon { background: linear-gradient(135deg, #4a80d4, #7caeff); }
 .stat-info { display: flex; flex-direction: column; min-width: 0; }
-.stat-value { font-size: 30px; font-weight: 700; color: #1a1a2e; line-height: 1.2; }
-.stat-label { font-size: 13px; color: #909399; margin-top: 2px; }
-.stat-sub { font-size: 12px; color: #c0c4cc; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: 1px; }
+.stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.stat-sub { font-size: 12px; color: rgba(255,255,255,0.2); }
+
+/* 图表卡片 */
 .charts-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
 }
-.chart-card :deep(.el-card__body) { padding: 0; }
-.chart-title { font-weight: 600; font-size: 15px; color: #1a1a2e; }
+.chart-card-wrapper {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+.chart-card-wrapper:hover {
+  border-color: var(--border-color-hover);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(74, 111, 165, 0.03);
+}
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent-light);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.chart-card-header .el-icon {
+  color: var(--accent);
+}
+.chart-card-body {
+  padding: 4px;
+}
 .chart-container { width: 100%; height: 260px; }
-.quick-links h3 { margin-bottom: 14px; color: #1a1a2e; font-size: 16px; }
-.links-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
-.link-card { cursor: pointer; text-align: center; }
-.link-card :deep(.el-card__body) {
-  display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px;
+
+/* 快捷入口 */
+.quick-links h3 {
+  margin-bottom: 14px;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.link-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+.link-card:hover {
+  border-color: var(--border-color-hover);
+  background: rgba(74, 111, 165, 0.04);
+  color: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.link-card .el-icon {
+  color: var(--text-tertiary);
+  transition: color 0.3s;
+}
+.link-card:hover .el-icon {
+  color: var(--accent);
 }
 </style>

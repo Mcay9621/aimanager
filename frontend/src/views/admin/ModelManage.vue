@@ -1,44 +1,46 @@
 <template>
-  <div class="model-manage">
-    <div class="header">
-      <h2>模型管理</h2>
-      <el-button type="primary" @click="handleAdd">添加模型</el-button>
-    </div>
-    <el-table :data="paginatedData" border stripe>
-      <el-table-column prop="id" label="ID" width="60" />
-      <el-table-column prop="name" label="模型名称" />
-      <el-table-column prop="type" label="类型">
-        <template #default="{ row }">
-          {{ getTypeName(row.type) }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="modelName" label="模型标识" />
-      <el-table-column prop="endpoint" label="API地址" show-overflow-tooltip />
-      <el-table-column prop="enabled" label="状态" width="80">
-        <template #default="{ row }">
-          <el-tag :type="row.enabled ? 'success' : 'info'">
-            {{ row.enabled ? '启用' : '禁用' }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="220">
-        <template #default="{ row }">
-          <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-          <el-button size="small" @click="handleTest(row)" :loading="testingId === row.id">测试</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div class="page-container">
+    <div class="table-card">
+      <div class="table-header">
+        <h3>模型列表</h3>
+        <el-button type="primary" @click="handleAdd">添加模型</el-button>
+      </div>
+      <el-table :data="paginatedData" border stripe element-loading-background="rgba(10,10,15,0.8)">
+        <el-table-column prop="id" label="ID" width="60" />
+        <el-table-column prop="name" label="模型名称" />
+        <el-table-column prop="type" label="类型">
+          <template #default="{ row }">
+            {{ getTypeName(row.type) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="modelName" label="模型标识" />
+        <el-table-column prop="endpoint" label="API地址" show-overflow-tooltip />
+        <el-table-column prop="enabled" label="状态" width="80">
+          <template #default="{ row }">
+            <el-tag :type="row.enabled ? 'success' : 'info'">
+              {{ row.enabled ? '启用' : '禁用' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="220">
+          <template #default="{ row }">
+            <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
+            <el-button size="small" @click="handleTest(row)" :loading="testingId === row.id">测试</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <div class="pagination-wrapper" v-if="models.length > 0">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :total="models.length"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        background
-      />
+      <div class="pagination-wrapper" v-if="models.length > 0">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :total="models.length"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          background
+        />
+      </div>
     </div>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
@@ -132,13 +134,7 @@ const handleAdd = () => {
   isEdit.value = false
   dialogTitle.value = '添加模型'
   Object.assign(form, {
-    id: null,
-    name: '',
-    type: '',
-    endpoint: '',
-    apiKey: '',
-    modelName: '',
-    enabled: 1
+    id: null, name: '', type: '', endpoint: '', apiKey: '', modelName: '', enabled: 1
   })
   dialogVisible.value = true
 }
@@ -146,22 +142,16 @@ const handleAdd = () => {
 const handleEdit = (row) => {
   isEdit.value = true
   dialogTitle.value = '编辑模型'
-  Object.assign(form, {
-    ...row,
-    apiKey: row.apiKey ? '••••••••' : ''  // 脱敏显示
-  })
+  Object.assign(form, { ...row, apiKey: row.apiKey ? '••••••••' : '' })
   dialogVisible.value = true
 }
 
 const handleSubmit = async () => {
   await formRef.value.validate()
-
-  // 如果 API 密钥是脱敏字符串，不提交
   const submitData = { ...form }
   if (submitData.apiKey === '••••••••') {
     delete submitData.apiKey
   }
-
   const api = isEdit.value ? `/admin/models/${form.id}` : '/admin/models'
   const method = isEdit.value ? 'put' : 'post'
   await request[method](api, submitData)
@@ -193,17 +183,29 @@ const handleDelete = async (id) => {
   fetchModels()
 }
 
-onMounted(() => {
-  fetchModels()
-})
+onMounted(() => { fetchModels() })
 </script>
 
 <style scoped>
-.header {
+.table-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+}
+.table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+}
+.table-header h3 {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin: 0;
 }
 .pagination-wrapper {
   display: flex;

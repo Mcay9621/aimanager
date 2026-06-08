@@ -1,23 +1,36 @@
 <template>
   <div class="admin-login-container">
-    <div class="admin-login-bg">
-      <div class="bg-pattern"></div>
-    </div>
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
+    <div class="ambient-light light-3"></div>
+
     <div class="admin-login-content">
-      <div class="admin-logo-section">
-        <div class="admin-logo-icon">
-          <el-icon :size="40"><Setting /></el-icon>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8-6 8 6v12H12z" stroke="#0a0a0f" stroke-width="2" fill="none"/>
+            <path d="M16 22h8v6h-8z" fill="#0a0a0f" opacity="0.8"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0%" stop-color="#4a6fa5"/>
+                <stop offset="100%" stop-color="#6b8fc9"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
-        <h1 class="admin-title">AI Manager</h1>
-        <p class="admin-subtitle">管理系统</p>
+        <h1 class="brand-title"><span class="accent-gradient-text">AI</span> Manager</h1>
+        <p class="brand-subtitle">管理后台</p>
       </div>
-      <el-card class="admin-login-card">
-        <h2 class="admin-card-title">管理员登录</h2>
-        <el-form :model="loginForm" :rules="rules" ref="loginFormRef" class="admin-login-form">
+
+      <div class="login-card">
+        <h2 class="card-title">管理员登录</h2>
+        <p class="card-desc">登录管理后台以继续</p>
+        <el-form :model="loginForm" :rules="rules" ref="loginFormRef" class="login-form">
           <el-form-item prop="username">
             <el-input
               v-model="loginForm.username"
-              placeholder="请输入管理员用户名"
+              placeholder="管理员用户名"
               size="large"
               :prefix-icon="User"
             />
@@ -26,7 +39,7 @@
             <el-input
               v-model="loginForm.password"
               type="password"
-              placeholder="请输入密码"
+              placeholder="密码"
               size="large"
               :prefix-icon="Lock"
               show-password
@@ -34,24 +47,17 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
-              type="primary"
-              size="large"
-              class="admin-login-btn"
-              :loading="loading"
-              @click="handleLogin"
-            >
+            <el-button type="primary" size="large" class="login-btn" :loading="loading" @click="handleLogin">
               登 录
             </el-button>
           </el-form-item>
         </el-form>
-        <div class="admin-login-options">
-          <el-link type="primary" @click="$router.push('/login')">返回前台登录</el-link>
+        <div class="login-footer">
+          <el-link type="primary" :underline="false" @click="$router.push('/login')">返回前台登录</el-link>
         </div>
-      </el-card>
-      <div class="admin-footer-tip">
-        © 2024 AI Manager 管理后台
       </div>
+
+      <p class="copyright">© 2024 AI Manager 管理后台</p>
     </div>
   </div>
 </template>
@@ -60,7 +66,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, Setting } from '@element-plus/icons-vue'
+import { User, Lock } from '@element-plus/icons-vue'
 import { useUserStore } from '../../stores/user'
 import request from '../../utils/request'
 
@@ -110,168 +116,142 @@ const handleLogin = async () => {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: var(--bg-primary);
 }
 
-.admin-login-bg {
+/* 环境光效 */
+.ambient-light {
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+.light-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(74, 111, 165, 0.08), transparent);
+  top: -200px; right: -100px;
+  animation: floatLight 12s ease-in-out infinite;
+}
+.light-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(74, 128, 212, 0.06), transparent);
+  bottom: -100px; left: -50px;
+  animation: floatLight 15s ease-in-out infinite reverse;
+}
+.light-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(74, 111, 165, 0.05), transparent);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.bg-pattern {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 25% 25%, rgba(64, 158, 255, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(124, 58, 237, 0.15) 0%, transparent 50%);
-}
-
-.bg-pattern::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.5;
+@keyframes floatLight {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -30px); }
+  66% { transform: translate(-20px, 20px); }
 }
 
 .admin-login-content {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 32px;
 }
 
-.admin-logo-section {
+/* 品牌区 */
+.brand {
   text-align: center;
-  color: #fff;
 }
-
-.admin-logo-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 20px;
-  background: linear-gradient(135deg, #e6a23c 0%, #f56c6c 100%);
-  border-radius: 20px;
+.brand-icon {
+  margin: 0 auto 16px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 20px 60px rgba(230, 162, 60, 0.4);
 }
-
-.admin-title {
+.brand-title {
   font-size: 36px;
-  font-weight: 700;
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--text-primary);
   margin: 0;
-  background: linear-gradient(135deg, #fff 0%, #e0f0ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 4px;
+}
+.brand-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 6px;
+  margin-top: 8px;
+  font-weight: 300;
 }
 
-.admin-subtitle {
-  font-size: 16px;
-  color: rgba(230, 162, 60, 0.9);
-  margin: 8px 0 0;
-  letter-spacing: 8px;
-  font-weight: 500;
-}
-
-.admin-login-card {
-  width: 420px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border: none;
-  border-radius: 16px;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-}
-
-.admin-login-card :deep(.el-card__body) {
+/* 登录卡片 */
+.login-card {
+  width: 400px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
   padding: 40px;
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(74, 111, 165, 0.03);
+  transition: all 0.4s ease;
+}
+.login-card:hover {
+  border-color: var(--border-color-hover);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 80px rgba(74, 111, 165, 0.04);
 }
 
-.admin-card-title {
+.card-title {
   font-size: 22px;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin: 0 0 30px;
-  text-align: center;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: 2px;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 8px 0 28px;
+  letter-spacing: 1px;
+  font-weight: 300;
 }
 
-.admin-login-form :deep(.el-form-item) {
-  margin-bottom: 24px;
+.login-form {
+  margin-top: 0;
+}
+.login-form :deep(.el-form-item) {
+  margin-bottom: 20px;
 }
 
-.admin-login-form :deep(.el-input__wrapper) {
-  background: #f5f8ff;
-  border: 2px solid #e5eaf5;
-  border-radius: 12px;
-  padding: 8px 16px;
-  box-shadow: none;
-  transition: all 0.3s;
-}
-
-.admin-login-form :deep(.el-input__wrapper:hover),
-.admin-login-form :deep(.el-input__wrapper.is-focus) {
-  background: #fff;
-  border-color: #e6a23c;
-  box-shadow: 0 0 0 4px rgba(230, 162, 60, 0.15);
-}
-
-.admin-login-form :deep(.el-input__inner) {
-  color: #1a1a2e;
-  height: 24px;
-  font-size: 15px;
-}
-
-.admin-login-form :deep(.el-input__inner::placeholder) {
-  color: #999;
-}
-
-.admin-login-form :deep(.el-input__prefix) {
-  color: #e6a23c;
-}
-
-.admin-login-btn {
+.login-btn {
   width: 100%;
   height: 48px;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 4px;
-  background: linear-gradient(135deg, #e6a23c 0%, #f56c6c 100%);
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(230, 162, 60, 0.4);
-  transition: all 0.3s;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  border-radius: 10px !important;
+  margin-top: 4px;
 }
 
-.admin-login-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(230, 162, 60, 0.5);
-}
-
-.admin-login-options {
+.login-footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  color: #666;
-  font-size: 14px;
+  gap: 12px;
   margin-top: 20px;
 }
-
-.admin-login-options :deep(.el-link--primary) {
-  color: #409eff;
-  font-weight: 500;
+.login-footer :deep(.el-link) {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
 }
 
-.admin-footer-tip {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
+.copyright {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.15);
   letter-spacing: 2px;
+  font-weight: 300;
 }
 </style>

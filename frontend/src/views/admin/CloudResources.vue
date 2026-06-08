@@ -46,7 +46,7 @@
     </div>
 
     <!-- 资源列表 -->
-    <el-table :data="paginatedData" border stripe v-loading="loading" @selection-change="handleSelectionChange"
+    <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)" @selection-change="handleSelectionChange"
               :default-sort="{ prop: 'name', order: 'ascending' }">
       <el-table-column type="selection" width="40" />
       <el-table-column label="资源名称" min-width="160">
@@ -293,7 +293,7 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
 
 <style scoped>
 .cloud-resources {
-  background: #fff;
+  background: transparent;
   border-radius: 12px;
   padding: 20px 24px;
 }
@@ -318,7 +318,7 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
 .status-bar {
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color);
 }
 .status-tabs :deep(.el-radio-button__inner) {
   display: flex;
@@ -330,13 +330,13 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  background: #ecf5ff;
+  background: rgba(74, 111, 165, 0.08);
   border-radius: 8px;
   margin-bottom: 12px;
 }
 .selected-count {
   font-size: 13px;
-  color: #409eff;
+  color: var(--accent-light);
   font-weight: 500;
   margin-right: 8px;
 }
@@ -347,11 +347,11 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
 }
 .name-text {
   cursor: pointer;
-  color: #409eff;
+  color: var(--accent-light);
   font-weight: 500;
 }
 .name-text:hover {
-  color: #66b1ff;
+  color: var(--accent);
 }
 .provider-tag {
   flex-shrink: 0;
@@ -364,15 +364,15 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
   margin-right: 4px;
 }
 .status-dot.running { background: #67c23a; }
-.status-dot.stopped { background: #909399; }
+.status-dot.stopped { background: var(--text-muted); }
 .status-dot.error { background: #f56c6c; }
-.text-muted { color: #c0c4cc; }
+.text-muted { color: var(--text-muted); }
 .hierarchy-account { font-size: 13px; }
 .hierarchy-account::before { content: ''; }
 .loading-detail {
   text-align: center;
   padding: 60px 0;
-  color: #909399;
+  color: var(--text-muted);
 }
 .pagination-wrapper {
   display: flex;

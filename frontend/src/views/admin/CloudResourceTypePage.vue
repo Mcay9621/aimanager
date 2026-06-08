@@ -25,7 +25,7 @@
       <span>共 <b>{{ total }}</b> 条</span>
     </div>
 
-    <el-table :data="list" border stripe v-loading="loading" style="width:100%"
+    <el-table :data="list" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)" style="width:100%"
       :default-sort="{ prop: 'name', order: 'ascending' }">
       <el-table-column type="index" width="50" label="#" />
       <el-table-column v-for="col in allColumns" :key="col" :label="fieldLabels[col] || col" min-width="120" show-overflow-tooltip>
@@ -204,13 +204,13 @@ watch(() => props.resourceType, fetchData)
 </script>
 
 <style scoped>
-.cloud-type-page { background:#fff; border-radius:12px; padding:20px 24px; }
+.cloud-type-page { background:transparent; border-radius:12px; padding:20px 24px; }
 .top-bar { display:flex; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
 .top-bar-left { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-.stat-bar { margin-bottom:12px; font-size:13px; color:#909399; }
-.stat-bar b { color:#303133; }
-.link { cursor:pointer; color:#409eff; font-weight:500; }
-.link:hover { color:#66b1ff; }
-.text-muted { color:#909399; font-size:12px; }
+.stat-bar { margin-bottom:12px; font-size:13px; color:var(--text-muted); }
+.stat-bar b { color:var(--text-primary); }
+.link { cursor:pointer; color:var(--accent-light); font-weight:500; }
+.link:hover { color:var(--accent); }
+.text-muted { color:var(--text-muted); font-size:12px; }
 .pagination-wrapper { display:flex; justify-content:center; margin-top:20px; }
 </style>

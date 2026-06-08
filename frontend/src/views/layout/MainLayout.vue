@@ -3,7 +3,17 @@
     <div class="topbar">
       <div class="topbar-logo">
         <div class="logo-icon">
-          <el-icon :size="22"><Monitor /></el-icon>
+          <svg viewBox="0 0 40 40" width="22" height="22" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8-6 8 6v12H12z" stroke="#0a0a0f" stroke-width="2" fill="none"/>
+            <path d="M16 22h8v6h-8z" fill="#0a0a0f" opacity="0.8"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0%" stop-color="#4a6fa5"/>
+                <stop offset="100%" stop-color="#6b8fc9"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
         <span class="logo-text">AI Manager</span>
       </div>
@@ -183,13 +193,13 @@ const handleLogout = () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f0f5ff;
+  background: var(--bg-primary);
 }
 
 /* ===== Top Bar ===== */
 .topbar {
   height: 60px;
-  background: linear-gradient(90deg, #1a1a2e 0%, #0d1b2a 100%);
+  background: linear-gradient(90deg, #0a0a0f 0%, #12121a 100%);
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -197,7 +207,19 @@ const handleLogout = () => {
   flex-shrink: 0;
   position: relative;
   z-index: 100;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(74, 111, 165, 0.08);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(74, 111, 165, 0.15), transparent);
+  pointer-events: none;
 }
 
 .topbar-logo {
@@ -211,20 +233,19 @@ const handleLogout = () => {
 .topbar-logo .logo-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #409eff 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #4a6fa5, #6b8fc9);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(64, 158, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(74, 111, 165, 0.3);
 }
 
 .topbar-logo .logo-text {
   font-size: 18px;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .topbar-menu-wrap {
@@ -233,33 +254,34 @@ const handleLogout = () => {
   display: flex;
 }
 
-/* ===== Horizontal Menu Overrides ===== */
+/* ===== Horizontal Menu ===== */
 .topbar-menu {
   flex: 1;
   border: none !important;
   background: transparent !important;
 }
 
-/* Force dark theme on horizontal menu */
 .topbar-menu :deep(.el-menu-item),
 .topbar-menu :deep(.el-sub-menu__title) {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
   background: transparent !important;
   border-bottom: none !important;
   height: 60px;
   line-height: 60px;
   transition: all 0.25s ease;
+  letter-spacing: 0.5px;
+  font-weight: 400;
 }
 
 .topbar-menu :deep(.el-menu-item:hover),
 .topbar-menu :deep(.el-sub-menu__title:hover) {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #fff !important;
+  background: rgba(74, 111, 165, 0.06) !important;
+  color: var(--accent-light) !important;
 }
 
 .topbar-menu :deep(.el-menu-item.is-active) {
-  color: #fff !important;
-  background: rgba(64, 158, 255, 0.2) !important;
+  color: var(--accent-light) !important;
+  background: rgba(74, 111, 165, 0.08) !important;
 }
 
 .topbar-menu :deep(.el-menu-item.is-active::after) {
@@ -269,55 +291,14 @@ const handleLogout = () => {
   left: 50%;
   transform: translateX(-50%);
   width: 28px;
-  height: 3px;
-  background: linear-gradient(90deg, #409eff, #7c3aed);
-  border-radius: 3px 3px 0 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 12px rgba(74, 111, 165, 0.4);
 }
 
 .topbar-menu :deep(.el-sub-menu.is-active .el-sub-menu__title) {
-  color: #fff !important;
-}
-
-/* Sub menu / popup menu dark theme */
-.topbar-menu :deep(.el-menu--popup) {
-  background: #1a1a2e !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 8px !important;
-  padding: 6px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
-}
-
-.topbar-menu :deep(.el-menu--popup .el-menu-item) {
-  color: rgba(255, 255, 255, 0.75) !important;
-  background: transparent !important;
-  height: 40px !important;
-  line-height: 40px !important;
-  border-radius: 6px !important;
-  margin: 2px 0 !important;
-}
-
-.topbar-menu :deep(.el-menu--popup .el-menu-item:hover) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #fff !important;
-}
-
-.topbar-menu :deep(.el-menu--popup .el-menu-item.is-active) {
-  background: rgba(64, 158, 255, 0.25) !important;
-  color: #fff !important;
-}
-
-/* Nested sub-menu in popup */
-.topbar-menu :deep(.el-menu--popup .el-sub-menu .el-sub-menu__title) {
-  color: rgba(255, 255, 255, 0.75) !important;
-  background: transparent !important;
-  height: 40px !important;
-  line-height: 40px !important;
-  border-radius: 6px !important;
-}
-
-.topbar-menu :deep(.el-menu--popup .el-sub-menu .el-sub-menu__title:hover) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #fff !important;
+  color: var(--accent-light) !important;
 }
 
 /* ===== Top Bar User ===== */
@@ -328,7 +309,7 @@ const handleLogout = () => {
   flex-shrink: 0;
   margin-left: 8px;
   padding-left: 12px;
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-left: 1px solid rgba(74, 111, 165, 0.15);
 }
 
 .user-info {
@@ -342,15 +323,16 @@ const handleLogout = () => {
 }
 
 .user-info:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(74, 111, 165, 0.06);
 }
 
 .user-avatar {
-  background: linear-gradient(135deg, #409eff 0%, #7c3aed 100%);
-  color: #fff;
-  font-weight: 600;
+  background: linear-gradient(135deg, #4a6fa5, #6b8fc9) !important;
+  color: #fff !important;
+  font-weight: 700;
   font-size: 14px;
   flex-shrink: 0;
+  border: none;
 }
 
 .user-detail {
@@ -361,18 +343,18 @@ const handleLogout = () => {
 }
 
 .user-detail .username {
-  color: #fff;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
   font-size: 13px;
 }
 
 .user-detail .user-role {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.35);
   font-size: 11px;
 }
 
 .logout-btn {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
   font-size: 18px;
   padding: 6px !important;
   transition: color 0.2s;
@@ -392,17 +374,18 @@ const handleLogout = () => {
 }
 
 .page-header {
-  padding: 20px 32px 0;
+  padding: 24px 32px 0;
   flex-shrink: 0;
 }
 
 .page-title {
   font-size: 20px;
-  font-weight: 600;
-  color: #1a1a2e;
+  font-weight: 400;
+  color: var(--text-primary);
   margin: 0;
   padding-left: 14px;
   position: relative;
+  letter-spacing: 1px;
 }
 
 .page-title::before {
@@ -411,10 +394,11 @@ const handleLogout = () => {
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 4px;
-  height: 22px;
-  background: linear-gradient(180deg, #409eff 0%, #7c3aed 100%);
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
   border-radius: 2px;
+  box-shadow: 0 0 8px rgba(74, 111, 165, 0.3);
 }
 
 .main-content {
@@ -422,6 +406,14 @@ const handleLogout = () => {
   padding: 20px 32px 28px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(74, 111, 165, 0.15);
+  border-radius: 3px;
+}
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(74, 111, 165, 0.3);
 }
 
 .fade-enter-active,

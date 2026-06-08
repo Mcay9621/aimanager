@@ -1,31 +1,33 @@
 <template>
-  <div class="role-manage">
-    <div class="header">
-      <h2>角色管理</h2>
-      <el-button type="primary" @click="handleAdd">添加角色</el-button>
-    </div>
-    <el-table :data="paginatedData" border stripe>
-      <el-table-column prop="id" label="ID" width="60" />
-      <el-table-column prop="name" label="角色名称" />
-      <el-table-column prop="code" label="角色编码" />
-      <el-table-column prop="description" label="描述" />
-      <el-table-column label="操作" width="150">
-        <template #default="{ row }">
-          <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div class="page-container">
+    <div class="table-card">
+      <div class="table-header">
+        <h3>角色列表</h3>
+        <el-button type="primary" @click="handleAdd">添加角色</el-button>
+      </div>
+      <el-table :data="paginatedData" border stripe element-loading-background="rgba(10,10,15,0.8)">
+        <el-table-column prop="id" label="ID" width="60" />
+        <el-table-column prop="name" label="角色名称" />
+        <el-table-column prop="code" label="角色编码" />
+        <el-table-column prop="description" label="描述" />
+        <el-table-column label="操作" width="150">
+          <template #default="{ row }">
+            <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <div class="pagination-wrapper" v-if="roles.length > 0">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :total="roles.length"
-        :page-sizes="[10, 20, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        background
-      />
+      <div class="pagination-wrapper" v-if="roles.length > 0">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :total="roles.length"
+          :page-sizes="[10, 20, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          background
+        />
+      </div>
     </div>
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
@@ -67,10 +69,7 @@ const paginatedData = computed(() => {
 })
 
 const form = reactive({
-  id: null,
-  name: '',
-  code: '',
-  description: ''
+  id: null, name: '', code: '', description: ''
 })
 
 const rules = {
@@ -114,17 +113,29 @@ const handleDelete = async (id) => {
   fetchRoles()
 }
 
-onMounted(() => {
-  fetchRoles()
-})
+onMounted(() => { fetchRoles() })
 </script>
 
 <style scoped>
-.header {
+.table-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(12px);
+}
+.table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+}
+.table-header h3 {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin: 0;
 }
 .pagination-wrapper {
   display: flex;

@@ -2,6 +2,7 @@ package com.example.aimanager.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class ChatSession {
     private Long modelId;
     private String modelName;
     private String username;
+    @TableField(exist = false)
     private Long userId;
     private Integer messageCount;
     @TableLogic

@@ -1,34 +1,79 @@
 <template>
   <div class="register-container">
-    <el-card class="register-card">
-      <template #header>
-        <div class="card-header">
-          <span>用户注册</span>
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
+    <div class="ambient-light light-3"></div>
+
+    <div class="register-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8-6 8 6v12H12z" stroke="#0a0a0f" stroke-width="2" fill="none"/>
+            <path d="M16 22h8v6h-8z" fill="#0a0a0f" opacity="0.8"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0%" stop-color="#4a6fa5"/>
+                <stop offset="100%" stop-color="#6b8fc9"/>
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
-      </template>
-      <el-form :model="registerForm" :rules="rules" ref="registerFormRef">
-        <el-form-item prop="username">
-          <el-input v-model="registerForm.username" placeholder="用户名" prefix-icon="User" />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input v-model="registerForm.password" type="password" placeholder="密码" prefix-icon="Lock" show-password />
-        </el-form-item>
-        <el-form-item prop="email">
-          <el-input v-model="registerForm.email" placeholder="邮箱" prefix-icon="Message" />
-        </el-form-item>
-        <el-form-item prop="phone">
-          <el-input v-model="registerForm.phone" placeholder="手机号" prefix-icon="Phone" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" style="width: 100%" :loading="loading" @click="handleRegister">
-            注册
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-link type="primary" @click="$router.push('/login')">已有账号？立即登录</el-link>
-        </el-form-item>
-      </el-form>
-    </el-card>
+        <h1 class="brand-title"><span class="accent-gradient-text">AI</span> Manager</h1>
+        <p class="brand-subtitle">创建您的账户</p>
+      </div>
+
+      <div class="register-card">
+        <h2 class="card-title">用户注册</h2>
+        <p class="card-desc">注册账户以开始使用</p>
+        <el-form :model="registerForm" :rules="rules" ref="registerFormRef" class="register-form">
+          <el-form-item prop="username">
+            <el-input
+              v-model="registerForm.username"
+              placeholder="用户名"
+              size="large"
+              :prefix-icon="User"
+            />
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="registerForm.password"
+              type="password"
+              placeholder="密码"
+              size="large"
+              :prefix-icon="Lock"
+              show-password
+            />
+          </el-form-item>
+          <el-form-item prop="email">
+            <el-input
+              v-model="registerForm.email"
+              placeholder="邮箱"
+              size="large"
+              :prefix-icon="Message"
+            />
+          </el-form-item>
+          <el-form-item prop="phone">
+            <el-input
+              v-model="registerForm.phone"
+              placeholder="手机号"
+              size="large"
+              :prefix-icon="Phone"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="large" class="register-btn" :loading="loading" @click="handleRegister">
+              注 册
+            </el-button>
+          </el-form-item>
+        </el-form>
+        <div class="register-footer">
+          <el-link type="primary" :underline="false" @click="$router.push('/login')">已有账号？立即登录</el-link>
+        </div>
+      </div>
+
+      <p class="copyright">© 2024 AI Manager</p>
+    </div>
   </div>
 </template>
 
@@ -36,6 +81,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { User, Lock, Message, Phone } from '@element-plus/icons-vue'
 import request from '../../utils/request'
 
 const router = useRouter()
@@ -76,106 +122,148 @@ const handleRegister = async () => {
 
 <style scoped>
 .register-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 20% 80%, rgba(0, 200, 255, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(120, 100, 255, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(0, 255, 200, 0.15) 0%, transparent 60%),
-    linear-gradient(180deg, #1a2a4a 0%, #2d4a6a 50%, #1e3a5f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
+  background: var(--bg-primary);
 }
 
-.register-container::before {
-  content: '';
+/* 环境光效 */
+.ambient-light {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: gridMove 15s linear infinite;
+  border-radius: 50%;
+  filter: blur(100px);
   pointer-events: none;
 }
-
-.register-container::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(from 0deg, transparent, rgba(100, 200, 255, 0.15), transparent 40%);
-  animation: rotate 8s linear infinite;
-  pointer-events: none;
+.light-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(74, 111, 165, 0.08), transparent);
+  top: -200px; left: -100px;
+  animation: floatLight 12s ease-in-out infinite;
+}
+.light-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(74, 128, 212, 0.06), transparent);
+  bottom: -100px; right: -50px;
+  animation: floatLight 15s ease-in-out infinite reverse;
+}
+.light-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(74, 111, 165, 0.05), transparent);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-@keyframes gridMove {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(40px, 40px); }
+@keyframes floatLight {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -30px); }
+  66% { transform: translate(-20px, 20px); }
 }
 
-@keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.register-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
 }
 
-.register-card {
-  width: 400px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 0 60px rgba(0, 150, 255, 0.15);
-}
-
-.register-card :deep(.el-card__header) {
-  background: rgba(0, 150, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  color: #0066cc;
-  font-weight: 600;
-}
-
-.register-card :deep(.el-input__wrapper) {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(0, 150, 255, 0.4);
-  box-shadow: none;
-}
-
-.register-card :deep(.el-input__wrapper:hover),
-.register-card :deep(.el-input__wrapper.is-focus) {
-  border-color: rgba(0, 150, 255, 0.8);
-  box-shadow: 0 0 20px rgba(0, 150, 255, 0.25);
-}
-
-.register-card :deep(.el-input__inner) {
-  color: #1a1a2e;
-}
-
-.register-card :deep(.el-input__inner::placeholder) {
-  color: rgba(26, 26, 46, 0.5);
-}
-
-.register-card :deep(.el-button--primary) {
-  background: linear-gradient(135deg, #0088ff 0%, #00aaff 100%);
-  border: none;
-  box-shadow: 0 4px 20px rgba(0, 150, 255, 0.4);
-}
-
-.register-card :deep(.el-link--primary) {
-  color: #0066cc;
-  font-weight: 500;
-}
-
-.card-header {
+/* 品牌区 */
+.brand {
   text-align: center;
+}
+.brand-icon {
+  margin: 0 auto 16px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-title {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--text-primary);
+  margin: 0;
+}
+.brand-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 6px;
+  margin-top: 8px;
+  font-weight: 300;
+}
+
+/* 注册卡片 */
+.register-card {
+  width: 420px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 40px;
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(74, 111, 165, 0.03);
+  transition: all 0.4s ease;
+}
+.register-card:hover {
+  border-color: var(--border-color-hover);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 80px rgba(74, 111, 165, 0.04);
+}
+
+.card-title {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: 2px;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 8px 0 28px;
   letter-spacing: 1px;
+  font-weight: 300;
+}
+
+.register-form {
+  margin-top: 0;
+}
+.register-form :deep(.el-form-item) {
+  margin-bottom: 20px;
+}
+
+.register-btn {
+  width: 100%;
+  height: 48px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  border-radius: 10px !important;
+  margin-top: 4px;
+}
+
+.register-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.register-footer :deep(.el-link) {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.copyright {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 2px;
+  font-weight: 300;
 }
 </style>

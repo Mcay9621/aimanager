@@ -1,21 +1,36 @@
 <template>
   <div class="login-container">
-    <div class="login-bg">
-      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80" alt="background" class="bg-image" />
-      <div class="bg-overlay"></div>
-    </div>
+    <div class="ambient-light light-1"></div>
+    <div class="ambient-light light-2"></div>
+    <div class="ambient-light light-3"></div>
+
     <div class="login-content">
-      <div class="logo-section">
-        <h1 class="title">AI Manager</h1>
-        <p class="subtitle">智能大模型管理平台</p>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8-6 8 6v12H12z" stroke="#0a0a0f" stroke-width="2" fill="none"/>
+            <path d="M16 22h8v6h-8z" fill="#0a0a0f" opacity="0.8"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0%" stop-color="#4a6fa5"/>
+                <stop offset="100%" stop-color="#6b8fc9"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="brand-title"><span class="accent-gradient-text">AI</span> Manager</h1>
+        <p class="brand-subtitle">智能大模型管理平台</p>
       </div>
-      <el-card class="login-card">
-        <h2 class="card-title">前台登录</h2>
+
+      <div class="login-card">
+        <h2 class="card-title">欢迎回来</h2>
+        <p class="card-desc">登录您的账户以继续</p>
         <el-form :model="loginForm" :rules="rules" ref="loginFormRef" class="login-form">
           <el-form-item prop="username">
             <el-input
               v-model="loginForm.username"
-              placeholder="请输入用户名"
+              placeholder="用户名"
               size="large"
               :prefix-icon="User"
             />
@@ -24,7 +39,7 @@
             <el-input
               v-model="loginForm.password"
               type="password"
-              placeholder="请输入密码"
+              placeholder="密码"
               size="large"
               :prefix-icon="Lock"
               show-password
@@ -32,26 +47,19 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button
-              type="primary"
-              size="large"
-              class="login-btn"
-              :loading="loading"
-              @click="handleLogin"
-            >
+            <el-button type="primary" size="large" class="login-btn" :loading="loading" @click="handleLogin">
               登 录
             </el-button>
           </el-form-item>
         </el-form>
-        <div class="login-options">
-          <el-link type="primary" @click="$router.push('/register')">立即注册</el-link>
-          <el-divider direction="vertical" />
-          <el-link type="warning" @click="$router.push('/admin/login')">管理员登录</el-link>
+        <div class="login-footer">
+          <el-link type="primary" :underline="false" @click="$router.push('/register')">创建账户</el-link>
+          <span class="divider">|</span>
+          <el-link type="primary" :underline="false" @click="$router.push('/admin/login')">管理员登录</el-link>
         </div>
-      </el-card>
-      <div class="footer-tip">
-        © 2024 AI Manager · 智能科技 引领未来
       </div>
+
+      <p class="copyright">© 2024 AI Manager</p>
     </div>
   </div>
 </template>
@@ -110,199 +118,172 @@ const handleLogin = async () => {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  background: var(--bg-primary);
 }
 
-.login-bg {
+/* 环境光效 */
+.ambient-light {
   position: absolute;
-  inset: 0;
-  z-index: 0;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+}
+.light-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(74, 111, 165, 0.08), transparent);
+  top: -200px; left: -100px;
+  animation: floatLight 12s ease-in-out infinite;
+}
+.light-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(74, 128, 212, 0.06), transparent);
+  bottom: -100px; right: -50px;
+  animation: floatLight 15s ease-in-out infinite reverse;
+}
+.light-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(74, 111, 165, 0.05), transparent);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.bg-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  animation: scaleSlow 30s ease-in-out infinite;
+@keyframes floatLight {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(30px, -30px); }
+  66% { transform: translate(-20px, 20px); }
 }
 
-@keyframes scaleSlow {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.bg-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg,
-    rgba(255,255,255,0.15) 0%,
-    rgba(64,169,255,0.2) 50%,
-    rgba(128,96,240,0.15) 100%);
-  backdrop-filter: blur(3px);
-}
-
+/* 内容区 */
 .login-content {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 32px;
 }
 
-.logo-section {
+/* 品牌区 */
+.brand {
   text-align: center;
-  color: #fff;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
-
-.logo-icon {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 20px;
-  background: linear-gradient(135deg, #409eff 0%, #7c3aed 100%);
-  border-radius: 24px;
+.brand-icon {
+  margin: 0 auto 16px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 20px 60px rgba(64, 158, 255, 0.5);
-  animation: iconFloat 3s ease-in-out infinite;
 }
-
-@keyframes iconFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.logo-icon .el-icon {
-  color: #fff;
-}
-
-.title {
-  font-size: 48px;
-  font-weight: 700;
+.brand-title {
+  font-size: 36px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  color: var(--text-primary);
   margin: 0;
-  background: linear-gradient(135deg, #fff 0%, #e0f0ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 4px;
 }
-
-.subtitle {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 10px 0 0;
-  letter-spacing: 8px;
+.brand-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 6px;
+  margin-top: 8px;
   font-weight: 300;
 }
 
+/* 登录卡片 */
 .login-card {
-  width: 420px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  border: none;
-  border-radius: 24px;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
-}
-
-.login-card :deep(.el-card__body) {
+  width: 400px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
   padding: 40px;
+  backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(74, 111, 165, 0.03);
+  transition: all 0.4s ease;
+}
+.login-card:hover {
+  border-color: var(--border-color-hover);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 80px rgba(74, 111, 165, 0.04);
 }
 
 .card-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #1a1a2e;
-  margin: 0 0 30px;
-  text-align: center;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: 2px;
+}
+.card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 8px 0 28px;
+  letter-spacing: 1px;
+  font-weight: 300;
 }
 
+.login-form {
+  margin-top: 0;
+}
 .login-form :deep(.el-form-item) {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
-
 .login-form :deep(.el-input__wrapper) {
-  background: #f5f8ff;
-  border: 2px solid #e5eaf5;
-  border-radius: 12px;
-  padding: 8px 16px;
-  box-shadow: none;
-  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  padding: 4px 16px !important;
+  height: 48px;
 }
-
-.login-form :deep(.el-input__wrapper:hover),
+.login-form :deep(.el-input__wrapper:hover) {
+  border-color: rgba(74, 111, 165, 0.25) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
 .login-form :deep(.el-input__wrapper.is-focus) {
-  background: #fff;
-  border-color: #409eff;
-  box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.15);
+  border-color: var(--accent) !important;
+  background: rgba(74, 111, 165, 0.04) !important;
+  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.08) !important;
 }
-
 .login-form :deep(.el-input__inner) {
-  color: #1a1a2e;
-  height: 24px;
-  font-size: 15px;
+  color: var(--text-primary) !important;
+  font-size: 14px;
+  letter-spacing: 0.5px;
 }
-
 .login-form :deep(.el-input__inner::placeholder) {
-  color: #999;
-}
-
-.login-form :deep(.el-input__prefix) {
-  color: #409eff;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.5px;
 }
 
 .login-btn {
   width: 100%;
   height: 48px;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 4px;
-  background: linear-gradient(135deg, #409eff 0%, #7c3aed 100%);
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(64, 158, 255, 0.4);
-  transition: all 0.3s;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  border-radius: 10px !important;
+  margin-top: 4px;
 }
 
-.login-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 35px rgba(64, 158, 255, 0.5);
-}
-
-.register-tip {
+.login-footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: #666;
-  font-size: 14px;
+  gap: 12px;
   margin-top: 20px;
 }
-
-.login-options {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: #666;
-  font-size: 14px;
-  margin-top: 20px;
-}
-
-.login-options :deep(.el-link--primary) {
-  color: #409eff;
-  font-weight: 500;
-}
-
-.login-options :deep(.el-link--warning) {
-  color: #e6a23c;
-  font-weight: 500;
-}
-
-.footer-tip {
-  color: rgba(255, 255, 255, 0.8);
+.divider {
+  color: rgba(255, 255, 255, 0.15);
   font-size: 12px;
+}
+.login-footer :deep(.el-link) {
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.copyright {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.15);
   letter-spacing: 2px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  font-weight: 300;
 }
 </style>
