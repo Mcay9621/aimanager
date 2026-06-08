@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: ai-manager
+  cloud:
+    nacos:
+      config:
+        server-addr: ${NACOS_ADDR:localhost:8848}
+        file-extension: yaml
+      discovery:
+        server-addr: ${NACOS_ADDR:localhost:8848}
