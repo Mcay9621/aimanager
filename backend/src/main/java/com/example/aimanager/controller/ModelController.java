@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -366,99 +364,39 @@ public class ModelController {
             )));
         }
 
-        // 取第一个 DeepSeek 模型的 API key
-        AiModel ds = deepSeekModels.get(0);
-
-        LocalDate endDate = LocalDate.now();
-        LocalDate startDate = endDate.minusDays(days);
+        // 从本地 chat_message 表统计 DeepSeek 用量（token 数 + 调用次数）
+        LocalDate startDate = LocalDate.now().minusDays(days);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String modelIds = deepSeekModels.stream()
+                .map(m -> String.valueOf(m.getId()))
+                .collect(Collectors.joining(","));
 
-        // 先尝试 DeepSeek 官方 API
-        if (ds.getApiKey() != null && !ds.getApiKey().isBlank()) {
-            try {
-                String url = "https://api.deepseek.com/v1/usage?start_date=" + startDate.format(fmt)
-                        + "&end_date=" + endDate.format(fmt);
+        List<Map<String, Object>> localUsage = chatMessageMapper.selectModelDailyUsage(
+                modelIds, startDate.format(fmt));
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(url))
-                        .timeout(Duration.ofSeconds(15))
-                        .header("Authorization", "Bearer " + ds.getApiKey())
-                        .GET()
-                        .build();
+        long totalTokens = 0;
+        int totalApiCalls = 0;
+        List<Map<String, Object>> dailyBreakdown = new ArrayList<>();
 
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() >= 200 && response.statusCode() < 300) {
-                    JsonNode root = objectMapper.readTree(response.body());
-                    JsonNode data = root.path("data");
-
-                    BigDecimal totalCost = BigDecimal.ZERO;
-                    int totalApiCalls = 0;
-                    long totalTokens = 0;
-                    Map<String, DailyBreakdown> dailyMap = new LinkedHashMap<>();
-
-                    if (data.isArray()) {
-                        for (JsonNode item : data) {
-                            totalApiCalls++;
-                            BigDecimal cost = BigDecimal.valueOf(item.path("cost_in_cents").asDouble(0) / 100);
-                            totalCost = totalCost.add(cost);
-                            totalTokens += item.path("total_tokens").asLong(0);
-
-                            String date = item.path("date").asText();
-                            if (date.isEmpty()) date = item.path("created_at").asText().substring(0, 10);
-                            DailyBreakdown db = dailyMap.computeIfAbsent(date, k -> new DailyBreakdown());
-                            db.calls++;
-                            db.cost = db.cost.add(cost);
-                            db.tokens += item.path("total_tokens").asLong(0);
-                        }
-                    }
-
-                    List<Map<String, Object>> dailyBreakdown = new ArrayList<>();
-                    for (Map.Entry<String, DailyBreakdown> entry : dailyMap.entrySet()) {
-                        Map<String, Object> d = new HashMap<>();
-                        d.put("date", entry.getKey());
-                        d.put("apiCalls", entry.getValue().calls);
-                        d.put("cost", entry.getValue().cost.setScale(4, RoundingMode.HALF_UP));
-                        d.put("tokens", entry.getValue().tokens);
-                        dailyBreakdown.add(d);
-                    }
-
-                    Map<String, Object> result = new HashMap<>();
-                    result.put("hasDeepSeek", true);
-                    result.put("source", "api");
-                    result.put("totalCost", totalCost.setScale(4, RoundingMode.HALF_UP));
-                    result.put("totalApiCalls", totalApiCalls);
-                    result.put("totalTokens", totalTokens);
-                    result.put("dailyBreakdown", dailyBreakdown);
-                    return ResponseEntity.ok(Result.success(result));
-                }
-                // API 返回非 200
-                return ResponseEntity.ok(Result.success(Map.of(
-                        "hasDeepSeek", true,
-                        "source", "api",
-                        "error", "DeepSeek API 返回状态码 " + response.statusCode()
-                )));
-            } catch (Exception e) {
-                return ResponseEntity.ok(Result.success(Map.of(
-                        "hasDeepSeek", true,
-                        "source", "api",
-                        "error", "无法连接 DeepSeek API: " + e.getMessage()
-                )));
-            }
+        for (Map<String, Object> row : localUsage) {
+            int calls = ((Number) row.getOrDefault("api_calls", 0)).intValue();
+            long tokens = ((Number) row.getOrDefault("total_tokens", 0)).longValue();
+            totalApiCalls += calls;
+            totalTokens += tokens;
+            Map<String, Object> d = new HashMap<>();
+            d.put("date", row.get("date"));
+            d.put("apiCalls", calls);
+            d.put("tokens", tokens);
+            dailyBreakdown.add(d);
         }
 
-        return ResponseEntity.ok(Result.success(Map.of(
-                "hasDeepSeek", true,
-                "source", "api",
-                "error", "DeepSeek 模型未配置 API Key"
-        )));
-    }
-
-    // 内部类用于每日统计
-    private static class DailyBreakdown {
-        int calls = 0;
-        BigDecimal cost = BigDecimal.ZERO;
-        long tokens = 0;
+        Map<String, Object> result = new HashMap<>();
+        result.put("hasDeepSeek", true);
+        result.put("source", "local");
+        result.put("totalApiCalls", totalApiCalls);
+        result.put("totalTokens", totalTokens);
+        result.put("dailyBreakdown", dailyBreakdown);
+        return ResponseEntity.ok(Result.success(result));
     }
 
     private Map<String, Object> fetchDeepSeekBalance(AiModel model) throws Exception {

@@ -131,25 +131,17 @@
 
       <!-- DeepSeek 用量 -->
       <div v-if="deepseekUsage.hasDeepSeek" class="chart-card deepseek-card">
-        <h4>DeepSeek 用量
-          <span class="subtitle">(来自 DeepSeek 官方 API)</span>
-        </h4>
+        <h4>DeepSeek 用量 <span class="subtitle">(本地数据库统计)</span></h4>
         <div v-if="deepseekUsage.error" class="ds-error">{{ deepseekUsage.error }}</div>
         <div v-else>
           <el-row :gutter="16" class="ds-summary">
-            <el-col :span="8">
-              <div class="ds-stat">
-                <span class="ds-stat-value">¥{{ deepseekUsage.totalCost }}</span>
-                <span class="ds-stat-label">总消费金额</span>
-              </div>
-            </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
               <div class="ds-stat">
                 <span class="ds-stat-value">{{ deepseekUsage.totalApiCalls }}</span>
                 <span class="ds-stat-label">API 调用次数</span>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :span="12">
               <div class="ds-stat">
                 <span class="ds-stat-value">{{ formatTokens(deepseekUsage.totalTokens) }}</span>
                 <span class="ds-stat-label">总 Tokens</span>
@@ -391,7 +383,7 @@ const renderDeepSeekChart = () => {
   const data = (deepseekUsage.value.dailyBreakdown || []).reverse()
   dsChart.setOption({
     tooltip: { trigger: 'axis' },
-    legend: { data: ['调用次数', '消费金额'], textStyle: { color: '#888' } },
+    legend: { data: ['调用次数', 'Tokens'], textStyle: { color: '#888' } },
     grid: { left: 50, right: 30, top: 35, bottom: 25 },
     xAxis: {
       type: 'category', data: data.map(d => d.date),
@@ -400,11 +392,11 @@ const renderDeepSeekChart = () => {
     },
     yAxis: [
       { type: 'value', name: '调用次数', axisLabel: { color: '#666' }, splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } } },
-      { type: 'value', name: '金额 (¥)', axisLabel: { color: '#666' }, splitLine: { show: false } }
+      { type: 'value', name: 'Tokens', axisLabel: { color: '#666' }, splitLine: { show: false } }
     ],
     series: [
       { name: '调用次数', type: 'bar', data: data.map(d => d.apiCalls || 0), itemStyle: { color: 'rgba(74,111,165,0.7)', borderRadius: [4,4,0,0] }, barMaxWidth: 24 },
-      { name: '消费金额', type: 'line', yAxisIndex: 1, data: data.map(d => parseFloat(d.cost) || 0), smooth: true, lineStyle: { color: '#10b981', width: 2 }, symbol: 'none' }
+      { name: 'Tokens', type: 'line', yAxisIndex: 1, data: data.map(d => d.tokens || 0), smooth: true, lineStyle: { color: '#10b981', width: 2 }, symbol: 'none' }
     ]
   }, true)
   dsChart.resize()
