@@ -24,6 +24,12 @@ public class AiModelService extends ServiceImpl<AiModelMapper, AiModel> {
                 .eq(AiModel::getEnabled, 1));
     }
 
+    public List<AiModel> listWithDecryptedKeys() {
+        List<AiModel> models = this.list();
+        models.forEach(this::decryptApiKey);
+        return models;
+    }
+
     @Override
     public boolean save(AiModel entity) {
         if (entity.getApiKey() != null) {

@@ -44,6 +44,7 @@ public class AiChatService {
     public interface StreamCallback {
         void onToken(String token);
         default void onDone(String fullContent) {}
+        default void onDone(String fullContent, Map<String, Integer> usage) { onDone(fullContent); }
         default void onError(String error) {}
     }
 
@@ -70,6 +71,11 @@ public class AiChatService {
                 @Override
                 public void onDone(String content) {
                     callback.onDone(content);
+                }
+
+                @Override
+                public void onDone(String content, Map<String, Integer> usage) {
+                    callback.onDone(content, usage);
                 }
 
                 @Override

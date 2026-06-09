@@ -94,6 +94,7 @@ public class AnthropicStrategy implements AiProviderStrategy {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body()))) {
                     String line;
                     StringBuilder contentBuilder = new StringBuilder();
+                    int inputTokens = 0;
 
                     while ((line = reader.readLine()) != null) {
                         if (line.startsWith("data: ")) {
@@ -102,8 +103,12 @@ public class AnthropicStrategy implements AiProviderStrategy {
 
                             try {
                                 JsonNode jsonNode = objectMapper.readTree(data);
-                                if (jsonNode.has("type")
-                                        && "content_block_delta".equals(jsonNode.get("type").asText())) {
+                                String type = jsonNode.has("type") ? jsonNode.get("type").asText() : "";
+                                if ("message_start".equals(type)) {
+                                    JsonNode msg = jsonNode.path("message");
+                                    inputTokens = msg.path("usage").path("input_tokens").asInt(0);
+                                }
+                                if ("content_block_delta".equals(type)) {
                                     JsonNode delta = jsonNode.path("delta");
                                     if (delta.has("text")) {
                                         String token = delta.get("text").asText();
@@ -112,8 +117,19 @@ public class AnthropicStrategy implements AiProviderStrategy {
                                         emitter.send(SseEmitter.event().name("token").data(token));
                                     }
                                 }
-                                if (jsonNode.has("type")
-                                        && "message_stop".equals(jsonNode.get("type").asText())) {
+                                if ("message_delta".equals(type)) {
+                                    JsonNode usage = jsonNode.path("usage");
+                                    int outputTokens = usage.path("output_tokens").asInt(0);
+                                    Map<String, Integer> usageMap = new HashMap<>();
+                                    usageMap.put("prompt_tokens", inputTokens);
+                                    usageMap.put("completion_tokens", outputTokens);
+                                    usageMap.put("total_tokens", inputTokens + outputTokens);
+                                    callback.onDone(contentBuilder.toString(), usageMap);
+                                    emitter.send(SseEmitter.event().name("done").data(""));
+                                    emitter.complete();
+                                    return;
+                                }
+                                if ("message_stop".equals(type)) {
                                     break;
                                 }
                             } catch (Exception ignored) {}
@@ -141,6 +157,24 @@ public class AnthropicStrategy implements AiProviderStrategy {
             return root.path("content").get(0).path("text").asText();
         } catch (Exception e) {
             throw new RuntimeException("解析响应失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Integer> parseUsage(String responseBody) {
+        try {
+            JsonNode root = objectMapper.readTree(responseBody);
+            JsonNode usage = root.path("usage");
+            if (usage.isMissingNode() || usage.isNull()) {
+                return Map.of("prompt_tokens", 0, "completion_tokens", 0, "total_tokens", 0);
+            }
+            Map<String, Integer> result = new HashMap<>();
+            result.put("prompt_tokens", usage.path("input_tokens").asInt(0));
+            result.put("completion_tokens", usage.path("output_tokens").asInt(0));
+            result.put("total_tokens", usage.path("input_tokens").asInt(0) + usage.path("output_tokens").asInt(0));
+            return result;
+        } catch (Exception e) {
+            return Map.of("prompt_tokens", 0, "completion_tokens", 0, "total_tokens", 0);
         }
     }
 }

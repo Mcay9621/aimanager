@@ -1,5 +1,6 @@
 package com.example.aimanager.util;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,20 @@ public class AesUtil {
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128;
 
-    private final SecretKeySpec keySpec;
+    private final String secret;
+    private SecretKeySpec keySpec;
 
-    public AesUtil(@Value("${app.api-key-secret:DefaultSecretKey32}") String secret) {
+    public AesUtil(@Value("${app.api-key-secret}") String secret) {
+        this.secret = secret;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (secret == null || secret.isEmpty() || "DefaultSecretKey32".equals(secret)) {
+            throw new IllegalStateException(
+                "app.api-key-secret 未配置！请在 application.yml 中设置 app.api-key-secret，或通过环境变量 API_KEY_SECRET 提供。"
+            );
+        }
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         byte[] key = new byte[32];
         System.arraycopy(keyBytes, 0, key, 0, Math.min(keyBytes.length, 32));

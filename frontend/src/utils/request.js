@@ -4,7 +4,7 @@ import router from '../router'
 
 const request = axios.create({
   baseURL: '/api',
-  timeout: 10000
+  timeout: 30000
 })
 
 // 是否正在刷新 token 中

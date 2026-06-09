@@ -113,6 +113,7 @@
             <el-menu-item index="/admin/users">用户管理</el-menu-item>
             <el-menu-item index="/admin/roles">角色管理</el-menu-item>
             <el-menu-item index="/admin/models">模型管理</el-menu-item>
+            <el-menu-item index="/admin/models/usage">模型用量</el-menu-item>
             <el-menu-item index="/admin/audit-logs">审计日志</el-menu-item>
           </el-sub-menu>
         </el-menu>

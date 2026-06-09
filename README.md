@@ -5,8 +5,10 @@
 ## 技术栈
 
 - **前端**：Vue 3 + Element Plus + Pinia + Vite
-- **后端**：Spring Boot 3 + MyBatis-Plus + MySQL
+- **后端**：Spring Boot 3 + MyBatis-Plus + MySQL + Redis
+- **缓存**：Redis（模型连通性状态缓存，60s TTL）
 - **认证**：JWT + Spring Security
+- **服务发现**：Nacos（可选）
 
 ## 项目结构
 
@@ -21,6 +23,7 @@ project-root/
 │   │   │   │   ├── SecurityConfig.java       # Spring Security配置
 │   │   │   │   ├── JwtAuthenticationFilter.java # JWT过滤器
 │   │   │   │   ├── BeanConfig.java           # Bean配置
+│   │   │   │   ├── RedisConfig.java          # Redis/Jedis配置
 │   │   │   │   └── AuditLogAspect.java       # 审计日志AOP切面
 │   │   │   ├── controller/                   # 控制器
 │   │   │   │   ├── AuthController.java       # 认证接口
@@ -46,27 +49,18 @@ project-root/
 │   │   │   │   ├── UserService.java          # 用户+UserDetailsService
 │   │   │   │   ├── RoleService.java          # 角色CRUD
 │   │   │   │   ├── AiModelService.java       # 模型服务
+│   │   │   │   ├── ModelStatusService.java   # 模型连通性状态缓存(Redis)
 │   │   │   │   ├── AiChatService.java        # AI对话(多提供商+SSE流式)
 │   │   │   │   ├── ChatSessionService.java   # 聊天会话
 │   │   │   │   ├── ChatMessageService.java   # 聊天消息
 │   │   │   │   ├── AuditLogService.java      # 审计日志
 │   │   │   │   └── VerifyCodeService.java    # 验证码
 │   │   │   ├── mapper/                       # MyBatis映射
-│   │   │   │   ├── UserMapper.java           # 用户
-│   │   │   │   ├── RoleMapper.java           # 角色
-│   │   │   │   ├── PermissionMapper.java     # 权限
-│   │   │   │   ├── AiModelMapper.java        # 模型
-│   │   │   │   ├── UserRoleMapper.java       # 用户角色关联
-│   │   │   │   ├── RolePermissionMapper.java # 角色权限关联
-│   │   │   │   ├── VerifyCodeMapper.java     # 验证码
-│   │   │   │   ├── AuditLogMapper.java       # 审计日志
-│   │   │   │   ├── ChatSessionMapper.java    # 聊天会话
-│   │   │   │   └── ChatMessageMapper.java    # 聊天消息
-│   │   │   ├── dto/                          # 数据传输对象
 │   │   │   └── util/                         # 工具类
 │   │   │       └── JwtUtil.java              # JWT工具
 │   │   └── resources/
-│   │       └── application.yml              # 配置文件
+│   │       ├── application.yml              # 配置文件
+│   │       └── bootstrap.yml                # Nacos引导配置
 ├── frontend/                   # Vue3 前端
 │   ├── package.json
 │   ├── vite.config.js
@@ -117,6 +111,9 @@ project-root/
   - 文心一言 (百度)
   - 豆包 (字节跳动)
   - 腾讯混元 (腾讯)
+  - DeepSeek Chat / DeepSeek Reasoner (DeepSeek)
+  - 模型连通性状态（在线/离线/未检测），缓存至 Redis，60s TTL
+  - 一键刷新状态按钮
 - **AI对话** (`/front/chat`)：SSE 流式 AI 对话，功能包括：
   - 左侧会话历史列表（支持搜索、删除）
   - 右侧流式聊天区域，逐 token 实时显示回复
@@ -132,12 +129,12 @@ project-root/
 - **用户管理** (`/admin/users`)：查看用户列表、禁用/启用用户、**分配角色**
 - **角色管理** (`/admin/roles`)：角色的增删改查
 - **模型管理** (`/admin/models`)：配置 AI 模型，包括：
-  - 模型名称
-  - 模型类型（OpenAI/Anthropic/阿里云/百度/字节/腾讯）
-  - API 地址
-  - API 密钥
-  - 模型标识
-  - 启用/禁用状态
+  - 模型名称、类型（OpenAI/Anthropic/阿里云/百度/字节/腾讯/DeepSeek）
+  - API 地址和密钥、模型标识、启用/禁用状态
+  - 连通性检测（在线/离线/未检测）
+  - 批量刷新连通性、单模型测试
+  - 用量统计（对话次数、Token 数、余额查询）
+  - 从 OpenAI 兼容 API 同步模型列表
 - **审计日志** (`/admin/audit-logs`)：操作审计记录，支持按操作类型和对象类型筛选，记录内容包括：
   - 操作人、操作类型（创建/更新/删除/登录）
   - 操作对象、对象ID、详情
@@ -159,7 +156,22 @@ mysql -u root -p < sql/init.sql
 # 或在 MySQL 客户端执行 sql/init.sql 内容
 ```
 
-### 2. 后端启动
+### 2. Redis 配置（可选，用于模型连通性缓存）
+
+```bash
+# 安装 Redis
+apt install redis-server  # 或 yum install redis
+
+# 修改密码（可选）
+redis-cli CONFIG SET requirepass your_password
+
+# 启动 Redis
+systemctl start redis
+```
+
+如果不配置 Redis，模型列表和状态功能仍可正常工作，只是可用性状态显示为"未检测"。
+
+### 3. 后端启动
 
 ```bash
 cd backend
@@ -175,7 +187,7 @@ mvn spring-boot:run
 set JAVA_HOME=E:\soft\jdk-17.0.11+9
 ```
 
-### 3. 前端启动
+### 4. 前端启动
 
 ```bash
 cd frontend
@@ -189,7 +201,7 @@ npm run dev
 
 前端默认端口：`http://localhost:5173`（如被占用会自动切换）
 
-### 4. 访问系统
+### 5. 访问系统
 
 1. 打开浏览器访问 `http://localhost:5173`
 2. 使用默认管理员账号登录：
@@ -211,11 +223,17 @@ npm run dev
 ### 模型接口
 | 方法 | 路径 | 说明 | 认证 |
 |------|------|------|------|
-| GET | /api/models | 获取可用模型列表 | 否 |
-| GET | /api/admin/models | 获取所有模型 | 是(管理员) |
+| GET | /api/models | 获取可用模型列表（含 Redis 缓存状态） | 否 |
+| POST | /api/models/refresh | 批量刷新所有模型连通性（结果写入 Redis） | 否 |
+| GET | /api/admin/models | 获取所有模型（含缓存状态） | 是(管理员) |
 | POST | /api/admin/models | 添加模型 | 是(管理员) |
 | PUT | /api/admin/models/{id} | 更新模型 | 是(管理员) |
 | DELETE | /api/admin/models/{id} | 删除模型 | 是(管理员) |
+| POST | /api/admin/models/{id}/test | 测试单个模型连通性 | 是(管理员) |
+| POST | /api/admin/models/fetch | 从 OpenAI 兼容 API 同步模型列表 | 是(管理员) |
+| GET | /api/admin/models/balances | 模型用量统计+余额查询 | 是(管理员) |
+| GET | /api/admin/models/usage | 整体用量+按天趋势+模型排行 | 是(管理员) |
+| GET | /api/admin/models/usage/deepseek | DeepSeek 用量明细 | 是(管理员) |
 
 ### 用户管理接口
 | 方法 | 路径 | 说明 | 认证 |
@@ -269,7 +287,7 @@ npm run dev
 
 ### 环境变量配置
 
-项目使用环境变量注入敏感配置，参考 `.env.example` 文件设置：
+项目使用环境变量注入敏感配置：
 
 ```bash
 # 数据库配置
@@ -279,6 +297,11 @@ DB_PASSWORD=your_database_password
 
 # JWT 密钥（可选，有默认值）
 JWT_SECRET=your-256-bit-secret-key-must-be-at-least-32-characters
+
+# Redis 配置（可选，默认 127.0.0.1:6379）
+REDIS_HOST=127.0.0.1
+REDIS_PORT=6379
+REDIS_PASSWORD=your_redis_password
 ```
 
 **启动前设置环境变量：**
@@ -294,11 +317,7 @@ $env:DB_PASSWORD="your_password"
 export DB_PASSWORD=your_password
 ```
 
-或直接修改 `application.yml` 中的默认值。注意：数据库密码 `${DB_PASSWORD}` **没有默认值**，必须通过环境变量提供。
-
 ### 数据库配置
-
-`backend/src/main/resources/application.yml`：
 
 ```yaml
 spring:
@@ -307,6 +326,25 @@ spring:
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD}
 ```
+
+### Redis 配置
+
+```yaml
+spring:
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:redis}
+    timeout: 3000
+    client-type: jedis
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 4
+        min-idle: 0
+```
+
+Redis 用于缓存模型连通性状态（60s TTL），前端批量刷新时由后端写入 Redis，所有用户共享缓存。
 
 ### JWT 配置
 
@@ -335,4 +373,6 @@ jwt:
 
 - 登录页：科技感图片背景 + 磨砂玻璃登录卡片
 - 主布局：深色渐变侧边栏 + 明亮内容区域
+- 模型列表：在线/离线标签（Redis 缓存，60s 自动过期）
+- 模型管理：可用性列 + 连通性检测按钮
 - 响应式设计，现代化视觉风格

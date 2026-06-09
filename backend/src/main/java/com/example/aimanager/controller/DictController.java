@@ -22,4 +22,9 @@ public class DictController {
     public ResponseEntity<?> getItems(@PathVariable String typeCode) {
         return ResponseEntity.ok(Result.success(dictService.getItemsByType(typeCode)));
     }
+
+    @GetMapping("/model-types")
+    public ResponseEntity<?> getModelTypes() {
+        return ResponseEntity.ok(Result.success(dictService.getModelTypes()));
+    }
 }

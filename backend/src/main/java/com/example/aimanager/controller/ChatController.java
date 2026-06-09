@@ -110,22 +110,12 @@ public class ChatController {
 
                     @Override
                     public void onDone(String content) {
-                        // 保存助手消息到数据库
-                        saveMessage(sessionId, "assistant", fullContent.toString());
+                        saveAssistantMessage(sessionId, fullContent.toString(), null);
+                    }
 
-                        // 更新会话消息数和标题
-                        ChatSession cs = chatSessionService.getById(sessionId);
-                        if (cs != null) {
-                            int count = (int) chatMessageService.count(
-                                    new LambdaQueryWrapper<ChatMessage>().eq(ChatMessage::getSessionId, sessionId));
-                            cs.setMessageCount(count);
-                            chatSessionService.updateById(cs);
-
-                            // 第一条对话完成后，用用户消息更新标题
-                            if (count <= 2 && cs.getTitle() != null && cs.getTitle().equals(truncateTitle(request.getMessage()))) {
-                                // 尝试用 AI 回复精简标题，暂时截取用户消息前 30 字
-                            }
-                        }
+                    @Override
+                    public void onDone(String content, Map<String, Integer> usage) {
+                        saveAssistantMessage(sessionId, fullContent.toString(), usage);
                     }
 
                     @Override
@@ -181,6 +171,28 @@ public class ChatController {
             emitter.send(SseEmitter.event().name("sessionId").data(String.valueOf(sessionId)));
         } catch (Exception e) {
             // ignore
+        }
+    }
+
+    private void saveAssistantMessage(Long sessionId, String content, Map<String, Integer> usage) {
+        ChatMessage msg = new ChatMessage();
+        msg.setSessionId(sessionId);
+        msg.setRole("assistant");
+        msg.setContent(content);
+        if (usage != null) {
+            msg.setPromptTokens(usage.getOrDefault("prompt_tokens", 0));
+            msg.setCompletionTokens(usage.getOrDefault("completion_tokens", 0));
+            msg.setTotalTokens(usage.getOrDefault("total_tokens", 0));
+        }
+        chatMessageService.save(msg);
+
+        // 更新会话消息数
+        ChatSession cs = chatSessionService.getById(sessionId);
+        if (cs != null) {
+            int count = (int) chatMessageService.count(
+                    new LambdaQueryWrapper<ChatMessage>().eq(ChatMessage::getSessionId, sessionId));
+            cs.setMessageCount(count);
+            chatSessionService.updateById(cs);
         }
     }
 
@@ -278,6 +290,26 @@ public class ChatController {
                         .eq(ChatMessage::getSessionId, id)
                         .orderByAsc(ChatMessage::getCreateTime));
         return ResponseEntity.ok(Result.success(messages));
+    }
+
+    @DeleteMapping("/messages/{id}")
+    public ResponseEntity<?> deleteMessage(@PathVariable Long id, Authentication auth) {
+        ChatMessage msg = chatMessageService.getById(id);
+        if (msg == null) {
+            return ResponseEntity.status(404).body(Result.notFound("消息不存在"));
+        }
+        ChatSession session = chatSessionService.getById(msg.getSessionId());
+        if (session == null || !session.getUsername().equals(auth.getName())) {
+            return ResponseEntity.status(403).body(Result.forbidden("无权删除此消息"));
+        }
+        chatMessageService.removeById(id);
+
+        // 更新会话消息计数
+        int count = (int) chatMessageService.count(
+                new LambdaQueryWrapper<ChatMessage>().eq(ChatMessage::getSessionId, msg.getSessionId()));
+        session.setMessageCount(count);
+        chatSessionService.updateById(session);
+        return ResponseEntity.ok(Result.success(Map.of("message", "删除成功")));
     }
 
     private String truncateTitle(String text) {

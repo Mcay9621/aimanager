@@ -75,6 +75,12 @@ const routes = [
         meta: { title: '审计日志', requiresAuth: true, requiresAdmin: true }
       },
       {
+        path: 'admin/models/usage',
+        name: 'ModelUsage',
+        component: () => import('../views/admin/ModelUsage.vue'),
+        meta: { title: '模型用量', requiresAuth: true, requiresAdmin: true }
+      },
+      {
         path: 'admin/cloud',
         redirect: '/admin/cloud/resources'
       },

@@ -102,6 +102,7 @@ public class OpenAiCompatibleStrategy implements AiProviderStrategy {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body()))) {
                     String line;
                     StringBuilder contentBuilder = new StringBuilder();
+                    Map<String, Integer> finalUsage = null;
 
                     while ((line = reader.readLine()) != null) {
                         if (line.startsWith("data: ")) {
@@ -110,6 +111,15 @@ public class OpenAiCompatibleStrategy implements AiProviderStrategy {
 
                             try {
                                 JsonNode jsonNode = objectMapper.readTree(data);
+                                // Check for usage in this chunk (providers like DeepSeek send it before [DONE])
+                                JsonNode usage = jsonNode.path("usage");
+                                if (!usage.isMissingNode() && !usage.isNull()) {
+                                    Map<String, Integer> usageMap = new HashMap<>();
+                                    usageMap.put("prompt_tokens", usage.path("prompt_tokens").asInt(0));
+                                    usageMap.put("completion_tokens", usage.path("completion_tokens").asInt(0));
+                                    usageMap.put("total_tokens", usage.path("total_tokens").asInt(0));
+                                    finalUsage = usageMap;
+                                }
                                 JsonNode choices = jsonNode.path("choices");
                                 if (choices.isArray() && choices.size() > 0) {
                                     JsonNode delta = choices.get(0).path("delta");
@@ -124,7 +134,11 @@ public class OpenAiCompatibleStrategy implements AiProviderStrategy {
                         }
                     }
 
-                    callback.onDone(contentBuilder.toString());
+                    if (finalUsage != null) {
+                        callback.onDone(contentBuilder.toString(), finalUsage);
+                    } else {
+                        callback.onDone(contentBuilder.toString());
+                    }
                     emitter.send(SseEmitter.event().name("done").data(""));
                     emitter.complete();
                 }
@@ -145,6 +159,24 @@ public class OpenAiCompatibleStrategy implements AiProviderStrategy {
             return root.path("choices").get(0).path("message").path("content").asText();
         } catch (Exception e) {
             throw new RuntimeException("解析响应失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Map<String, Integer> parseUsage(String responseBody) {
+        try {
+            JsonNode root = objectMapper.readTree(responseBody);
+            JsonNode usage = root.path("usage");
+            if (usage.isMissingNode() || usage.isNull()) {
+                return Map.of("prompt_tokens", 0, "completion_tokens", 0, "total_tokens", 0);
+            }
+            Map<String, Integer> result = new HashMap<>();
+            result.put("prompt_tokens", usage.path("prompt_tokens").asInt(0));
+            result.put("completion_tokens", usage.path("completion_tokens").asInt(0));
+            result.put("total_tokens", usage.path("total_tokens").asInt(0));
+            return result;
+        } catch (Exception e) {
+            return Map.of("prompt_tokens", 0, "completion_tokens", 0, "total_tokens", 0);
         }
     }
 }

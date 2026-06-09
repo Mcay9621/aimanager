@@ -28,7 +28,7 @@ public class AiProviderStrategyFactory {
 
     private AiProviderStrategy createStrategy(String type) {
         return switch (type) {
-            case "openai", "ali", "baidu", "byte" ->
+            case "openai", "ali", "baidu", "byte", "deepseek" ->
                     new OpenAiCompatibleStrategy(httpClient, objectMapper);
             case "tencent" -> new TencentStrategy(httpClient, objectMapper);
             case "anthropic" -> new AnthropicStrategy(httpClient, objectMapper);
