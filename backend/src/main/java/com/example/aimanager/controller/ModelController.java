@@ -432,49 +432,26 @@ public class ModelController {
                     result.put("dailyBreakdown", dailyBreakdown);
                     return ResponseEntity.ok(Result.success(result));
                 }
-                // API 返回非 200，回退到本地数据
-            } catch (Exception ignored) {
-                // 连接失败，回退到本地数据
+                // API 返回非 200
+                return ResponseEntity.ok(Result.success(Map.of(
+                        "hasDeepSeek", true,
+                        "source", "api",
+                        "error", "DeepSeek API 返回状态码 " + response.statusCode()
+                )));
+            } catch (Exception e) {
+                return ResponseEntity.ok(Result.success(Map.of(
+                        "hasDeepSeek", true,
+                        "source", "api",
+                        "error", "无法连接 DeepSeek API: " + e.getMessage()
+                )));
             }
         }
 
-        // 回退：从本地 chat_message 表统计 DeepSeek 用量
-        return getDeepSeekUsageLocal(days, deepSeekModels, fmt, startDate);
-    }
-
-    private ResponseEntity<?> getDeepSeekUsageLocal(int days, List<AiModel> deepSeekModels,
-                                                     DateTimeFormatter fmt, LocalDate startDate) {
-        String modelIds = deepSeekModels.stream()
-                .map(m -> String.valueOf(m.getId()))
-                .collect(Collectors.joining(","));
-
-        List<Map<String, Object>> localUsage = chatMessageMapper.selectModelDailyUsage(
-                modelIds, startDate.format(fmt));
-
-        long totalTokens = 0;
-        int totalApiCalls = 0;
-        List<Map<String, Object>> dailyBreakdown = new ArrayList<>();
-
-        for (Map<String, Object> row : localUsage) {
-            int calls = ((Number) row.getOrDefault("api_calls", 0)).intValue();
-            long tokens = ((Number) row.getOrDefault("total_tokens", 0)).longValue();
-            totalApiCalls += calls;
-            totalTokens += tokens;
-            Map<String, Object> d = new HashMap<>();
-            d.put("date", row.get("date"));
-            d.put("apiCalls", calls);
-            d.put("tokens", tokens);
-            dailyBreakdown.add(d);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("hasDeepSeek", true);
-        result.put("source", "local");
-        result.put("note", "数据来自本地数据库统计，非 DeepSeek 官方 API");
-        result.put("totalApiCalls", totalApiCalls);
-        result.put("totalTokens", totalTokens);
-        result.put("dailyBreakdown", dailyBreakdown);
-        return ResponseEntity.ok(Result.success(result));
+        return ResponseEntity.ok(Result.success(Map.of(
+                "hasDeepSeek", true,
+                "source", "api",
+                "error", "DeepSeek 模型未配置 API Key"
+        )));
     }
 
     // 内部类用于每日统计

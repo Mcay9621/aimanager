@@ -132,13 +132,12 @@
       <!-- DeepSeek 用量 -->
       <div v-if="deepseekUsage.hasDeepSeek" class="chart-card deepseek-card">
         <h4>DeepSeek 用量
-          <span v-if="deepseekUsage.source === 'api'" class="subtitle">(来自 DeepSeek 官方 API)</span>
-          <span v-else class="subtitle">(本地数据库统计)</span>
+          <span class="subtitle">(来自 DeepSeek 官方 API)</span>
         </h4>
-        <div v-if="deepseekUsage.note" class="ds-note">{{ deepseekUsage.note }}</div>
-        <div>
+        <div v-if="deepseekUsage.error" class="ds-error">{{ deepseekUsage.error }}</div>
+        <div v-else>
           <el-row :gutter="16" class="ds-summary">
-            <el-col :span="8" v-if="deepseekUsage.totalCost != null">
+            <el-col :span="8">
               <div class="ds-stat">
                 <span class="ds-stat-value">¥{{ deepseekUsage.totalCost }}</span>
                 <span class="ds-stat-label">总消费金额</span>
@@ -150,7 +149,7 @@
                 <span class="ds-stat-label">API 调用次数</span>
               </div>
             </el-col>
-            <el-col :span="deepseekUsage.totalCost != null ? 8 : 16">
+            <el-col :span="8">
               <div class="ds-stat">
                 <span class="ds-stat-value">{{ formatTokens(deepseekUsage.totalTokens) }}</span>
                 <span class="ds-stat-label">总 Tokens</span>
