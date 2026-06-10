@@ -1,0 +1,92 @@
+/* ========================================
+   AI Manager - Light Theme (Warm Gray)
+   Default theme (:root level)
+   ======================================== */
+
+:root {
+  /* ========================================
+     App Custom Properties
+     ======================================== */
+
+  /* Background */
+  --app-bg-primary: #f5f4f1;
+  --app-bg-secondary: #eeedea;
+  --app-bg-card: #ffffff;
+  --app-bg-card-hover: #f8f7f5;
+  --app-bg-elevated: #ffffff;
+
+  /* Accent - Slate Blue (consistent with dark theme) */
+  --app-accent: #4a6fa5;
+  --app-accent-light: #3d5e8c;
+  --app-accent-dark: #2d4a6e;
+
+  /* Text */
+  --app-text-primary: #1a1a1a;
+  --app-text-secondary: rgba(26, 26, 26, 0.7);
+  --app-text-tertiary: rgba(26, 26, 26, 0.45);
+  --app-text-muted: rgba(26, 26, 26, 0.25);
+
+  /* Border */
+  --app-border-color: rgba(0, 0, 0, 0.08);
+  --app-border-color-light: rgba(0, 0, 0, 0.04);
+  --app-border-color-hover: rgba(74, 111, 165, 0.3);
+
+  /* Gradient */
+  --app-gradient-accent: linear-gradient(135deg, #2d4a6e, #4a6fa5, #6b8fc9);
+  --app-gradient-card: linear-gradient(180deg, #ffffff 0%, #fafaf9 100%);
+  --app-gradient-bg: none;
+  --app-gradient-input: linear-gradient(135deg, #ffffff, #fafaf9);
+
+  /* Shadow - lighter for light theme */
+  --app-shadow-card: 0 1px 8px rgba(0, 0, 0, 0.06);
+  --app-shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --app-shadow-glow: 0 0 30px rgba(74, 111, 165, 0.08);
+
+  /* ========================================
+     Element Plus Light Variable Overrides
+     ======================================== */
+
+  /* Background */
+  --el-fill-color-blank: #ffffff;
+  --el-bg-color-overlay: #ffffff;
+  --el-bg-color-page: #f5f4f1;
+  --el-bg-color: #ffffff;
+  --el-fill-color: #f0f0f0;
+  --el-fill-color-light: #f5f5f5;
+  --el-fill-color-lighter: #fafafa;
+  --el-fill-color-extra-light: #fcfcfc;
+
+  /* Text */
+  --el-text-color-primary: #1a1a1a;
+  --el-text-color-regular: rgba(26, 26, 26, 0.8);
+  --el-text-color-secondary: rgba(26, 26, 26, 0.55);
+  --el-text-color-placeholder: rgba(26, 26, 26, 0.35);
+  --el-text-color-disabled: rgba(26, 26, 26, 0.2);
+
+  /* Border */
+  --el-border-color: rgba(0, 0, 0, 0.1);
+  --el-border-color-light: rgba(0, 0, 0, 0.06);
+  --el-border-color-lighter: rgba(0, 0, 0, 0.04);
+  --el-border-color-extra-light: rgba(0, 0, 0, 0.02);
+  --el-border-color-hover: rgba(74, 111, 165, 0.3);
+  --el-border-color-dark: rgba(0, 0, 0, 0.15);
+
+  /* Primary color */
+  --el-color-primary: #4a6fa5;
+  --el-color-primary-light-3: #5a80b8;
+  --el-color-primary-light-5: #6b8fc9;
+  --el-color-primary-light-7: #8ba8d4;
+  --el-color-primary-light-8: #9bb8de;
+  --el-color-primary-light-9: #bccde8;
+  --el-color-primary-dark-2: #3d5e8c;
+
+  /* Mask */
+  --el-mask-color: rgba(0, 0, 0, 0.5);
+  --el-mask-color-extra-light: rgba(0, 0, 0, 0.3);
+
+  /* Box shadow */
+  --el-box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  --el-box-shadow-light: 0 1px 6px rgba(0, 0, 0, 0.06);
+  --el-box-shadow-lighter: 0 0 4px rgba(0, 0, 0, 0.04);
+  --el-box-shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.12);
+}

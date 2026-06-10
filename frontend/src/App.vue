@@ -6,7 +6,7 @@
 </script>
 
 <style>
-@import './assets/styles/theme.css';
+@import './assets/styles/index.css';
 
 * {
   margin: 0;

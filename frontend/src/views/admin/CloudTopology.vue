@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="cloud-topology">
     <div class="top-bar">
       <h2>资源拓扑图</h2>
@@ -352,12 +352,12 @@ onBeforeUnmount(() => { if (graph) { graph.destroy(); graph = null } })
 <style scoped>
 .cloud-topology { height: 100%; display: flex; flex-direction: column; }
 .top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
-.top-bar h2 { font-size:18px; color:var(--text-primary); flex-shrink:0; }
+.top-bar h2 { font-size:18px; color:var(--app-text-primary); flex-shrink:0; }
 .top-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.graph-wrapper { flex:1; background:var(--bg-secondary); border-radius:12px; position:relative; overflow:hidden; min-height:500px; }
+.graph-wrapper { flex:1; background:var(--app-bg-secondary); border-radius:12px; position:relative; overflow:hidden; min-height:500px; }
 #g6-container { width:100%; height:100%; min-height:500px; }
 .empty-hint { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#c0c4cc; font-size:16px; }
-.loading-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,10,15,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--text-muted); }
+.loading-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,10,15,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--app-text-muted); }
 .loading-icon { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform:rotate(0deg) } to { transform:rotate(360deg) } }
 .topo-tooltip {

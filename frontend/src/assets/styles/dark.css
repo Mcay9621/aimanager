@@ -1,0 +1,101 @@
+/* ========================================
+   AI Manager - Dark Theme (Slate Blue)
+   Activated when <html class="dark">
+   ======================================== */
+
+html.dark {
+  /* ========================================
+     App Custom Properties
+     ======================================== */
+
+  /* Background */
+  --app-bg-primary: #0a0a0f;
+  --app-bg-secondary: #12121a;
+  --app-bg-card: rgba(255, 255, 255, 0.03);
+  --app-bg-card-hover: rgba(255, 255, 255, 0.06);
+  --app-bg-elevated: rgba(18, 18, 26, 0.95);
+
+  /* Accent - Slate Blue */
+  --app-accent: #4a6fa5;
+  --app-accent-light: #6b8fc9;
+  --app-accent-dark: #2d4a6e;
+
+  /* Text */
+  --app-text-primary: #e8e8ef;
+  --app-text-secondary: rgba(232, 232, 239, 0.85);
+  --app-text-tertiary: rgba(232, 232, 239, 0.55);
+  --app-text-muted: rgba(232, 232, 239, 0.35);
+
+  /* Border */
+  --app-border-color: rgba(74, 111, 165, 0.12);
+  --app-border-color-light: rgba(255, 255, 255, 0.06);
+  --app-border-color-hover: rgba(74, 111, 165, 0.25);
+
+  /* Gradient */
+  --app-gradient-accent: linear-gradient(135deg, #2d4a6e, #4a6fa5, #6b8fc9);
+  --app-gradient-card: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  --app-gradient-bg: radial-gradient(ellipse at 20% 30%, rgba(74,111,165,0.05) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 70%, rgba(74,128,212,0.03) 0%, transparent 60%);
+  --app-gradient-input: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+
+  /* ========================================
+     Element Plus Dark Variable Overrides
+     ======================================== */
+
+  /* Background */
+  --el-fill-color-blank: #0a0a0f;
+  --el-bg-color-overlay: rgba(18, 18, 26, 0.98);
+  --el-bg-color-page: #0a0a0f;
+  --el-bg-color: #0a0a0f;
+  --el-fill-color: #1a1a22;
+  --el-fill-color-light: #16161e;
+  --el-fill-color-lighter: #12121a;
+  --el-fill-color-extra-light: #0e0e16;
+
+  /* Text */
+  --el-text-color-primary: #e8e8ef;
+  --el-text-color-regular: rgba(232, 232, 239, 0.85);
+  --el-text-color-secondary: rgba(232, 232, 239, 0.55);
+  --el-text-color-placeholder: rgba(232, 232, 239, 0.35);
+  --el-text-color-disabled: rgba(232, 232, 239, 0.2);
+
+  /* Border */
+  --el-border-color: rgba(74, 111, 165, 0.15);
+  --el-border-color-light: rgba(74, 111, 165, 0.1);
+  --el-border-color-lighter: rgba(74, 111, 165, 0.06);
+  --el-border-color-extra-light: rgba(74, 111, 165, 0.03);
+  --el-border-color-hover: rgba(74, 111, 165, 0.25);
+  --el-border-color-dark: rgba(74, 111, 165, 0.2);
+
+  /* Primary color */
+  --el-color-primary: #4a6fa5;
+  --el-color-primary-light-3: #5a80b8;
+  --el-color-primary-light-5: #6b8fc9;
+  --el-color-primary-light-7: #8ba8d4;
+  --el-color-primary-light-8: #9bb8de;
+  --el-color-primary-light-9: #bccde8;
+  --el-color-primary-dark-2: #6b8fc9;
+
+  /* Status colors */
+  --el-color-success: #67c23a;
+  --el-color-warning: #e6a23c;
+  --el-color-danger: #f56c6c;
+  --el-color-error: #f56c6c;
+  --el-color-info: #909399;
+
+  /* Mask */
+  --el-mask-color: rgba(10, 10, 15, 0.9);
+  --el-mask-color-extra-light: rgba(10, 10, 15, 0.6);
+
+  /* Box shadow */
+  --el-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --el-box-shadow-light: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --el-box-shadow-lighter: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --el-box-shadow-dark: 0 12px 48px rgba(0, 0, 0, 0.6);
+
+  /* Border radius */
+  --el-border-radius-base: 8px;
+  --el-border-radius-small: 6px;
+  --el-border-radius-round: 20px;
+  --el-border-radius-circle: 100%;
+}

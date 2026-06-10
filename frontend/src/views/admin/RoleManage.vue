@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page-container">
     <div class="table-card">
       <div class="table-header">
@@ -119,7 +119,7 @@ onMounted(() => { fetchRoles() })
 <style scoped>
 .table-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 16px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -131,7 +131,7 @@ onMounted(() => { fetchRoles() })
   margin-bottom: 16px;
 }
 .table-header h3 {
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;

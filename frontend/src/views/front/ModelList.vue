@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="model-list-page">
     <h2 class="page-title-sm">AI 模型列表</h2>
     <p class="page-desc">选择模型以开始智能对话</p>
@@ -231,13 +231,13 @@ onMounted(async () => {
 .page-title-sm {
   font-size: 20px;
   font-weight: 400;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin: 0 0 4px;
   letter-spacing: 1px;
 }
 .page-desc {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   margin: 0 0 24px;
   font-weight: 300;
 }
@@ -263,10 +263,10 @@ onMounted(async () => {
   background: rgba(255,255,255,0.04) !important;
 }
 .model-search :deep(.el-input__inner) {
-  color: var(--text-primary);
+  color: var(--app-text-primary);
 }
 .model-search :deep(.el-input__inner::placeholder) {
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .filter-tabs {
   display: flex;
@@ -275,7 +275,7 @@ onMounted(async () => {
 
 .model-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 20px;
@@ -286,7 +286,7 @@ onMounted(async () => {
   gap: 12px;
 }
 .model-card:hover {
-  border-color: var(--border-color-hover);
+  border-color: var(--app-border-color-hover);
   transform: translateY(-2px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(74, 111, 165, 0.04);
 }
@@ -316,20 +316,20 @@ onMounted(async () => {
 .model-name {
   font-size: 18px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin: 0;
   letter-spacing: 0.5px;
 }
 .model-id {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   margin: 0;
   font-weight: 300;
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
 }
 .model-latency {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
 }
 .model-card-footer {

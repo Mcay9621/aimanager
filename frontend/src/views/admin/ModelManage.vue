@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page-container">
     <div class="table-card">
       <div class="table-header">
@@ -449,7 +449,7 @@ onMounted(async () => {
 <style scoped>
 .table-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 16px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -461,7 +461,7 @@ onMounted(async () => {
   margin-bottom: 16px;
 }
 .table-header h3 {
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -486,11 +486,11 @@ onMounted(async () => {
 }
 .sync-result {
   margin-top: 16px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--app-border-color);
   padding-top: 16px;
 }
 .sync-count {
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   font-size: 13px;
   margin-bottom: 12px;
 }
@@ -503,12 +503,12 @@ onMounted(async () => {
 }
 .sync-item {
   background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 6px;
   padding: 4px 10px;
   font-size: 12px;
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   cursor: pointer;
   display: inline-flex;
   align-items: center;

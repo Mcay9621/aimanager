@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="profile-page">
     <div class="profile-card">
       <div class="card-header">
@@ -171,7 +171,7 @@ onMounted(fetchProfile)
   gap: 10px;
   font-size: 16px;
   font-weight: 500;
-  color: var(--accent-light);
+  color: var(--app-accent-light);
   letter-spacing: 0.5px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(74, 111, 165, 0.08);
@@ -191,14 +191,14 @@ onMounted(fetchProfile)
   background: linear-gradient(135deg, #4a80d4, #6a9be0);
 }
 .el-form-item :deep(.el-form-item__label) {
-  color: var(--text-secondary);
+  color: var(--app-text-secondary);
 }
 .el-form-item :deep(.el-input.is-disabled .el-input__wrapper) {
   background: rgba(255,255,255,0.02) !important;
   border-color: rgba(255,255,255,0.04) !important;
 }
 .el-form-item :deep(.el-input.is-disabled .el-input__inner) {
-  color: var(--text-muted) !important;
-  -webkit-text-fill-color: var(--text-muted);
+  color: var(--app-text-muted) !important;
+  -webkit-text-fill-color: var(--app-text-muted);
 }
 </style>

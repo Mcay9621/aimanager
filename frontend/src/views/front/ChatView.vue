@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="chat-view">
     <!-- 左侧会话列表 -->
     <div class="session-panel" :class="{ collapsed: sessionCollapsed }">
@@ -736,7 +736,7 @@ onUnmounted(() => {
 .session-header h3 {
   margin: 0;
   font-size: 15px;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-weight: 500;
   letter-spacing: 0.5px;
 }
@@ -792,12 +792,12 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: var(--app-accent);
   margin-top: 2px;
   transition: all 0.3s ease;
 }
 .session-item.active .session-icon {
-  background: var(--accent);
+  background: var(--app-accent);
   color: #0a0a0f;
 }
 .session-info {
@@ -807,7 +807,7 @@ onUnmounted(() => {
 .session-title {
   font-weight: 500;
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin-bottom: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -824,7 +824,7 @@ onUnmounted(() => {
 }
 .session-meta {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -902,13 +902,13 @@ onUnmounted(() => {
 .empty-title {
   font-size: 22px;
   font-weight: 400;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin: 0 0 8px;
   letter-spacing: 1px;
 }
 .empty-desc {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   margin: 0 0 28px;
   font-weight: 300;
 }
@@ -925,7 +925,7 @@ onUnmounted(() => {
 }
 .suggestion-label {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   display: block;
   margin-bottom: 10px;
 }
@@ -938,11 +938,11 @@ onUnmounted(() => {
 .suggestion-list .el-button {
   transition: all 0.2s ease;
   border-color: rgba(74, 111, 165, 0.15);
-  color: var(--text-secondary);
+  color: var(--app-text-secondary);
 }
 .suggestion-list .el-button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--app-accent);
+  color: var(--app-accent);
   background: rgba(74, 111, 165, 0.08);
   transform: translateY(-1px);
 }
@@ -964,7 +964,7 @@ onUnmounted(() => {
 }
 .chat-header-info strong {
   font-size: 15px;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-weight: 500;
 }
 .header-status-dot {
@@ -1092,7 +1092,7 @@ onUnmounted(() => {
 }
 .msg-content :deep(code) {
   background: rgba(74, 111, 165, 0.08);
-  color: var(--accent-light);
+  color: var(--app-accent-light);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 13px;
@@ -1121,7 +1121,7 @@ onUnmounted(() => {
 /* AI message */
 .msg.assistant .msg-content {
   background: rgba(255,255,255,0.03);
-  color: var(--text-secondary);
+  color: var(--app-text-secondary);
   border: 1px solid rgba(74, 111, 165, 0.08);
   border-bottom-left-radius: 4px;
 }
@@ -1220,7 +1220,7 @@ onUnmounted(() => {
 .typing-bar-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--app-accent), transparent);
   animation: typingSlide 1.2s ease-in-out infinite;
   border-radius: 2px;
 }
@@ -1230,7 +1230,7 @@ onUnmounted(() => {
 }
 .typing-text {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   animation: typingFade 1.5s ease-in-out infinite;
 }
 @keyframes typingFade {
@@ -1258,13 +1258,13 @@ onUnmounted(() => {
 .chat-input-area:focus-within::after {
   left: 10%;
   right: 10%;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--app-accent), transparent);
 }
 .chat-input-area :deep(.el-textarea__inner) {
   background: rgba(255,255,255,0.02) !important;
   border: 1px solid rgba(255,255,255,0.06) !important;
   border-radius: 12px !important;
-  color: var(--text-primary) !important;
+  color: var(--app-text-primary) !important;
   font-size: 14px;
   transition: all 0.3s;
   padding: 12px 14px !important;
@@ -1275,7 +1275,7 @@ onUnmounted(() => {
   box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.06), 0 0 20px rgba(74, 111, 165, 0.03) !important;
 }
 .chat-input-area :deep(.el-textarea__inner::placeholder) {
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .input-actions {
   display: flex;
@@ -1285,7 +1285,7 @@ onUnmounted(() => {
 }
 .input-hint {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   letter-spacing: 0.3px;
 }
 

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="usage-page">
     <!-- 余额/状态概览 -->
     <div class="table-card">
@@ -423,7 +423,7 @@ onUnmounted(() => {
 }
 .table-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 16px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -435,7 +435,7 @@ onUnmounted(() => {
   margin-bottom: 16px;
 }
 .table-header h3 {
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -478,7 +478,7 @@ onUnmounted(() => {
 .balance-empty { color: var(--el-color-danger); }
 .balance-hint {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 
 .stats-section {
@@ -492,7 +492,7 @@ onUnmounted(() => {
   align-items: center;
 }
 .section-header h3 {
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -504,7 +504,7 @@ onUnmounted(() => {
 }
 .stat-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -517,24 +517,24 @@ onUnmounted(() => {
 .stat-value {
   font-size: 28px;
   font-weight: 600;
-  color: var(--accent-light);
+  color: var(--app-accent-light);
   font-family: 'SF Mono', Monaco, monospace;
   margin-bottom: 4px;
 }
 .stat-label {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 
 .chart-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
 }
 .chart-card h4 {
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-size: 14px;
   font-weight: 500;
   margin: 0 0 12px;
@@ -542,7 +542,7 @@ onUnmounted(() => {
 .chart-card h4 .subtitle {
   font-weight: 300;
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .chart-container {
   width: 100%;
@@ -558,7 +558,7 @@ onUnmounted(() => {
   padding: 8px;
 }
 .ds-note {
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   font-size: 12px;
   padding: 0 0 12px;
 }
@@ -581,6 +581,6 @@ onUnmounted(() => {
 }
 .ds-stat-label {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 </style>

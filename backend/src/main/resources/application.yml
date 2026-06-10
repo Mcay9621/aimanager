@@ -14,6 +14,17 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  redis:
+    host: ${REDIS_HOST:122.51.136.129}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:redis}
+    timeout: 3000
+    client-type: jedis
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 4
+        min-idle: 0
 
 mybatis-plus:
   configuration:

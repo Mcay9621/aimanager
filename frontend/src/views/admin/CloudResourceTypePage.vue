@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="cloud-type-page">
     <div class="top-bar">
       <div class="top-bar-left">
@@ -207,10 +207,10 @@ watch(() => props.resourceType, fetchData)
 .cloud-type-page { background:transparent; border-radius:12px; padding:20px 24px; }
 .top-bar { display:flex; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
 .top-bar-left { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-.stat-bar { margin-bottom:12px; font-size:13px; color:var(--text-muted); }
-.stat-bar b { color:var(--text-primary); }
-.link { cursor:pointer; color:var(--accent-light); font-weight:500; }
-.link:hover { color:var(--accent); }
-.text-muted { color:var(--text-muted); font-size:12px; }
+.stat-bar { margin-bottom:12px; font-size:13px; color:var(--app-text-muted); }
+.stat-bar b { color:var(--app-text-primary); }
+.link { cursor:pointer; color:var(--app-accent-light); font-weight:500; }
+.link:hover { color:var(--app-accent); }
+.text-muted { color:var(--app-text-muted); font-size:12px; }
 .pagination-wrapper { display:flex; justify-content:center; margin-top:20px; }
 </style>

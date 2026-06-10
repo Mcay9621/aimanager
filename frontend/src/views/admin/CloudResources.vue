@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="cloud-resources">
     <!-- 顶部工具栏：云厂商筛选 + 地域选择 + 搜索 -->
     <div class="top-bar">
@@ -318,7 +318,7 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
 .status-bar {
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--app-border-color);
 }
 .status-tabs :deep(.el-radio-button__inner) {
   display: flex;
@@ -336,7 +336,7 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
 }
 .selected-count {
   font-size: 13px;
-  color: var(--accent-light);
+  color: var(--app-accent-light);
   font-weight: 500;
   margin-right: 8px;
 }
@@ -347,11 +347,11 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
 }
 .name-text {
   cursor: pointer;
-  color: var(--accent-light);
+  color: var(--app-accent-light);
   font-weight: 500;
 }
 .name-text:hover {
-  color: var(--accent);
+  color: var(--app-accent);
 }
 .provider-tag {
   flex-shrink: 0;
@@ -364,15 +364,15 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
   margin-right: 4px;
 }
 .status-dot.running { background: #67c23a; }
-.status-dot.stopped { background: var(--text-muted); }
+.status-dot.stopped { background: var(--app-text-muted); }
 .status-dot.error { background: #f56c6c; }
-.text-muted { color: var(--text-muted); }
+.text-muted { color: var(--app-text-muted); }
 .hierarchy-account { font-size: 13px; }
 .hierarchy-account::before { content: ''; }
 .loading-detail {
   text-align: center;
   padding: 60px 0;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .pagination-wrapper {
   display: flex;

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="dashboard">
     <!-- 欢迎头部 -->
     <div class="dash-header">
@@ -279,13 +279,13 @@ onBeforeUnmount(() => {
   margin: 0 0 4px;
   font-size: 22px;
   font-weight: 400;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   letter-spacing: 1px;
 }
 .dash-header-text p {
   margin: 0;
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   font-weight: 300;
 }
 
@@ -398,8 +398,8 @@ onBeforeUnmount(() => {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 .stat-info { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
-.stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: 1px; }
-.stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.stat-value { font-size: 28px; font-weight: 700; color: var(--app-text-primary); line-height: 1.2; letter-spacing: 1px; }
+.stat-label { font-size: 13px; color: var(--app-text-muted); margin-top: 2px; }
 .stat-sub { font-size: 12px; color: rgba(255,255,255,0.2); }
 
 /* ===== 图表卡片 ===== */
@@ -411,7 +411,7 @@ onBeforeUnmount(() => {
 }
 .chart-card-wrapper {
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 16px;
   overflow: hidden;
   backdrop-filter: blur(12px);
@@ -423,11 +423,11 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--app-accent), transparent);
   opacity: 0.3;
 }
 .chart-card-wrapper:hover {
-  border-color: var(--border-color-hover);
+  border-color: var(--app-border-color-hover);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(74, 111, 165, 0.03);
 }
 .chart-card-header {
@@ -435,14 +435,14 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: 8px;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--accent-light);
+  border-bottom: 1px solid var(--app-border-color);
+  color: var(--app-accent-light);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
 .chart-card-header .el-icon {
-  color: var(--accent);
+  color: var(--app-accent);
 }
 .chart-card-body {
   padding: 4px;
@@ -455,7 +455,7 @@ onBeforeUnmount(() => {
 }
 .quick-links h3 {
   margin-bottom: 14px;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   font-size: 16px;
   font-weight: 400;
   letter-spacing: 1px;
@@ -508,7 +508,7 @@ onBeforeUnmount(() => {
 .link-users {
   background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(99,102,241,0.01));
   border-color: rgba(99,102,241,0.1);
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .link-users::after { background: linear-gradient(135deg, rgba(99,102,241,0.06), transparent); }
 .link-users .link-icon { background: linear-gradient(135deg, #6366f1, #818cf8); color: #0a0a0f; }
@@ -518,7 +518,7 @@ onBeforeUnmount(() => {
 .link-roles {
   background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(16,185,129,0.01));
   border-color: rgba(16,185,129,0.1);
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .link-roles::after { background: linear-gradient(135deg, rgba(16,185,129,0.06), transparent); }
 .link-roles .link-icon { background: linear-gradient(135deg, #10b981, #34d399); color: #0a0a0f; }
@@ -528,7 +528,7 @@ onBeforeUnmount(() => {
 .link-models {
   background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(139,92,246,0.01));
   border-color: rgba(139,92,246,0.1);
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .link-models::after { background: linear-gradient(135deg, rgba(139,92,246,0.06), transparent); }
 .link-models .link-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: #0a0a0f; }
@@ -538,7 +538,7 @@ onBeforeUnmount(() => {
 .link-cloud {
   background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(6,182,212,0.01));
   border-color: rgba(6,182,212,0.1);
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .link-cloud::after { background: linear-gradient(135deg, rgba(6,182,212,0.06), transparent); }
 .link-cloud .link-icon { background: linear-gradient(135deg, #06b6d4, #22d3ee); color: #0a0a0f; }
@@ -548,7 +548,7 @@ onBeforeUnmount(() => {
 .link-logs {
   background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(245,158,11,0.01));
   border-color: rgba(245,158,11,0.1);
-  color: var(--text-muted);
+  color: var(--app-text-muted);
 }
 .link-logs::after { background: linear-gradient(135deg, rgba(245,158,11,0.06), transparent); }
 .link-logs .link-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #0a0a0f; }

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page-container">
     <div class="table-card">
       <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
@@ -61,7 +61,7 @@
     <el-dialog v-model="masterDialogVisible" title="绑定主账号" width="400px">
       <el-form label-width="100px">
         <el-form-item label="用户">
-          <span style="color: var(--text-secondary)">{{ masterUser?.username }}</span>
+          <span style="color: var(--app-text-secondary)">{{ masterUser?.username }}</span>
         </el-form-item>
         <el-form-item label="主账号">
           <el-select v-model="selectedMasterId" placeholder="选择主账号" clearable style="width:100%">
@@ -197,7 +197,7 @@ onMounted(() => {
 <style scoped>
 .table-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 16px;
   padding: 20px;
   backdrop-filter: blur(12px);
@@ -208,7 +208,7 @@ onMounted(() => {
   width: 100%;
 }
 .el-checkbox :deep(.el-checkbox__label) {
-  color: var(--text-secondary);
+  color: var(--app-text-secondary);
 }
 .pagination-wrapper {
   display: flex;
@@ -216,6 +216,6 @@ onMounted(() => {
   margin-top: 20px;
 }
 .el-dialog :deep(.el-form-item__label) {
-  color: var(--text-secondary);
+  color: var(--app-text-secondary);
 }
 </style>

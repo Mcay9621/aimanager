@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="login-container">
     <div class="ambient-light light-1"></div>
     <div class="ambient-light light-2"></div>
@@ -65,6 +65,9 @@
 </template>
 
 <script setup>
+import { useTheme } from '@/composables/useTheme'
+useTheme() // initialize theme, prevent FOUC
+
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -118,7 +121,7 @@ const handleLogin = async () => {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  background: var(--bg-primary);
+  background: var(--app-bg-primary);
 }
 
 /* 环境光效 */
@@ -179,12 +182,12 @@ const handleLogin = async () => {
   font-size: 36px;
   font-weight: 300;
   letter-spacing: 6px;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin: 0;
 }
 .brand-subtitle {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   letter-spacing: 6px;
   margin-top: 8px;
   font-weight: 300;
@@ -194,7 +197,7 @@ const handleLogin = async () => {
 .login-card {
   width: 400px;
   background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 20px;
   padding: 40px;
   backdrop-filter: blur(24px);
@@ -202,20 +205,20 @@ const handleLogin = async () => {
   transition: all 0.4s ease;
 }
 .login-card:hover {
-  border-color: var(--border-color-hover);
+  border-color: var(--app-border-color-hover);
   box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 80px rgba(74, 111, 165, 0.04);
 }
 
 .card-title {
   font-size: 22px;
   font-weight: 400;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin: 0;
   letter-spacing: 2px;
 }
 .card-desc {
   font-size: 13px;
-  color: var(--text-muted);
+  color: var(--app-text-muted);
   margin: 8px 0 28px;
   letter-spacing: 1px;
   font-weight: 300;
@@ -239,12 +242,12 @@ const handleLogin = async () => {
   background: rgba(255, 255, 255, 0.05) !important;
 }
 .login-form :deep(.el-input__wrapper.is-focus) {
-  border-color: var(--accent) !important;
+  border-color: var(--app-accent) !important;
   background: rgba(74, 111, 165, 0.04) !important;
   box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.08) !important;
 }
 .login-form :deep(.el-input__inner) {
-  color: var(--text-primary) !important;
+  color: var(--app-text-primary) !important;
   font-size: 14px;
   letter-spacing: 0.5px;
 }

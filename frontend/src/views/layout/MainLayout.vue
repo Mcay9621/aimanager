@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="main-layout">
     <div class="topbar">
       <div class="topbar-logo">
@@ -118,6 +118,7 @@
           </el-sub-menu>
         </el-menu>
       </div>
+      <button class="theme-toggle-btn" @click="toggleTheme"><el-icon :size="18"><Sunny v-if="isDark" /><Moon v-else /></el-icon></button>
       <div class="topbar-user">
         <div class="user-info" @click="router.push('/user/profile')">
           <el-avatar :size="32" class="user-avatar">
@@ -151,11 +152,14 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { Sunny, Moon } from '@element-plus/icons-vue'
 import { useUserStore } from '../../stores/user'
+import { useTheme } from '../../composables/useTheme'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const { isDark, toggle: toggleTheme } = useTheme()
 
 const activeMenu = computed(() => {
   return route.path
@@ -194,7 +198,7 @@ const handleLogout = () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: var(--app-bg-primary);
 }
 
 /* ===== Top Bar ===== */
@@ -277,11 +281,11 @@ const handleLogout = () => {
 .topbar-menu :deep(.el-menu-item:hover),
 .topbar-menu :deep(.el-sub-menu__title:hover) {
   background: rgba(74, 111, 165, 0.06) !important;
-  color: var(--accent-light) !important;
+  color: var(--app-accent-light) !important;
 }
 
 .topbar-menu :deep(.el-menu-item.is-active) {
-  color: var(--accent-light) !important;
+  color: var(--app-accent-light) !important;
   background: rgba(74, 111, 165, 0.08) !important;
 }
 
@@ -293,13 +297,13 @@ const handleLogout = () => {
   transform: translateX(-50%);
   width: 28px;
   height: 2px;
-  background: var(--accent);
+  background: var(--app-accent);
   border-radius: 2px 2px 0 0;
   box-shadow: 0 0 12px rgba(74, 111, 165, 0.4);
 }
 
 .topbar-menu :deep(.el-sub-menu.is-active .el-sub-menu__title) {
-  color: var(--accent-light) !important;
+  color: var(--app-accent-light) !important;
 }
 
 /* ===== Top Bar User ===== */
@@ -382,7 +386,7 @@ const handleLogout = () => {
 .page-title {
   font-size: 20px;
   font-weight: 400;
-  color: var(--text-primary);
+  color: var(--app-text-primary);
   margin: 0;
   padding-left: 14px;
   position: relative;
@@ -397,7 +401,7 @@ const handleLogout = () => {
   transform: translateY(-50%);
   width: 3px;
   height: 20px;
-  background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+  background: linear-gradient(180deg, var(--app-accent), var(--app-accent-dark));
   border-radius: 2px;
   box-shadow: 0 0 8px rgba(74, 111, 165, 0.3);
 }
