@@ -39,7 +39,7 @@
 
   /* Shadow - lighter for light theme */
   --app-shadow-card: 0 1px 8px rgba(0, 0, 0, 0.06);
-  --app-shadow-elevated: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --app-shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.12);
   --app-shadow-glow: 0 0 30px rgba(74, 111, 165, 0.08);
 
   /* ========================================

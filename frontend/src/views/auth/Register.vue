@@ -205,17 +205,17 @@ const handleRegister = async () => {
 /* 注册卡片 */
 .register-card {
   width: 420px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-gradient-card);
   border: 1px solid var(--app-border-color);
   border-radius: 20px;
   padding: 40px;
-  backdrop-filter: blur(24px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(74, 111, 165, 0.03);
-  transition: all 0.4s ease;
+  backdrop-filter: var(--app-blur);
+  box-shadow: var(--app-shadow-elevated), 0 0 60px rgba(74, 111, 165, 0.03);
+  transition: all var(--app-transition-slow);
 }
 .register-card:hover {
   border-color: var(--app-border-color-hover);
-  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 80px rgba(74, 111, 165, 0.04);
+  box-shadow: var(--app-shadow-elevated), 0 0 80px rgba(74, 111, 165, 0.04);
 }
 
 .card-title {
@@ -265,7 +265,7 @@ const handleRegister = async () => {
 
 .copyright {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--app-text-muted);
   letter-spacing: 2px;
   font-weight: 300;
 }
