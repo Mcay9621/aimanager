@@ -1,7 +1,11 @@
 ﻿<template>
   <div class="main-layout">
     <div class="topbar">
-      <div class="topbar-logo">
+
+      <!-- Mobile hamburger -->
+      <button class="hamburger-btn" @click="drawerVisible = true">
+        <el-icon :size="22"><Menu /></el-icon>
+      </button>      <div class="topbar-logo">
         <div class="logo-icon">
           <svg viewBox="0 0 40 40" width="22" height="22" fill="none">
             <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
@@ -134,6 +138,25 @@
         </el-button>
       </div>
     </div>
+    <!-- Mobile navigation drawer -->
+    <el-drawer v-model="drawerVisible" direction="ltr" size="260px" :with-header="false" class="mobile-drawer">
+      <div class="drawer-header">
+        <span class="drawer-title">AI Manager</span>
+        <button class="drawer-close" @click="drawerVisible = false"><el-icon :size="18"><Close /></el-icon></button>
+      </div>
+      <el-menu :default-active="activeMenu" router @select="onMenuSelect" class="drawer-menu">
+        <el-menu-item index="/front/models"><el-icon><Monitor /></el-icon><span>AI模型</span></el-menu-item>
+        <el-menu-item index="/front/chat"><el-icon><ChatDotRound /></el-icon><span>AI对话</span></el-menu-item>
+        <el-menu-item v-if="userStore.isAdmin" index="/admin"><el-icon><DataAnalysis /></el-icon><span>仪表盘</span></el-menu-item>
+        <el-menu-item v-if="userStore.hasCloudAccess" index="/admin/cloud/resources"><el-icon><Cloudy /></el-icon><span>多云管理</span></el-menu-item>
+        <el-menu-item v-if="userStore.isAdmin" index="/admin/users"><el-icon><Setting /></el-icon><span>系统管理</span></el-menu-item>
+        <el-menu-item v-if="userStore.isAdmin" index="/admin/audit-logs"><el-icon><Document /></el-icon><span>审计日志</span></el-menu-item>
+      </el-menu>
+      <div class="drawer-footer" @click="handleLogoutFromDrawer">
+        <el-button text style="width:100%;color:var(--app-text-tertiary)">退出登录</el-button>
+      </div>
+    </el-drawer>
+
     <div class="main-area">
       <div class="page-header" v-if="pageTitle">
         <h2 class="page-title">{{ pageTitle }}</h2>
@@ -152,13 +175,15 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { Sunny, Moon } from '@element-plus/icons-vue'
+import { Sunny, Moon, Menu, Close } from '@element-plus/icons-vue'
+import { ref } from 'vue'
 import { useUserStore } from '../../stores/user'
 import { useTheme } from '../../composables/useTheme'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const drawerVisible = ref(false)
 const { isDark, toggle: toggleTheme } = useTheme()
 
 const activeMenu = computed(() => {
@@ -182,6 +207,13 @@ onMounted(() => {
   userStore.fetchUserInfo()
 })
 
+const onMenuSelect = () => { drawerVisible.value = false }
+const handleLogoutFromDrawer = () => {
+  drawerVisible.value = false
+  const wasAdmin = userStore.isAdmin
+  userStore.logout()
+  if (wasAdmin) { router.push('/admin/login') } else { router.push('/login') }
+}
 const handleLogout = () => {
   const wasAdmin = userStore.isAdmin
   userStore.logout()
@@ -193,261 +225,78 @@ const handleLogout = () => {
 }
 </script>
 
+
 <style scoped>
-.main-layout {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--app-bg-primary);
+.main-layout { display: flex; flex-direction: column; min-height: 100vh; background: var(--app-bg-primary); }
+
+/* ===== Topbar ===== */
+.topbar { display: flex; align-items: center; padding: 0 var(--app-spacing-lg); height: 56px; border-bottom: 1px solid var(--app-border-color); background: var(--app-bg-secondary); position: sticky; top: 0; z-index: 100; }
+.topbar-logo { display: flex; align-items: center; gap: var(--app-spacing-sm); margin-right: var(--app-spacing-xl); }
+.logo-icon { display: flex; align-items: center; }
+.logo-text { font-size: var(--app-font-size-lg); font-weight: var(--app-font-weight-semibold); color: var(--app-accent-light); }
+
+/* ===== Desktop navigation ===== */
+.topbar-menu-wrap { flex: 1; display: flex; }
+.topbar-menu { background: transparent !important; border-bottom: none !important; }
+.topbar-menu .el-menu-item, .topbar-menu .el-sub-menu__title { color: var(--app-text-secondary) !important; font-size: var(--app-font-size-sm); }
+.topbar-menu .el-menu-item:hover, .topbar-menu .el-sub-menu__title:hover { color: var(--app-accent-light) !important; background: rgba(74,111,165,0.08) !important; }
+.topbar-menu .el-menu-item.is-active { color: var(--app-accent-light) !important; font-weight: var(--app-font-weight-semibold) !important; }
+
+.topbar-user { display: flex; align-items: center; gap: var(--app-spacing-md); margin-left: auto; }
+.user-info { display: flex; align-items: center; gap: var(--app-spacing-sm); cursor: pointer; }
+.user-detail { display: flex; flex-direction: column; line-height: 1.3; }
+.username { font-size: var(--app-font-size-sm); color: var(--app-text-primary); font-weight: var(--app-font-weight-medium); }
+.user-role { font-size: var(--app-font-size-xs); color: var(--app-text-tertiary); }
+.logout-btn { color: var(--app-text-tertiary) !important; }
+
+/* ===== Theme toggle ===== */
+.theme-toggle-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--app-border-color); border-radius: var(--app-radius-sm); background: transparent; color: var(--app-text-tertiary); cursor: pointer; transition: all var(--app-transition-fast); margin-right: 12px; }
+.theme-toggle-btn:hover { color: var(--app-accent-light); border-color: var(--app-accent); background: rgba(74,111,165,0.06); }
+
+/* ===== Hamburger (mobile) ===== */
+.hamburger-btn { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border: none; background: transparent; color: var(--app-text-secondary); cursor: pointer; margin-right: var(--app-spacing-sm); }
+.hamburger-btn:hover { color: var(--app-accent-light); }
+
+/* ===== Mobile drawer ===== */
+.mobile-drawer :deep(.el-drawer__body) { padding: 0; display: flex; flex-direction: column; height: 100%; }
+.drawer-header { display: flex; align-items: center; justify-content: space-between; padding: var(--app-spacing-md) var(--app-spacing-lg); border-bottom: 1px solid var(--app-border-color); }
+.drawer-title { font-size: var(--app-font-size-lg); font-weight: var(--app-font-weight-semibold); color: var(--app-accent-light); }
+.drawer-close { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: none; background: transparent; color: var(--app-text-tertiary); cursor: pointer; border-radius: var(--app-radius-sm); }
+.drawer-close:hover { background: var(--app-bg-card); color: var(--app-accent-light); }
+.drawer-menu { flex: 1; border-right: none !important; padding: var(--app-spacing-sm) 0; }
+.drawer-menu .el-menu-item { color: var(--app-text-secondary) !important; font-size: var(--app-font-size-base); height: 44px; line-height: 44px; }
+.drawer-menu .el-menu-item:hover { color: var(--app-accent-light) !important; background: rgba(74,111,165,0.06) !important; }
+.drawer-menu .el-menu-item.is-active { color: var(--app-accent-light) !important; font-weight: var(--app-font-weight-semibold) !important; background: rgba(74,111,165,0.08) !important; }
+.drawer-footer { padding: var(--app-spacing-md) var(--app-spacing-lg); border-top: 1px solid var(--app-border-color); cursor: pointer; }
+
+/* ===== Main content ===== */
+.main-area { flex: 1; display: flex; flex-direction: column; padding: var(--app-spacing-lg); max-width: 1400px; width: 100%; margin: 0 auto; }
+.page-header { margin-bottom: var(--app-spacing-lg); }
+.page-title { font-size: var(--app-font-size-xl); font-weight: var(--app-font-weight-semibold); color: var(--app-text-primary); margin: 0; }
+.main-content { flex: 1; }
+
+/* ===== Responsive: hide/show ===== */
+.mobile-only { display: none !important; }
+.desktop-only { display: flex; }
+
+/* ===== Responsive Breakpoints ===== */
+@media (max-width: 1023px) {
+  .topbar { padding: 0 var(--app-spacing-md); }
+  .topbar-menu-wrap { display: none !important; }
+  .topbar-user { display: none !important; }
+  .hamburger-btn { display: flex; }
+  .mobile-only { display: flex !important; }
+  .desktop-only { display: none !important; }
+  .topbar-logo { margin-right: 0; }
+  .main-area { padding: var(--app-spacing-md); }
+  .page-title { font-size: var(--app-font-size-lg); }
+  .theme-toggle-btn { margin-right: 0; margin-left: auto; }
 }
 
-/* ===== Top Bar ===== */
-.topbar {
-  height: 60px;
-  background: linear-gradient(90deg, #0a0a0f 0%, #12121a 100%);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 8px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 100;
-  border-bottom: 1px solid rgba(74, 111, 165, 0.08);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
-
-.topbar::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 5%;
-  right: 5%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(74, 111, 165, 0.15), transparent);
-  pointer-events: none;
-}
-
-.topbar-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-right: 16px;
-  flex-shrink: 0;
-}
-
-.topbar-logo .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, #4a6fa5, #6b8fc9);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 16px rgba(74, 111, 165, 0.3);
-}
-
-.topbar-logo .logo-text {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-.topbar-menu-wrap {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-}
-
-/* ===== Horizontal Menu ===== */
-.topbar-menu {
-  flex: 1;
-  border: none !important;
-  background: transparent !important;
-}
-
-.topbar-menu :deep(.el-menu-item),
-.topbar-menu :deep(.el-sub-menu__title) {
-  color: rgba(255, 255, 255, 0.6) !important;
-  background: transparent !important;
-  border-bottom: none !important;
-  height: 60px;
-  line-height: 60px;
-  transition: all 0.25s ease;
-  letter-spacing: 0.5px;
-  font-weight: 400;
-}
-
-.topbar-menu :deep(.el-menu-item:hover),
-.topbar-menu :deep(.el-sub-menu__title:hover) {
-  background: rgba(74, 111, 165, 0.06) !important;
-  color: var(--app-accent-light) !important;
-}
-
-.topbar-menu :deep(.el-menu-item.is-active) {
-  color: var(--app-accent-light) !important;
-  background: rgba(74, 111, 165, 0.08) !important;
-}
-
-.topbar-menu :deep(.el-menu-item.is-active::after) {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  height: 2px;
-  background: var(--app-accent);
-  border-radius: 2px 2px 0 0;
-  box-shadow: 0 0 12px rgba(74, 111, 165, 0.4);
-}
-
-.topbar-menu :deep(.el-sub-menu.is-active .el-sub-menu__title) {
-  color: var(--app-accent-light) !important;
-}
-
-/* ===== Top Bar User ===== */
-.topbar-user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  margin-left: 8px;
-  padding-left: 12px;
-  border-left: 1px solid rgba(74, 111, 165, 0.15);
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 4px 10px;
-  border-radius: 20px;
-  transition: background 0.2s;
-}
-
-.user-info:hover {
-  background: rgba(74, 111, 165, 0.06);
-}
-
-.user-avatar {
-  background: linear-gradient(135deg, #4a6fa5, #6b8fc9) !important;
-  color: #fff !important;
-  font-weight: 700;
-  font-size: 14px;
-  flex-shrink: 0;
-  border: none;
-}
-
-.user-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  line-height: 1.2;
-}
-
-.user-detail .username {
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.user-detail .user-role {
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 11px;
-}
-
-.logout-btn {
-  color: rgba(255, 255, 255, 0.35) !important;
-  font-size: 18px;
-  padding: 6px !important;
-  transition: color 0.2s;
-}
-
-.logout-btn:hover {
-  color: #f56c6c !important;
-  background: rgba(245, 108, 108, 0.1) !important;
-}
-
-/* ===== Main Area ===== */
-.main-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.page-header {
-  padding: 24px 32px 0;
-  flex-shrink: 0;
-}
-
-.page-title {
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--app-text-primary);
-  margin: 0;
-  padding-left: 14px;
-  position: relative;
-  letter-spacing: 1px;
-}
-
-.page-title::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 20px;
-  background: linear-gradient(180deg, var(--app-accent), var(--app-accent-dark));
-  border-radius: 2px;
-  box-shadow: 0 0 8px rgba(74, 111, 165, 0.3);
-}
-
-.main-content {
-  flex: 1;
-  padding: 20px 32px 28px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.main-content::-webkit-scrollbar-thumb {
-  background: rgba(74, 111, 165, 0.15);
-  border-radius: 3px;
-}
-.main-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(74, 111, 165, 0.3);
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .topbar {
-    padding: 0 12px;
-    gap: 4px;
-  }
-  .topbar-logo .logo-text {
-    display: none;
-  }
-  .user-detail {
-    display: none;
-  }
-  .page-header {
-    padding: 16px 16px 0;
-  }
-  .main-content {
-    padding: 16px;
-  }
+@media (max-width: 767px) {
+  .topbar { height: 48px; padding: 0 var(--app-spacing-sm); }
+  .logo-text { font-size: var(--app-font-size-base); }
+  .main-area { padding: var(--app-spacing-sm); }
+  .page-header { margin-bottom: var(--app-spacing-sm); }
 }
 </style>

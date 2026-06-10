@@ -338,3 +338,43 @@ html, body {
   border-color: var(--app-border-color-hover);
   box-shadow: var(--app-shadow-elevated);
 }
+
+
+/* ========================================
+   Responsive Utilities
+   ======================================== */
+
+/* --- Tables: horizontal scroll on mobile --- */
+@media (max-width: 767px) {
+  .el-table { font-size: var(--app-font-size-xs) !important; }
+}
+
+/* --- Dialogs: full-width on mobile --- */
+@media (max-width: 767px) {
+  .el-dialog { width: 92vw !important; margin: 2vh auto !important; }
+  .el-dialog__body { padding: var(--app-spacing-md) !important; }
+  .el-dialog__header { padding: var(--app-spacing-md) var(--app-spacing-md) 0 !important; }
+  .el-dialog__footer { padding: var(--app-spacing-sm) var(--app-spacing-md) var(--app-spacing-md) !important; }
+}
+
+/* --- Message notification: don't overlap on mobile --- */
+@media (max-width: 767px) {
+  .el-message { min-width: auto; max-width: 90vw; }
+  .el-notification { width: 90vw !important; }
+}
+
+/* --- Drawer: full-width on small mobile --- */
+@media (max-width: 480px) {
+  .el-drawer { width: 100vw !important; }
+}
+
+/* --- Pagination: compact on mobile --- */
+@media (max-width: 767px) {
+  .el-pagination { padding: var(--app-spacing-sm) 0; }
+  .el-pagination button, .el-pager li { min-width: 28px !important; height: 28px !important; }
+}
+
+/* --- Card: tighter padding on mobile --- */
+@media (max-width: 1023px) {
+  .el-card { --el-card-padding: 16px !important; }
+}

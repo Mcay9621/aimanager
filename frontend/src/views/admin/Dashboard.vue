@@ -554,4 +554,8 @@ onBeforeUnmount(() => {
 .link-logs .link-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #0a0a0f; }
 .link-logs:hover { border-color: rgba(245,158,11,0.25); color: #fbbf24;
   box-shadow: 0 8px 24px rgba(245,158,11,0.08); }
+
+@media (max-width: 1023px) { .stats-grid { grid-template-columns: repeat(3, 1fr) !important; gap: var(--app-spacing-sm) !important; } }
+@media (max-width: 767px) { .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: var(--app-spacing-xs) !important; } .stat-card { padding: var(--app-spacing-sm) !important; } }
+@media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr !important; } }
 </style>
