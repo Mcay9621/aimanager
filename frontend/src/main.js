@@ -5,6 +5,13 @@ import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
+import axios from 'axios'
+
+// Initialize axios auth header from localStorage on app load
+const savedToken = localStorage.getItem('token')
+if (savedToken) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`
+}
 
 const app = createApp(App)
 const pinia = createPinia()

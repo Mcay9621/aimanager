@@ -7,13 +7,14 @@ import com.example.aimanager.service.CloudAccountService;
 import com.example.aimanager.service.cloud.CloudClientRegistry;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.example.aimanager.common.LogAudit;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin/cloud/accounts")
+@RequestMapping("/api/v1/admin/cloud/accounts")
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 public class CloudAccountController {
 
@@ -43,6 +44,7 @@ public class CloudAccountController {
     }
 
     @PostMapping
+    @LogAudit(action = "CREATE", target = "CloudAccount", detail = "addAccount")
     public ResponseEntity<?> addAccount(@RequestBody CloudAccountRequest request) {
         String type = request.getType() != null ? request.getType() : "sub";
         if ("sub".equals(type)) {
@@ -75,6 +77,7 @@ public class CloudAccountController {
     }
 
     @PutMapping("/{id}")
+    @LogAudit(action = "UPDATE", target = "CloudAccount", detail = "updateAccount")
     public ResponseEntity<?> updateAccount(@PathVariable Long id, @RequestBody CloudAccountRequest request) {
         CloudAccount account = cloudAccountService.getById(id);
         if (account == null) {
@@ -104,6 +107,7 @@ public class CloudAccountController {
     }
 
     @DeleteMapping("/{id}")
+    @LogAudit(action = "DELETE", target = "CloudAccount", detail = "deleteAccount")
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
         CloudAccount account = cloudAccountService.getById(id);
         if (account == null) {

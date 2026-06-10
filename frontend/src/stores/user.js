@@ -43,7 +43,7 @@ export const useUserStore = defineStore('user', () => {
   async function fetchUserInfo() {
     if (!token.value) return
     try {
-      const response = await axios.get('/api/auth/info')
+      const response = await axios.get('/api/v1/auth/info')
       const result = response.data
       const userData = result.data || result
       // 处理 authorities 可能是数组或对象数组的情况
@@ -65,7 +65,6 @@ export const useUserStore = defineStore('user', () => {
   }
 
   axios.defaults.headers.common['Authorization'] = token.value ? `Bearer ${token.value}` : ''
-
   return {
     token,
     userInfo,

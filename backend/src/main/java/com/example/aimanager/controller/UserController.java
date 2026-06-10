@@ -11,6 +11,7 @@ import com.example.aimanager.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.aimanager.common.LogAudit;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/v1/admin/users")
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 public class UserController {
 
@@ -56,6 +57,7 @@ public class UserController {
     }
 
     @PostMapping
+    @LogAudit(action = "CREATE", target = "User", detail = "addUser")
     public ResponseEntity<?> addUser(@RequestBody User user) {
         if (userService.existsByUsername(user.getUsername())) {
             return ResponseEntity.badRequest().body(Result.badRequest("用户名已存在"));
@@ -67,6 +69,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @LogAudit(action = "UPDATE", target = "User", detail = "updateUser")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
         user.setId(id);
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
@@ -91,12 +94,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @LogAudit(action = "DELETE", target = "User", detail = "deleteUser")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.removeById(id);
         return ResponseEntity.ok(Result.success(Map.of("message", "删除成功")));
     }
 
     @PutMapping("/{id}/status")
+    @LogAudit(action = "UPDATE", target = "User", detail = "toggleStatus")
     public ResponseEntity<?> toggleStatus(@PathVariable Long id) {
         User user = userService.getById(id);
         if (user == null) {

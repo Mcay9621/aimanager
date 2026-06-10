@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/dict")
+@RequestMapping("/api/v1/dict")
 public class DictController {
 
     private final DictService dictService;

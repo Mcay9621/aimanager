@@ -41,15 +41,9 @@ public class AiChatService {
         }
     }
 
-    public interface StreamCallback {
-        void onToken(String token);
-        default void onDone(String fullContent) {}
-        default void onDone(String fullContent, Map<String, Integer> usage) { onDone(fullContent); }
-        default void onError(String error) {}
-    }
 
     public void chatStream(Long modelId, List<Map<String, String>> messages,
-                           SseEmitter emitter, StreamCallback callback) {
+                           SseEmitter emitter, AiProviderStrategy.StreamCallback callback) {
         AiModel model = aiModelService.getById(modelId);
         if (model == null || model.getEnabled() != 1) {
             try {
@@ -62,27 +56,7 @@ public class AiChatService {
         try {
             AiProviderStrategy strategy = strategyFactory.getStrategy(model.getType());
             strategy.chatStream(model.getEndpoint(), model.getApiKey(),
-                    model.getModelName(), messages, emitter, new AiProviderStrategy.StreamCallback() {
-                @Override
-                public void onToken(String token) {
-                    callback.onToken(token);
-                }
-
-                @Override
-                public void onDone(String content) {
-                    callback.onDone(content);
-                }
-
-                @Override
-                public void onDone(String content, Map<String, Integer> usage) {
-                    callback.onDone(content, usage);
-                }
-
-                @Override
-                public void onError(String error) {
-                    callback.onError(error);
-                }
-            });
+                    model.getModelName(), messages, emitter, callback);
         } catch (Exception e) {
             try {
                 callback.onError("AI调用失败: " + e.getMessage());

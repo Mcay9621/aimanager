@@ -11,13 +11,14 @@ import com.example.aimanager.service.cloud.CloudClientRegistry;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.example.aimanager.common.LogAudit;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/admin/cloud/resources")
+@RequestMapping("/api/v1/admin/cloud/resources")
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 public class CloudResourceController {
 
@@ -140,16 +141,19 @@ public class CloudResourceController {
     }
 
     @PostMapping("/{id}/start")
+    @LogAudit(action = "START", target = "CloudInstance", detail = "startInstance")
     public ResponseEntity<?> startInstance(@PathVariable String id) {
         return executeInstanceAction(id, "start");
     }
 
     @PostMapping("/{id}/stop")
+    @LogAudit(action = "STOP", target = "CloudInstance", detail = "stopInstance")
     public ResponseEntity<?> stopInstance(@PathVariable String id) {
         return executeInstanceAction(id, "stop");
     }
 
     @PostMapping("/{id}/restart")
+    @LogAudit(action = "RESTART", target = "CloudInstance", detail = "restartInstance")
     public ResponseEntity<?> restartInstance(@PathVariable String id) {
         return executeInstanceAction(id, "restart");
     }

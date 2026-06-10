@@ -5,13 +5,14 @@ import com.example.aimanager.entity.Role;
 import com.example.aimanager.service.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.example.aimanager.common.LogAudit;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/v1/admin")
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 public class AdminController {
 
@@ -28,6 +29,7 @@ public class AdminController {
     }
 
     @PostMapping("/roles")
+    @LogAudit(action = "CREATE", target = "Role", detail = "addRole")
     public ResponseEntity<?> addRole(@RequestBody Role role) {
         if (role.getName() == null || role.getName().isBlank()) {
             return ResponseEntity.badRequest().body(Result.badRequest("角色名称不能为空"));
@@ -40,6 +42,7 @@ public class AdminController {
     }
 
     @PutMapping("/roles/{id}")
+    @LogAudit(action = "UPDATE", target = "Role", detail = "updateRole")
     public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody Role role) {
         role.setId(id);
         roleService.updateById(role);
@@ -47,6 +50,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/roles/{id}")
+    @LogAudit(action = "DELETE", target = "Role", detail = "deleteRole")
     public ResponseEntity<?> deleteRole(@PathVariable Long id) {
         roleService.removeById(id);
         return ResponseEntity.ok(Result.success(Map.of("message", "删除成功")));

@@ -23,9 +23,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final PublicPathsProperties publicPathsProperties;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                          PublicPathsProperties publicPathsProperties) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.publicPathsProperties = publicPathsProperties;
     }
 
     @Bean
@@ -39,17 +42,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers("/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/send-code").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-code").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/models/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/models/refresh").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/chat").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/dict/**").permitAll()
-                        .requestMatchers("/api/user/**").authenticated()
-                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
+                        .requestMatchers("/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/auth/register").permitAll()
+                        .requestMatchers("/api/v1/auth/send-code").permitAll()
+                        .requestMatchers("/api/v1/auth/verify-code").permitAll()
+                        .requestMatchers("/api/v1/auth/refresh").permitAll()
+                        .requestMatchers("/api/v1/models/**").permitAll()
+                        .requestMatchers("/api/v1/chat").permitAll()
+                        .requestMatchers("/api/v1/dict/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/models/refresh").authenticated()
+                        .requestMatchers("/api/v1/user/**").authenticated()
+                        .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

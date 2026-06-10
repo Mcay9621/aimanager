@@ -159,7 +159,7 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import request from '../../utils/request'
-import { getModelTypes } from '../../utils/modelTypes'
+import { useModelTypes } from '@/composables/useModelTypes'
 
 const loading = ref(false)
 const balances = ref([])
@@ -179,9 +179,7 @@ const pageNo = ref(1)
 const pageSize = ref(15)
 
 // 动态模型类型
-const modelTypes = ref([])
-const typeMap = ref({})
-const typeColorMap = ref({})
+const { modelTypes, getTypeLabel, getTypeColor, getTypeBg, getConsoleUrl } = useModelTypes()
 
 const trendChartRef = ref(null)
 const topChartRef = ref(null)
@@ -192,18 +190,8 @@ let topChart = null
 let dsChart = null
 
 // 从动态类型构建查询映射
-function buildTypeMaps(types) {
-  const km = {}, cm = {}
-  types.forEach(t => { km[t.key] = t.label; cm[t.key] = t.color })
-  typeMap.value = km
-  typeColorMap.value = cm
-}
 
 // 模板中使用的类型辅助函数（已绑定 modelTypes）
-const getTypeLabel = (key) => typeMap.value[key] || key
-const getTypeColor = (key) => typeColorMap.value[key] || '#888'
-const getTypeBg = (key) => getTypeColor(key) + '26'
-const getConsoleUrl = (key) => { const t = modelTypes.value.find(t => t.key === key); return t ? t.consoleUrl : '#' }
 
 // 筛选+分页
 const filteredList = computed(() => {
@@ -414,9 +402,6 @@ const handleResize = () => {
 
 onMounted(async () => {
   // 加载动态模型类型
-  const types = await getModelTypes()
-  modelTypes.value = types
-  buildTypeMaps(types)
 
   await fetchBalances()
   await fetchUsage()

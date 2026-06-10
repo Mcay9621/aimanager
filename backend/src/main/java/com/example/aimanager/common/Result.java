@@ -10,7 +10,7 @@ public class Result<T> {
 
     public static <T> Result<T> success(T data) {
         Result<T> result = new Result<>();
-        result.setCode(200);
+        result.setCode(ErrorCode.SUCCESS.code);
         result.setMessage("success");
         result.setData(data);
         return result;
@@ -18,7 +18,7 @@ public class Result<T> {
 
     public static <T> Result<T> success(String message, T data) {
         Result<T> result = new Result<>();
-        result.setCode(200);
+        result.setCode(ErrorCode.SUCCESS.code);
         result.setMessage(message);
         result.setData(data);
         return result;
@@ -26,7 +26,7 @@ public class Result<T> {
 
     public static <T> Result<T> error(String message) {
         Result<T> result = new Result<>();
-        result.setCode(500);
+        result.setCode(ErrorCode.INTERNAL_ERROR.code);
         result.setMessage(message);
         return result;
     }
@@ -39,18 +39,18 @@ public class Result<T> {
     }
 
     public static <T> Result<T> badRequest(String message) {
-        return error(400, message);
+        return error(ErrorCode.BAD_REQUEST.code, message);
     }
 
     public static <T> Result<T> unauthorized(String message) {
-        return error(401, message);
+        return error(ErrorCode.UNAUTHORIZED.code, message);
     }
 
     public static <T> Result<T> forbidden(String message) {
-        return error(403, message);
+        return error(ErrorCode.FORBIDDEN.code, message);
     }
 
     public static <T> Result<T> notFound(String message) {
-        return error(404, message);
+        return error(ErrorCode.NOT_FOUND.code, message);
     }
 }

@@ -10,6 +10,7 @@ import com.example.aimanager.common.Result;
 import com.example.aimanager.entity.ChatMessage;
 import com.example.aimanager.entity.ChatSession;
 import com.example.aimanager.entity.AiModel;
+import com.example.aimanager.service.strategy.AiProviderStrategy;
 import com.example.aimanager.service.AiChatService;
 import com.example.aimanager.service.AiModelService;
 import com.example.aimanager.service.ChatMessageService;
@@ -24,23 +25,26 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/api/v1/chat")
 public class ChatController {
 
     private final AiChatService aiChatService;
     private final ChatSessionService chatSessionService;
+    private final java.util.concurrent.Executor chatAsyncExecutor;
     private final ChatMessageService chatMessageService;
     private final AiModelService aiModelService;
     private final SseProperties sseProperties;
 
     public ChatController(AiChatService aiChatService, ChatSessionService chatSessionService,
                           ChatMessageService chatMessageService, AiModelService aiModelService,
-                          SseProperties sseProperties) {
+                          SseProperties sseProperties,
+                           java.util.concurrent.Executor chatAsyncExecutor) {
         this.aiChatService = aiChatService;
         this.chatSessionService = chatSessionService;
         this.chatMessageService = chatMessageService;
         this.aiModelService = aiModelService;
         this.sseProperties = sseProperties;
+        this.chatAsyncExecutor = chatAsyncExecutor;
     }
 
     // ==================== 同步聊天（向后兼容） ====================
@@ -100,7 +104,7 @@ public class ChatController {
         // 在异步线程中执行流式调用
         java.util.concurrent.CompletableFuture.runAsync(() -> {
             try {
-                aiChatService.chatStream(request.getModelId(), messages, emitter, new AiChatService.StreamCallback() {
+                aiChatService.chatStream(request.getModelId(), messages, emitter, new AiProviderStrategy.StreamCallback() {
                     final StringBuilder fullContent = new StringBuilder();
 
                     @Override
@@ -128,7 +132,7 @@ public class ChatController {
             } catch (Exception e) {
                 sendError(emitter, "流式调用失败: " + e.getMessage());
             }
-        });
+        }, chatAsyncExecutor);
 
         return emitter;
     }
@@ -186,14 +190,11 @@ public class ChatController {
         }
         chatMessageService.save(msg);
 
-        // 更新会话消息数
-        ChatSession cs = chatSessionService.getById(sessionId);
-        if (cs != null) {
-            int count = (int) chatMessageService.count(
-                    new LambdaQueryWrapper<ChatMessage>().eq(ChatMessage::getSessionId, sessionId));
-            cs.setMessageCount(count);
-            chatSessionService.updateById(cs);
-        }
+        // 原子更新会话消息计数，省去一次 DB 查询
+        chatSessionService.lambdaUpdate()
+                .eq(ChatSession::getId, sessionId)
+                .setSql("message_count = message_count + 1")
+                .update();
     }
 
     private ChatMessage saveMessage(Long sessionId, String role, String content) {
@@ -304,11 +305,11 @@ public class ChatController {
         }
         chatMessageService.removeById(id);
 
-        // 更新会话消息计数
-        int count = (int) chatMessageService.count(
-                new LambdaQueryWrapper<ChatMessage>().eq(ChatMessage::getSessionId, msg.getSessionId()));
-        session.setMessageCount(count);
-        chatSessionService.updateById(session);
+        // 原子更新会话消息计数
+        chatSessionService.lambdaUpdate()
+                .eq(ChatSession::getId, msg.getSessionId())
+                .setSql("CASE WHEN message_count > 0 THEN message_count - 1 ELSE 0 END")
+                .update();
         return ResponseEntity.ok(Result.success(Map.of("message", "删除成功")));
     }
 

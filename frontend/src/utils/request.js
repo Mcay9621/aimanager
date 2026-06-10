@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus'
 import router from '../router'
 
 const request = axios.create({
-  baseURL: '/api',
+  baseURL: '/api/v1',
   timeout: 30000
 })
 
@@ -17,7 +17,7 @@ const refreshToken = async () => {
   if (!refreshTokenVal) {
     throw new Error('no refresh token')
   }
-  const response = await axios.post('/api/auth/refresh', {
+  const response = await axios.post('/api/v1/auth/refresh', {
     refreshToken: refreshTokenVal
   })
   const result = response.data

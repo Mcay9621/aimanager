@@ -226,6 +226,8 @@ import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
 import DOMPurify from 'dompurify'
 import request from '../../utils/request'
+import { useChatSessions } from './composables/useChatSessions'
+import { useSseChat } from './composables/useSseChat'
 
 const route = useRoute()
 const router = useRouter()
@@ -247,6 +249,11 @@ const availableModels = ref([])
 const newChatModel = ref(null)
 const messagesRef = ref(null)
 const sseStatus = ref('idle')
+
+// Composables
+const { fetchSessions: csFetchSessions, fetchMessages: csFetchMessages, switchSession: csSwitchSession, deleteSession: csDeleteSession, startRename: csStartRename, confirmRename: csConfirmRename } = useChatSessions()
+const { sendMessage: ssSendMessage, cancelStreaming: ssCancelStreaming } = useSseChat()
+
 const editingSessionId = ref(null)
 const renameTitle = ref('')
 const renameInput = ref(null)

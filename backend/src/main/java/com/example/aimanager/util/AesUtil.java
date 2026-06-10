@@ -15,6 +15,16 @@ import java.util.Base64;
 @Component
 public class AesUtil {
 
+    private static SecureRandom secureRandom;
+
+    static {
+        try {
+            secureRandom = SecureRandom.getInstance("NativePRNGNonBlocking");
+        } catch (Exception e) {
+            secureRandom = new SecureRandom();
+        }
+    }
+
     private static final String ALGORITHM = "AES/GCM/NoPadding";
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 128;
@@ -43,7 +53,7 @@ public class AesUtil {
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             byte[] iv = new byte[GCM_IV_LENGTH];
-            SecureRandom.getInstanceStrong().nextBytes(iv);
+            secureRandom.nextBytes(iv);
             GCMParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, spec);
             byte[] encrypted = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));

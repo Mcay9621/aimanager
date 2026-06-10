@@ -156,7 +156,7 @@
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '../../utils/request'
-import { getModelTypes } from '../../utils/modelTypes'
+import { useModelTypes } from '@/composables/useModelTypes'
 
 const models = ref([])
 const dialogVisible = ref(false)
@@ -175,9 +175,7 @@ const filterEnabled = ref('')
 const filterAvailable = ref('')
 
 // 动态模型类型
-const modelTypes = ref([])
-const typeMap = ref({})
-const typeColorMap = ref({})
+const { modelTypes, getTypeLabel, getTypeColor, getTypeBg } = useModelTypes()
 
 const currentPage = ref(1)
 const pageSize = ref(10)
@@ -338,10 +336,6 @@ const rules = {
 }
 
 // 类型辅助函数
-const getTypeLabel = (key) => typeMap.value[key] || key
-const getTypeColor = (key) => typeColorMap.value[key] || '#888'
-const getTypeBg = (key) => getTypeColor(key) + '26'
-
 const fetchModels = async () => {
   try {
     const data = await request.get('/admin/models')
@@ -448,14 +442,6 @@ const handleDelete = async (id) => {
 }
 
 onMounted(async () => {
-  // 加载动态模型类型
-  const types = await getModelTypes()
-  modelTypes.value = types
-  const km = {}, cm = {}
-  types.forEach(t => { km[t.key] = t.label; cm[t.key] = t.color })
-  typeMap.value = km
-  typeColorMap.value = cm
-
   fetchModels()
 })
 </script>

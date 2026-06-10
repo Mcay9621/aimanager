@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/admin/dashboard")
+@RequestMapping("/api/v1/admin/dashboard")
 @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 public class DashboardController {
 
