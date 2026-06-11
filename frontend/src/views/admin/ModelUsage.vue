@@ -634,12 +634,10 @@ onUnmounted(() => {
   }
   .table-card {
     padding: 14px;
+    overflow-x: auto;
   }
   :deep(.el-table) {
-    min-width: 700px;
-  }
-  :deep(.el-table__body-wrapper) {
-    overflow-x: auto;
+    min-width: 1000px;
   }
   :deep(.el-col-6) {
     flex: 0 0 50% !important;
