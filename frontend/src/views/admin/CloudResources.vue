@@ -46,7 +46,7 @@
     </div>
 
     <!-- 资源列表 -->
-    <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)" @selection-change="handleSelectionChange"
+    <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)" @selection-change="handleSelectionChange"
               :default-sort="{ prop: 'name', order: 'ascending' }">
       <el-table-column type="selection" width="40" />
       <el-table-column label="资源名称" min-width="160">
@@ -378,5 +378,17 @@ onMounted(() => { fetchRegions(); fetchMasterAccounts(); fetchResources() })
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .cloud-resources { padding: 14px; }
+  .top-bar { flex-direction: column; align-items: flex-start; }
+  .top-bar-left { width: 100%; }
+  .top-bar-left .el-input,
+  .top-bar-left .el-select { width: 100% !important; }
+  .status-bar { overflow-x: auto; }
+  :deep(.el-table) { min-width: 700px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="page-container">
     <div class="table-card">
-      <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
+      <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="username" label="用户名" min-width="120" />
         <el-table-column prop="email" label="邮箱" min-width="160" />
@@ -196,7 +196,7 @@ onMounted(() => {
 
 <style scoped>
 .table-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
@@ -217,5 +217,13 @@ onMounted(() => {
 }
 .el-dialog :deep(.el-form-item__label) {
   color: var(--text-secondary);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .table-card { padding: 14px; }
+  :deep(.el-table) { min-width: 700px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  :deep(.el-pagination .el-pagination__sizes) { display: none; }
 }
 </style>

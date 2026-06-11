@@ -5,7 +5,7 @@
         <h3>角色列表</h3>
         <el-button type="primary" @click="handleAdd">添加角色</el-button>
       </div>
-      <el-table :data="paginatedData" border stripe element-loading-background="rgba(10,10,15,0.8)">
+      <el-table :data="paginatedData" border stripe element-loading-background="var(--app-loading-bg)">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="name" label="角色名称" />
         <el-table-column prop="code" label="角色编码" />
@@ -118,7 +118,7 @@ onMounted(() => { fetchRoles() })
 
 <style scoped>
 .table-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
@@ -141,5 +141,13 @@ onMounted(() => { fetchRoles() })
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .table-card { padding: 14px; }
+  .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  :deep(.el-table) { min-width: 500px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
 }
 </style>

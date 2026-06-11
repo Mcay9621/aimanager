@@ -15,7 +15,7 @@
           :prefix-icon="Search"
         />
       </div>
-      <div class="session-list" v-loading="sessionsLoading" element-loading-background="rgba(10,10,15,0.8)">
+      <div class="session-list" v-loading="sessionsLoading" element-loading-background="var(--app-loading-bg)">
         <div
           v-for="session in filteredSessions"
           :key="session.id"
@@ -702,7 +702,7 @@ onUnmounted(() => {
 .session-panel {
   width: 280px;
   min-width: 280px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid rgba(74, 111, 165, 0.1);
   border-radius: 16px;
   display: flex;
@@ -737,8 +737,8 @@ onUnmounted(() => {
   padding: 12px 16px;
 }
 .session-search :deep(.el-input__wrapper) {
-  background: rgba(255,255,255,0.03) !important;
-  border-color: rgba(255,255,255,0.06) !important;
+  background: var(--app-chat-msg-bg) !important;
+  border-color: var(--border-color) !important;
 }
 .session-list {
   flex: 1;
@@ -823,7 +823,7 @@ onUnmounted(() => {
   gap: 4px;
 }
 .session-meta .dot {
-  color: rgba(255,255,255,0.15);
+  color: var(--app-chat-timestamp);
 }
 .session-delete {
   position: absolute;
@@ -836,7 +836,7 @@ onUnmounted(() => {
 /* ===== Chat Main ===== */
 .chat-main {
   flex: 1;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid rgba(74, 111, 165, 0.1);
   border-radius: 16px;
   display: flex;
@@ -948,7 +948,7 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  background: rgba(255,255,255,0.01);
+  background: var(--bg-card);
 }
 .chat-header-info {
   display: flex;
@@ -968,7 +968,7 @@ onUnmounted(() => {
 }
 .status-connected { background: #67c23a; box-shadow: 0 0 8px rgba(103,194,58,0.4); }
 .status-reconnecting { background: #e6a23c; box-shadow: 0 0 8px rgba(230,162,60,0.4); animation: pulse 1.5s ease-in-out infinite; }
-.status-idle { background: rgba(255,255,255,0.2); }
+.status-idle { background: var(--text-muted); }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -1009,7 +1009,7 @@ onUnmounted(() => {
 }
 .date-sep-text {
   font-size: 11px;
-  color: rgba(255,255,255,0.2);
+  color: var(--app-chat-date-text);
   font-weight: 400;
   letter-spacing: 0.5px;
   flex-shrink: 0;
@@ -1068,12 +1068,12 @@ onUnmounted(() => {
   margin-bottom: 0;
 }
 .msg-content :deep(pre) {
-  background: #0a0a0f;
+  background: var(--app-chat-code-bg);
   border-radius: 8px;
   overflow-x: auto;
   margin: 8px 0;
   position: relative;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid var(--app-chat-code-border);
 }
 .msg-content :deep(pre code) {
   display: block;
@@ -1113,9 +1113,9 @@ onUnmounted(() => {
 
 /* AI message */
 .msg.assistant .msg-content {
-  background: rgba(255,255,255,0.03);
+  background: var(--app-chat-msg-bg);
   color: var(--text-secondary);
-  border: 1px solid rgba(74, 111, 165, 0.08);
+  border: 1px solid var(--app-chat-msg-border);
   border-bottom-left-radius: 4px;
 }
 .msg.assistant .msg-content:hover {
@@ -1139,7 +1139,7 @@ onUnmounted(() => {
 }
 .msg-time {
   font-size: 11px;
-  color: rgba(255,255,255,0.15);
+  color: var(--app-chat-timestamp);
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
 }
 
@@ -1150,8 +1150,8 @@ onUnmounted(() => {
   right: -8px;
   display: flex;
   gap: 2px;
-  background: rgba(18,18,26,0.95);
-  border: 1px solid rgba(74, 111, 165, 0.1);
+  background: var(--app-chat-actions-bg);
+  border: 1px solid var(--app-chat-msg-border);
   border-radius: 8px;
   padding: 2px;
   opacity: 0;
@@ -1168,9 +1168,9 @@ onUnmounted(() => {
   position: absolute;
   top: 6px;
   right: 6px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.5);
+  background: var(--app-chat-msg-bg);
+  border: 1px solid var(--app-chat-code-border);
+  color: var(--text-tertiary);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
@@ -1186,8 +1186,8 @@ onUnmounted(() => {
   opacity: 1;
 }
 .chat-messages :deep(.copy-code-btn:hover) {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
 }
 
 /* ===== Typing / Streaming Indicator ===== */
@@ -1196,8 +1196,8 @@ onUnmounted(() => {
   align-items: center;
   gap: 10px;
   padding: 14px 18px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(74, 111, 165, 0.1);
+  background: var(--app-chat-msg-bg);
+  border: 1px solid var(--app-chat-msg-border);
   border-radius: 12px;
   border-bottom-left-radius: 4px;
   min-height: 48px;
@@ -1254,8 +1254,8 @@ onUnmounted(() => {
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 .chat-input-area :deep(.el-textarea__inner) {
-  background: rgba(255,255,255,0.02) !important;
-  border: 1px solid rgba(255,255,255,0.06) !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
   border-radius: 12px !important;
   color: var(--text-primary) !important;
   font-size: 14px;
@@ -1264,7 +1264,7 @@ onUnmounted(() => {
 }
 .chat-input-area :deep(.el-textarea__inner:focus) {
   border-color: rgba(74, 111, 165, 0.25) !important;
-  background: rgba(255,255,255,0.03) !important;
+  background: var(--bg-card-hover) !important;
   box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.06), 0 0 20px rgba(74, 111, 165, 0.03) !important;
 }
 .chat-input-area :deep(.el-textarea__inner::placeholder) {
@@ -1299,7 +1299,7 @@ onUnmounted(() => {
     min-height: 0;
   }
   .msg-content-wrapper {
-    max-width: 85%;
+    max-width: 90%;
   }
   .empty-actions {
     flex-direction: column;
@@ -1309,5 +1309,12 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
   }
+  .chat-header-text { display: none; }
+  .chat-header { padding: 8px 12px; }
+  .msg-row { padding: 8px 12px; }
+  .msg-avatar { display: none; }
+  .input-area { padding: 8px; gap: 6px; }
+  .input-area .el-button { padding: 8px !important; }
+  .msg-time { display: none; }
 }
 </style>

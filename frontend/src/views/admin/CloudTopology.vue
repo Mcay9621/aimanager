@@ -357,16 +357,27 @@ onBeforeUnmount(() => { if (graph) { graph.destroy(); graph = null } })
 .graph-wrapper { flex:1; background:var(--bg-secondary); border-radius:12px; position:relative; overflow:hidden; min-height:500px; }
 #g6-container { width:100%; height:100%; min-height:500px; }
 .empty-hint { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#c0c4cc; font-size:16px; }
-.loading-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(10,10,15,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--text-muted); }
+.loading-overlay { position:absolute; top:0; left:0; right:0; bottom:0; background:var(--app-loading-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--text-muted); }
 .loading-icon { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform:rotate(0deg) } to { transform:rotate(360deg) } }
 .topo-tooltip {
   position:absolute; z-index:999; pointer-events:none;
-  background:rgba(26,26,46,0.92); color:#fff; border-radius:8px;
+  background:var(--app-chat-actions-bg); color:var(--text-primary); border-radius:8px;
   padding:10px 14px; font-size:12px; line-height:1.6;
   min-width:140px; max-width:260px;
   backdrop-filter:blur(6px); box-shadow:0 4px 20px rgba(0,0,0,0.3);
 }
-.topo-tooltip .tip-title { font-weight:600; font-size:13px; margin-bottom:4px; padding-bottom:4px; border-bottom:1px solid rgba(255,255,255,0.15); }
-.topo-tooltip .tip-row { color:rgba(255,255,255,0.8); font-size:11px; }
+.topo-tooltip .tip-title { font-weight:600; font-size:13px; margin-bottom:4px; padding-bottom:4px; border-bottom:1px solid var(--border-color); }
+.topo-tooltip .tip-row { color:var(--text-secondary); font-size:11px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .top-bar { flex-direction: column; align-items: flex-start; }
+  .top-bar h2 { font-size: 16px; }
+  .top-actions { width: 100%; }
+  .top-actions .el-select { width: 100% !important; }
+  .top-actions .el-button { flex: 1; }
+  .graph-wrapper { min-height: 350px; }
+  #g6-container { min-height: 350px; }
+}
 </style>

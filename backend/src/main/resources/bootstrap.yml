@@ -6,5 +6,9 @@ spring:
       config:
         server-addr: ${NACOS_ADDR:localhost:8848}
         file-extension: yaml
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:nacos}
       discovery:
         server-addr: ${NACOS_ADDR:localhost:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:nacos}

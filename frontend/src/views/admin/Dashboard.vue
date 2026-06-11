@@ -11,7 +11,7 @@
       </div>
     </div>
     <!-- 统计卡片 -->
-    <div class="stats-grid" v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
+    <div class="stats-grid" v-loading="loading" element-loading-background="var(--app-loading-bg)">
       <div class="stat-card stat-users">
         <div class="stat-glow"></div>
         <div class="stat-icon-wrap"><el-icon :size="24"><User /></el-icon></div>
@@ -66,7 +66,7 @@
           <span>模型使用分布</span>
         </div>
         <div class="chart-card-body">
-          <div ref="pieChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="rgba(10,10,15,0.8)"></div>
+          <div ref="pieChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="var(--app-loading-bg)"></div>
           <el-empty v-if="!chartLoading && modelUsage.length === 0" description="暂无对话数据" :image-size="50" />
         </div>
       </div>
@@ -76,7 +76,7 @@
           <span>最近7天消息趋势</span>
         </div>
         <div class="chart-card-body">
-          <div ref="lineChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="rgba(10,10,15,0.8)"></div>
+          <div ref="lineChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="var(--app-loading-bg)"></div>
           <el-empty v-if="!chartLoading && activityData.length === 0" description="暂无消息数据" :image-size="50" />
         </div>
       </div>
@@ -112,12 +112,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, nextTick, onBeforeUnmount, watch } from 'vue'
 import request from '../../utils/request'
 import { useUserStore } from '../../stores/user'
+import { useTheme } from '../../composables/useTheme'
+import { getEChartsTheme } from '../../utils/echartsTheme'
 import * as echarts from 'echarts'
 
 const userStore = useUserStore()
+const { isDark } = useTheme()
+const chartTheme = computed(() => getEChartsTheme(isDark.value))
 const loading = ref(false)
 const chartLoading = ref(false)
 const stats = ref({
@@ -160,6 +164,7 @@ const fetchStats = async () => {
 }
 
 const renderCharts = () => {
+  const t = chartTheme.value
   if (modelUsage.value.length > 0 && pieChartRef.value) {
     pieChart = echarts.init(pieChartRef.value, null, { renderer: 'canvas' })
     const blueColors = ['#4a6fa5', '#6b8fc9', '#2d4a6e', '#4a80d4', '#6a9be0', '#3a9b9b']
@@ -168,10 +173,10 @@ const renderCharts = () => {
       tooltip: {
         trigger: 'item',
         formatter: '{b}: {c} ({d}%)',
-        backgroundColor: 'rgba(18,18,26,0.95)',
-        borderColor: 'rgba(74,111,165,0.2)',
+        backgroundColor: t.tooltipBg,
+        borderColor: t.tooltipBorder,
         borderWidth: 1,
-        textStyle: { color: '#fff', fontSize: 12 }
+        textStyle: { color: t.tooltipTextColor, fontSize: 12 }
       },
       series: [{
         type: 'pie',
@@ -182,7 +187,7 @@ const renderCharts = () => {
         label: {
           show: true,
           formatter: '{b}',
-          color: 'rgba(255,255,255,0.8)',
+          color: t.textColor,
           fontSize: 12
         },
         labelLine: {
@@ -206,24 +211,24 @@ const renderCharts = () => {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(18,18,26,0.95)',
-        borderColor: 'rgba(74,111,165,0.2)',
+        backgroundColor: t.tooltipBg,
+        borderColor: t.tooltipBorder,
         borderWidth: 1,
-        textStyle: { color: '#fff', fontSize: 12 }
+        textStyle: { color: t.tooltipTextColor, fontSize: 12 }
       },
       grid: { left: 40, right: 20, top: 20, bottom: 30 },
       xAxis: {
         type: 'category',
         data: activityData.value.map(d => d.date),
-        axisLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 11 },
-        axisLine: { lineStyle: { color: 'rgba(74,111,165,0.1)' } },
-        axisTick: { lineStyle: { color: 'rgba(74,111,165,0.1)' } }
+        axisLabel: { color: t.textColorSecondary, fontSize: 11 },
+        axisLine: { lineStyle: { color: t.axisLineColor } },
+        axisTick: { lineStyle: { color: t.axisLineColor } }
       },
       yAxis: {
         type: 'value',
         minInterval: 1,
-        axisLabel: { color: 'rgba(255,255,255,0.5)', fontSize: 11 },
-        splitLine: { lineStyle: { color: 'rgba(74,111,165,0.06)', type: 'dashed' } }
+        axisLabel: { color: t.textColorSecondary, fontSize: 11 },
+        splitLine: { lineStyle: { color: t.splitLineColor, type: 'dashed' } }
       },
       series: [{
         type: 'line',
@@ -260,6 +265,16 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
   pieChart?.dispose()
   lineChart?.dispose()
+})
+
+watch(isDark, () => {
+  if (pieChart || lineChart) {
+    pieChart?.dispose()
+    lineChart?.dispose()
+    pieChart = null
+    lineChart = null
+    nextTick(renderCharts)
+  }
 })
 </script>
 
@@ -393,14 +408,14 @@ onBeforeUnmount(() => {
   width: 48px; height: 48px;
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  color: #0a0a0f;
+  color: var(--app-icon-color);
   flex-shrink: 0;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 .stat-info { display: flex; flex-direction: column; min-width: 0; position: relative; z-index: 1; }
 .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: 1px; }
 .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-.stat-sub { font-size: 12px; color: rgba(255,255,255,0.2); }
+.stat-sub { font-size: 12px; color: var(--app-stat-sub); }
 
 /* ===== 图表卡片 ===== */
 .charts-row {
@@ -410,7 +425,7 @@ onBeforeUnmount(() => {
   margin-bottom: 24px;
 }
 .chart-card-wrapper {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
@@ -511,7 +526,7 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
 }
 .link-users::after { background: linear-gradient(135deg, rgba(99,102,241,0.06), transparent); }
-.link-users .link-icon { background: linear-gradient(135deg, #6366f1, #818cf8); color: #0a0a0f; }
+.link-users .link-icon { background: linear-gradient(135deg, #6366f1, #818cf8); color: var(--app-icon-color); }
 .link-users:hover { border-color: rgba(99,102,241,0.25); color: #818cf8;
   box-shadow: 0 8px 24px rgba(99,102,241,0.08); }
 
@@ -521,7 +536,7 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
 }
 .link-roles::after { background: linear-gradient(135deg, rgba(16,185,129,0.06), transparent); }
-.link-roles .link-icon { background: linear-gradient(135deg, #10b981, #34d399); color: #0a0a0f; }
+.link-roles .link-icon { background: linear-gradient(135deg, #10b981, #34d399); color: var(--app-icon-color); }
 .link-roles:hover { border-color: rgba(16,185,129,0.25); color: #34d399;
   box-shadow: 0 8px 24px rgba(16,185,129,0.08); }
 
@@ -531,7 +546,7 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
 }
 .link-models::after { background: linear-gradient(135deg, rgba(139,92,246,0.06), transparent); }
-.link-models .link-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: #0a0a0f; }
+.link-models .link-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); color: var(--app-icon-color); }
 .link-models:hover { border-color: rgba(139,92,246,0.25); color: #a78bfa;
   box-shadow: 0 8px 24px rgba(139,92,246,0.08); }
 
@@ -541,7 +556,7 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
 }
 .link-cloud::after { background: linear-gradient(135deg, rgba(6,182,212,0.06), transparent); }
-.link-cloud .link-icon { background: linear-gradient(135deg, #06b6d4, #22d3ee); color: #0a0a0f; }
+.link-cloud .link-icon { background: linear-gradient(135deg, #06b6d4, #22d3ee); color: var(--app-icon-color); }
 .link-cloud:hover { border-color: rgba(6,182,212,0.25); color: #22d3ee;
   box-shadow: 0 8px 24px rgba(6,182,212,0.08); }
 
@@ -551,7 +566,32 @@ onBeforeUnmount(() => {
   color: var(--text-muted);
 }
 .link-logs::after { background: linear-gradient(135deg, rgba(245,158,11,0.06), transparent); }
-.link-logs .link-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #0a0a0f; }
+.link-logs .link-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: var(--app-icon-color); }
 .link-logs:hover { border-color: rgba(245,158,11,0.25); color: #fbbf24;
   box-shadow: 0 8px 24px rgba(245,158,11,0.08); }
+
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .links-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .charts-row { grid-template-columns: 1fr; }
+  .chart-container { height: 220px; }
+  .dash-header-text h2 { font-size: 18px; }
+}
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .dash-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .stat-card { padding: 16px; }
+  .stat-value { font-size: 22px; }
+  .links-grid { gap: 8px; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .links-grid { grid-template-columns: repeat(2, 1fr); }
+  .link-card { padding: 16px 12px; }
+  .dash-header-text h2 { font-size: 16px; }
+  .dash-header-text p { font-size: 12px; }
+}
 </style>

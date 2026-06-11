@@ -193,7 +193,8 @@ const handleLogin = async () => {
 /* 登录卡片 */
 .login-card {
   width: 400px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  max-width: calc(100vw - 32px);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 40px;
@@ -228,20 +229,20 @@ const handleLogin = async () => {
   margin-bottom: 20px;
 }
 .login-form :deep(.el-input__wrapper) {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: var(--gradient-input) !important;
+  border: 1px solid var(--border-color-light) !important;
   border-radius: 10px !important;
   padding: 4px 16px !important;
   height: 48px;
 }
 .login-form :deep(.el-input__wrapper:hover) {
   border-color: rgba(74, 111, 165, 0.25) !important;
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--bg-card-hover) !important;
 }
 .login-form :deep(.el-input__wrapper.is-focus) {
   border-color: var(--accent) !important;
-  background: rgba(74, 111, 165, 0.04) !important;
-  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.08) !important;
+  background: var(--accent-glow) !important;
+  box-shadow: 0 0 0 3px var(--accent-glow) !important;
 }
 .login-form :deep(.el-input__inner) {
   color: var(--text-primary) !important;
@@ -249,7 +250,7 @@ const handleLogin = async () => {
   letter-spacing: 0.5px;
 }
 .login-form :deep(.el-input__inner::placeholder) {
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--app-text-on-glass);
   letter-spacing: 0.5px;
 }
 
@@ -271,7 +272,7 @@ const handleLogin = async () => {
   margin-top: 20px;
 }
 .divider {
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--app-divider-color);
   font-size: 12px;
 }
 .login-footer :deep(.el-link) {
@@ -282,8 +283,21 @@ const handleLogin = async () => {
 
 .copyright {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--app-divider-color);
   letter-spacing: 2px;
   font-weight: 300;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .login-card { padding: 28px 24px; }
+  .brand-title { font-size: 28px; letter-spacing: 4px; }
+  .brand-subtitle { letter-spacing: 4px; }
+  .login-content { gap: 24px; }
+}
+@media (max-width: 360px) {
+  .login-card { padding: 24px 16px; }
+  .brand-title { font-size: 24px; }
+  .login-footer { flex-direction: column; gap: 8px; }
 }
 </style>

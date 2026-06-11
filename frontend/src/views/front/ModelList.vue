@@ -251,16 +251,16 @@ onMounted(async () => {
   width: 320px;
 }
 .model-search :deep(.el-input__wrapper) {
-  background: rgba(255,255,255,0.03) !important;
-  border: 1px solid rgba(255,255,255,0.06) !important;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color-light) !important;
   border-radius: 10px !important;
   box-shadow: none !important;
   transition: all 0.3s;
 }
 .model-search :deep(.el-input__wrapper:hover),
 .model-search :deep(.el-input__wrapper.is-focus) {
-  border-color: rgba(74, 111, 165, 0.25) !important;
-  background: rgba(255,255,255,0.04) !important;
+  border-color: var(--border-color-hover) !important;
+  background: var(--bg-card-hover) !important;
 }
 .model-search :deep(.el-input__inner) {
   color: var(--text-primary);
@@ -274,7 +274,7 @@ onMounted(async () => {
 }
 
 .model-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 24px;
@@ -348,5 +348,17 @@ onMounted(async () => {
   .el-col {
     width: 100% !important;
   }
+  .model-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .model-toolbar .model-search {
+    width: 100% !important;
+  }
+  .filter-tabs {
+    flex-wrap: wrap;
+  }
+  .model-list-page { padding: 0; }
+  .model-card { padding: 16px; }
 }
 </style>

@@ -1,6 +1,9 @@
 <template>
   <div class="main-layout">
     <div class="topbar">
+      <el-button v-if="isMobile" text size="default" class="hamburger-btn" @click="drawerOpen = true">
+        <el-icon><Expand /></el-icon>
+      </el-button>
       <div class="topbar-logo">
         <div class="logo-icon">
           <svg viewBox="0 0 40 40" width="22" height="22" fill="none">
@@ -17,7 +20,7 @@
         </div>
         <span class="logo-text">AI Manager</span>
       </div>
-      <div class="topbar-menu-wrap">
+      <div v-if="!isMobile" class="topbar-menu-wrap">
         <el-menu
           :default-active="activeMenu"
           mode="horizontal"
@@ -128,11 +131,140 @@
             <span class="user-role">{{ roleText }}</span>
           </div>
         </div>
+        <el-button text size="default" class="theme-btn" @click="toggleTheme" :title="isDark ? '切换到亮色模式' : '切换到深色模式'">
+          <el-icon><Sunny v-if="isDark" /><Moon v-else /></el-icon>
+        </el-button>
         <el-button text size="default" class="logout-btn" @click="handleLogout" title="退出登录">
           <el-icon><SwitchButton /></el-icon>
         </el-button>
       </div>
     </div>
+
+    <!-- 移动端抽屉导航 -->
+    <el-drawer
+      v-model="drawerOpen"
+      direction="ltr"
+      :size="isSmallMobile ? '100%' : '280px'"
+      :with-header="false"
+      class="mobile-drawer"
+    >
+      <div class="drawer-header">
+        <div class="drawer-logo">
+          <svg viewBox="0 0 40 40" width="22" height="22" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#logo-grad)"/>
+            <path d="M12 28V16l8-6 8 6v12H12z" stroke="#0a0a0f" stroke-width="2" fill="none"/>
+            <path d="M16 22h8v6h-8z" fill="#0a0a0f" opacity="0.8"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0%" stop-color="#4a6fa5"/>
+                <stop offset="100%" stop-color="#6b8fc9"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>AI Manager</span>
+        </div>
+      </div>
+      <el-menu
+        :default-active="activeMenu"
+        mode="vertical"
+        router
+        @select="drawerOpen = false"
+      >
+        <el-menu-item index="/front/models">
+          <el-icon><Monitor /></el-icon>
+          <span>AI模型</span>
+        </el-menu-item>
+        <el-menu-item index="/front/chat">
+          <el-icon><ChatDotRound /></el-icon>
+          <span>AI对话</span>
+        </el-menu-item>
+        <el-menu-item v-if="userStore.isAdmin" index="/admin">
+          <el-icon><DataAnalysis /></el-icon>
+          <span>仪表盘</span>
+        </el-menu-item>
+        <el-sub-menu v-if="userStore.hasCloudAccess" index="cloud">
+          <template #title>
+            <el-icon><Cloudy /></el-icon>
+            <span>多云管理</span>
+          </template>
+          <el-menu-item index="/admin/cloud/resources">云资源总览</el-menu-item>
+          <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/topology">资源拓扑</el-menu-item>
+          <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/accounts">云账号管理</el-menu-item>
+          <el-sub-menu index="cloud-compute">
+            <template #title>计算资源</template>
+            <el-menu-item index="/admin/cloud/resources/cvm">CVM 云服务器</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/bms">BMS 裸金属</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="cloud-storage">
+            <template #title>存储资源</template>
+            <el-menu-item index="/admin/cloud/resources/cbs">CBS 云硬盘</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cfs">CFS 文件存储</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cos">COS 对象存储</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/snapshot">快照</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="cloud-database">
+            <template #title>数据库</template>
+            <el-menu-item index="/admin/cloud/resources/mysql">MySQL</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/oracle">Oracle</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/redis">Redis</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="cloud-network">
+            <template #title>网络资源</template>
+            <el-menu-item index="/admin/cloud/resources/vpc">VPC</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/vpn">VPN</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/nat">NAT 网关</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/eip">EIP</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/clb">CLB</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cdn">CDN</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/subnet">子网</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/sg">安全组</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/route_table">路由表</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dc">物理专线</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/ldc">逻辑专线</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dc_tunnel">专线通道</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/peering">对等连接</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/eni">弹性网卡</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dc_gateway">专线网关</el-menu-item>
+          </el-sub-menu>
+          <el-menu-item index="/admin/cloud/resources/bastion">堡垒机</el-menu-item>
+          <el-sub-menu index="cloud-security">
+            <template #title>安全资源</template>
+            <el-menu-item index="/admin/cloud/resources/waf">WAF 防火墙</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/ddos">DDoS 防护</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/ssl">SSL 证书</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/kms">KMS 密钥管理</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="cloud-container">
+            <template #title>容器与中间件</template>
+            <el-menu-item index="/admin/cloud/resources/tke">容器服务 TKE</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/image_registry">镜像仓库</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/function">函数计算</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/mq">消息队列</el-menu-item>
+          </el-sub-menu>
+          <el-sub-menu index="cloud-others">
+            <template #title>其他服务</template>
+            <el-menu-item index="/admin/cloud/resources/dns">DNS 解析</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/log_service">日志服务</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cloud_monitor">云监控</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/as">弹性伸缩 AS</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/global_acceleration">全球加速</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dts">DTS 数据传输</el-menu-item>
+          </el-sub-menu>
+        </el-sub-menu>
+        <el-sub-menu v-if="userStore.isAdmin" index="admin">
+          <template #title>
+            <el-icon><Setting /></el-icon>
+            <span>系统管理</span>
+          </template>
+          <el-menu-item index="/admin/users">用户管理</el-menu-item>
+          <el-menu-item index="/admin/roles">角色管理</el-menu-item>
+          <el-menu-item index="/admin/models">模型管理</el-menu-item>
+          <el-menu-item index="/admin/models/usage">模型用量</el-menu-item>
+          <el-menu-item index="/admin/audit-logs">审计日志</el-menu-item>
+        </el-sub-menu>
+      </el-menu>
+    </el-drawer>
+
     <div class="main-area">
       <div class="page-header" v-if="pageTitle">
         <h2 class="page-title">{{ pageTitle }}</h2>
@@ -149,13 +281,18 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../../stores/user'
+import { useTheme } from '../../composables/useTheme'
+import { useResponsive } from '../../composables/useResponsive'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const { toggleTheme, isDark } = useTheme()
+const { isMobile, isSmallMobile } = useResponsive()
+const drawerOpen = ref(false)
 
 const activeMenu = computed(() => {
   return route.path
@@ -200,7 +337,7 @@ const handleLogout = () => {
 /* ===== Top Bar ===== */
 .topbar {
   height: 60px;
-  background: linear-gradient(90deg, #0a0a0f 0%, #12121a 100%);
+  background: var(--app-topbar-bg);
   display: flex;
   align-items: center;
   padding: 0 20px;
@@ -245,7 +382,7 @@ const handleLogout = () => {
 .topbar-logo .logo-text {
   font-size: 18px;
   font-weight: 700;
-  color: #fff;
+  color: var(--app-topbar-text);
   letter-spacing: 1px;
 }
 
@@ -264,7 +401,7 @@ const handleLogout = () => {
 
 .topbar-menu :deep(.el-menu-item),
 .topbar-menu :deep(.el-sub-menu__title) {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: var(--app-topbar-text-secondary) !important;
   background: transparent !important;
   border-bottom: none !important;
   height: 60px;
@@ -276,13 +413,13 @@ const handleLogout = () => {
 
 .topbar-menu :deep(.el-menu-item:hover),
 .topbar-menu :deep(.el-sub-menu__title:hover) {
-  background: rgba(74, 111, 165, 0.06) !important;
-  color: var(--accent-light) !important;
+  background: var(--app-menu-hover-bg) !important;
+  color: var(--app-topbar-menu-active) !important;
 }
 
 .topbar-menu :deep(.el-menu-item.is-active) {
-  color: var(--accent-light) !important;
-  background: rgba(74, 111, 165, 0.08) !important;
+  color: var(--app-topbar-menu-active) !important;
+  background: var(--app-menu-active-bg) !important;
 }
 
 .topbar-menu :deep(.el-menu-item.is-active::after) {
@@ -344,18 +481,29 @@ const handleLogout = () => {
 }
 
 .user-detail .username {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--app-topbar-user-text);
   font-weight: 600;
   font-size: 13px;
 }
 
 .user-detail .user-role {
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--app-topbar-role-text);
   font-size: 11px;
 }
 
+.theme-btn {
+  color: var(--app-topbar-text-secondary) !important;
+  font-size: 18px;
+  padding: 6px !important;
+  transition: all 0.2s;
+}
+.theme-btn:hover {
+  color: var(--app-topbar-menu-active) !important;
+  background: var(--app-menu-hover-bg) !important;
+}
+
 .logout-btn {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: var(--app-topbar-role-text) !important;
   font-size: 18px;
   padding: 6px !important;
   transition: color 0.2s;
@@ -427,6 +575,45 @@ const handleLogout = () => {
   opacity: 0;
 }
 
+/* ===== Hamburger Button ===== */
+.hamburger-btn {
+  color: var(--app-topbar-text) !important;
+  font-size: 20px;
+  padding: 6px !important;
+  margin-right: 4px;
+}
+.hamburger-btn:hover {
+  color: var(--app-topbar-menu-active) !important;
+  background: var(--app-menu-hover-bg) !important;
+}
+
+/* ===== Mobile Drawer ===== */
+.mobile-drawer {
+  --el-drawer-bg-color: var(--bg-primary) !important;
+}
+.mobile-drawer :deep(.el-drawer__body) {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.drawer-header {
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid var(--border-color-light);
+  flex-shrink: 0;
+}
+.drawer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--app-topbar-text);
+  letter-spacing: 1px;
+}
+.drawer-logo svg {
+  flex-shrink: 0;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .topbar {
@@ -441,6 +628,9 @@ const handleLogout = () => {
   }
   .page-header {
     padding: 16px 16px 0;
+  }
+  .page-title {
+    font-size: 17px;
   }
   .main-content {
     padding: 16px;

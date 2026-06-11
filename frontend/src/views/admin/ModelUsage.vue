@@ -21,7 +21,7 @@
           <el-option label="离线" value="offline" />
         </el-select>
       </div>
-      <el-table :data="filteredBalances" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
+      <el-table :data="filteredBalances" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)">
         <el-table-column prop="name" label="模型名称" width="140" />
         <el-table-column label="类型" width="100">
           <template #default="{ row }">
@@ -160,6 +160,11 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import request from '../../utils/request'
 import { getModelTypes } from '../../utils/modelTypes'
+import { useTheme } from '../../composables/useTheme'
+import { getEChartsTheme } from '../../utils/echartsTheme'
+
+const { isDark } = useTheme()
+const chartTheme = computed(() => getEChartsTheme(isDark.value))
 
 const loading = ref(false)
 const balances = ref([])
@@ -292,6 +297,7 @@ const fetchDeepSeekUsage = async () => {
 }
 
 const renderCharts = () => {
+  const t = chartTheme.value
   // Token 趋势折线图
   if (trendChartRef.value) {
     if (!trendChart) {
@@ -299,18 +305,18 @@ const renderCharts = () => {
     }
     trendChart.setOption({
       tooltip: { trigger: 'axis' },
-      legend: { data: ['Prompt Tokens', 'Completion Tokens', '总 Tokens'], textStyle: { color: '#888' } },
+      legend: { data: ['Prompt Tokens', 'Completion Tokens', '总 Tokens'], textStyle: { color: t.legendTextColor } },
       grid: { left: 50, right: 20, top: 35, bottom: 25 },
       xAxis: {
         type: 'category',
         data: dailyTrend.value.map(d => d.date),
-        axisLabel: { color: '#666', fontSize: 11 },
-        axisLine: { lineStyle: { color: '#333' } }
+        axisLabel: { color: t.axisLabelColor, fontSize: 11 },
+        axisLine: { lineStyle: { color: t.axisLineStrokeColor } }
       },
       yAxis: {
         type: 'value',
-        axisLabel: { color: '#666', fontSize: 11, formatter: v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v },
-        splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } }
+        axisLabel: { color: t.axisLabelColor, fontSize: 11, formatter: v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v },
+        splitLine: { lineStyle: { color: t.splitLineColor } }
       },
       series: [
         {
@@ -351,11 +357,11 @@ const renderCharts = () => {
     topChart.setOption({
       tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
       grid: { left: 10, right: 60, top: 10, bottom: 5 },
-      xAxis: { type: 'value', axisLabel: { color: '#666', fontSize: 10, formatter: v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v }, splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } } },
+      xAxis: { type: 'value', axisLabel: { color: t.axisLabelColor, fontSize: 10, formatter: v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v }, splitLine: { lineStyle: { color: t.splitLineColor } } },
       yAxis: {
         type: 'category',
         data: top10.map(m => m.modelName || '未知').reverse(),
-        axisLabel: { color: '#ccc', fontSize: 10 },
+        axisLabel: { color: t.barCategoryColor, fontSize: 10 },
         axisLine: { show: false },
         axisTick: { show: false }
       },
@@ -380,19 +386,20 @@ const renderDeepSeekChart = () => {
   if (!dsChart) {
     dsChart = echarts.init(dsChartRef.value)
   }
+  const t = chartTheme.value
   const data = (deepseekUsage.value.dailyBreakdown || []).reverse()
   dsChart.setOption({
     tooltip: { trigger: 'axis' },
-    legend: { data: ['调用次数', 'Tokens'], textStyle: { color: '#888' } },
+    legend: { data: ['调用次数', 'Tokens'], textStyle: { color: t.legendTextColor } },
     grid: { left: 50, right: 30, top: 35, bottom: 25 },
     xAxis: {
       type: 'category', data: data.map(d => d.date),
-      axisLabel: { color: '#666', fontSize: 11 },
-      axisLine: { lineStyle: { color: '#333' } }
+      axisLabel: { color: t.axisLabelColor, fontSize: 11 },
+      axisLine: { lineStyle: { color: t.axisLineStrokeColor } }
     },
     yAxis: [
-      { type: 'value', name: '调用次数', axisLabel: { color: '#666' }, splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } } },
-      { type: 'value', name: 'Tokens', axisLabel: { color: '#666' }, splitLine: { show: false } }
+      { type: 'value', name: '调用次数', axisLabel: { color: t.axisLabelColorSecondary }, splitLine: { lineStyle: { color: t.splitLineColor } } },
+      { type: 'value', name: 'Tokens', axisLabel: { color: t.axisLabelColorSecondary }, splitLine: { show: false } }
     ],
     series: [
       { name: '调用次数', type: 'bar', data: data.map(d => d.apiCalls || 0), itemStyle: { color: 'rgba(74,111,165,0.7)', borderRadius: [4,4,0,0] }, barMaxWidth: 24 },
@@ -405,6 +412,18 @@ const renderDeepSeekChart = () => {
 watch(usageDays, () => {
   fetchUsage()
   fetchDeepSeekUsage()
+})
+
+watch(isDark, () => {
+  if (trendChart || topChart || dsChart) {
+    trendChart?.dispose()
+    topChart?.dispose()
+    dsChart?.dispose()
+    trendChart = null
+    topChart = null
+    dsChart = null
+    nextTick(() => { renderCharts(); renderDeepSeekChart() })
+  }
 })
 
 // 自适应
@@ -437,7 +456,7 @@ onUnmounted(() => {
   gap: 20px;
 }
 .table-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
@@ -518,7 +537,7 @@ onUnmounted(() => {
   margin-bottom: 4px;
 }
 .stat-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
@@ -542,7 +561,7 @@ onUnmounted(() => {
 }
 
 .chart-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 16px;
@@ -597,5 +616,49 @@ onUnmounted(() => {
 .ds-stat-label {
   font-size: 12px;
   color: var(--text-muted);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .filter-bar {
+    flex-direction: column;
+  }
+  .filter-bar .el-input,
+  .filter-bar .el-select {
+    width: 100% !important;
+  }
+  .table-card {
+    padding: 14px;
+  }
+  :deep(.el-table) {
+    min-width: 700px;
+  }
+  :deep(.el-table__body-wrapper) {
+    overflow-x: auto;
+  }
+  :deep(.el-col-6) {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  :deep(.el-col-16),
+  :deep(.el-col-8) {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  .stat-value { font-size: 22px; }
+  .chart-container { height: 220px; }
+}
+@media (max-width: 480px) {
+  .table-card { padding: 12px; border-radius: 12px; }
+  :deep(.el-col-6) {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+  .ds-stat-value { font-size: 18px; }
 }
 </style>

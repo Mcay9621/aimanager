@@ -25,7 +25,7 @@
       <span>共 <b>{{ total }}</b> 条</span>
     </div>
 
-    <el-table :data="list" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)" style="width:100%"
+    <el-table :data="list" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)" style="width:100%"
       :default-sort="{ prop: 'name', order: 'ascending' }">
       <el-table-column type="index" width="50" label="#" />
       <el-table-column v-for="col in allColumns" :key="col" :label="fieldLabels[col] || col" min-width="120" show-overflow-tooltip>
@@ -213,4 +213,15 @@ watch(() => props.resourceType, fetchData)
 .link:hover { color:var(--accent); }
 .text-muted { color:var(--text-muted); font-size:12px; }
 .pagination-wrapper { display:flex; justify-content:center; margin-top:20px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .cloud-type-page { padding: 14px; }
+  .top-bar { flex-direction: column; align-items: flex-start; }
+  .top-bar-left { width: 100%; }
+  .top-bar-left .el-input,
+  .top-bar-left .el-select { width: 100% !important; }
+  :deep(.el-table) { min-width: 600px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+}
 </style>

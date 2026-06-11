@@ -26,7 +26,7 @@
           <el-option label="未检测" value="unknown" />
         </el-select>
       </div>
-      <el-table :data="paginatedData" border stripe element-loading-background="rgba(10,10,15,0.8)">
+      <el-table :data="paginatedData" border stripe element-loading-background="var(--app-loading-bg)">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="name" label="模型名称" />
         <el-table-column prop="type" label="类型" width="100">
@@ -462,7 +462,7 @@ onMounted(async () => {
 
 <style scoped>
 .table-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
@@ -516,7 +516,7 @@ onMounted(async () => {
   gap: 6px;
 }
 .sync-item {
-  background: rgba(255,255,255,0.04);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 4px 10px;
@@ -542,5 +542,17 @@ onMounted(async () => {
   margin-top: 12px;
   color: #f56c6c;
   font-size: 13px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .table-card { padding: 14px; }
+  .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .filter-bar { flex-direction: column; }
+  .filter-bar .el-input,
+  .filter-bar .el-select { width: 100% !important; }
+  :deep(.el-table) { min-width: 800px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  :deep(.el-pagination .el-pagination__sizes) { display: none; }
 }
 </style>

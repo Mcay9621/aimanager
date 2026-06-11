@@ -202,7 +202,8 @@ const handleRegister = async () => {
 /* 注册卡片 */
 .register-card {
   width: 420px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  max-width: calc(100vw - 32px);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 20px;
   padding: 40px;
@@ -262,8 +263,20 @@ const handleRegister = async () => {
 
 .copyright {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--app-divider-color);
   letter-spacing: 2px;
   font-weight: 300;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .register-card { padding: 28px 24px; }
+  .brand-title { font-size: 28px; letter-spacing: 4px; }
+  .brand-subtitle { letter-spacing: 4px; }
+  .register-content { gap: 24px; }
+}
+@media (max-width: 360px) {
+  .register-card { padding: 24px 16px; }
+  .brand-title { font-size: 24px; }
 }
 </style>

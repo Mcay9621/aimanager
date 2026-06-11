@@ -29,7 +29,7 @@
           </el-button>
         </div>
       </div>
-      <el-table :data="paginatedData" border stripe v-loading="loading" max-height="calc(100vh - 300px)" element-loading-background="rgba(10,10,15,0.8)">
+      <el-table :data="paginatedData" border stripe v-loading="loading" max-height="calc(100vh - 300px)" element-loading-background="var(--app-loading-bg)">
         <el-table-column prop="id" label="ID" width="60" />
         <el-table-column prop="username" label="操作人" width="120" />
         <el-table-column prop="action" label="操作" width="100">
@@ -112,7 +112,7 @@ onMounted(fetchLogs)
 
 <style scoped>
 .table-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--app-bg-glass);
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 20px;
@@ -143,5 +143,15 @@ onMounted(fetchLogs)
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .table-card { padding: 14px; }
+  .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .filters { flex-wrap: wrap; width: 100%; }
+  .filters .el-select { width: 100% !important; }
+  :deep(.el-table) { min-width: 700px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
 }
 </style>

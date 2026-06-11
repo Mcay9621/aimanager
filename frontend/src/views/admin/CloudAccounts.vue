@@ -12,7 +12,7 @@
 
     <el-tabs v-model="activeTab" @tab-change="handleTabChange">
       <el-tab-pane label="主账号管理" name="master">
-        <el-table :data="masterPageData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
+        <el-table :data="masterPageData" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)">
           <el-table-column prop="aliasName" label="主账号名称" min-width="200" />
           <el-table-column label="子账号数量" width="120">
             <template #default="{ row }">
@@ -49,7 +49,7 @@
             <template #prefix><el-icon><Search /></el-icon></template>
           </el-input>
         </div>
-        <el-table :data="subPageData" border stripe v-loading="loading" element-loading-background="rgba(10,10,15,0.8)" @selection-change="handleSelectionChange">
+        <el-table :data="subPageData" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="45" />
           <el-table-column prop="aliasName" label="账号别名" min-width="140" />
           <el-table-column prop="provider" label="云厂商" width="110">
@@ -410,5 +410,17 @@ onMounted(() => { fetchRegions(); fetchAll() })
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .cloud-accounts { padding: 14px; }
+  .page-toolbar { flex-direction: column; align-items: flex-start; }
+  .toolbar-left { flex-wrap: wrap; }
+  .filter-bar { flex-direction: column; }
+  .filter-bar .el-input,
+  .filter-bar .el-select { width: 100% !important; }
+  :deep(.el-table) { min-width: 700px; }
+  :deep(.el-table__body-wrapper) { overflow-x: auto; }
 }
 </style>

@@ -7,7 +7,7 @@
         </div>
         <span>个人信息</span>
       </div>
-      <el-form :model="profile" label-width="100px" v-loading="loading" element-loading-background="rgba(10,10,15,0.8)">
+      <el-form :model="profile" label-width="100px" v-loading="loading" element-loading-background="var(--app-loading-bg)">
         <el-form-item label="用户名">
           <el-input v-model="profile.username" disabled />
         </el-form-item>
@@ -154,15 +154,15 @@ onMounted(fetchProfile)
   margin: 0 auto;
 }
 .profile-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid rgba(74, 111, 165, 0.1);
+  background: var(--app-bg-glass);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 28px;
   backdrop-filter: blur(12px);
   transition: all 0.3s ease;
 }
 .profile-card:hover {
-  border-color: rgba(74, 111, 165, 0.2);
+  border-color: var(--border-color-hover);
   box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 40px rgba(74, 111, 165, 0.03);
 }
 .card-header {
@@ -174,7 +174,7 @@ onMounted(fetchProfile)
   color: var(--accent-light);
   letter-spacing: 0.5px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(74, 111, 165, 0.08);
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 24px;
 }
 .card-header-icon {
@@ -185,7 +185,7 @@ onMounted(fetchProfile)
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0a0a0f;
+  color: var(--app-icon-color);
 }
 .card-header-icon.lock-icon {
   background: linear-gradient(135deg, #4a80d4, #6a9be0);
@@ -194,11 +194,28 @@ onMounted(fetchProfile)
   color: var(--text-secondary);
 }
 .el-form-item :deep(.el-input.is-disabled .el-input__wrapper) {
-  background: rgba(255,255,255,0.02) !important;
-  border-color: rgba(255,255,255,0.04) !important;
+  background: var(--bg-card) !important;
+  border-color: var(--border-color-light) !important;
 }
 .el-form-item :deep(.el-input.is-disabled .el-input__inner) {
   color: var(--text-muted) !important;
   -webkit-text-fill-color: var(--text-muted);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .profile-card { padding: 20px; }
+  :deep(.el-form-item) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  :deep(.el-form-item__label) {
+    width: 100% !important;
+    padding-bottom: 4px;
+  }
+  :deep(.el-form-item__content) {
+    margin-left: 0 !important;
+    width: 100%;
+  }
 }
 </style>
