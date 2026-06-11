@@ -2,6 +2,7 @@ export default {
   nav: {
     dashboard: 'Dashboard',
     modelList: 'AI Models',
+    freeModels: 'Free Trials',
     chat: 'AI Chat',
     profile: 'Profile',
     systemAdmin: 'System Admin',
@@ -254,6 +255,7 @@ export default {
       importResult: 'Import: {success} succeeded{extra}',
       inputApiKey: 'Please enter API endpoint and key',
       selectTotal: '{total} models, {selected} selected',
+      presets: 'Model Presets',
     },
     audit: {
       title: 'Audit Log',
@@ -507,5 +509,14 @@ export default {
     zh: '中文',
     en: 'English',
     switch: 'Language',
+  },
+  freeModels: {
+    title: 'Free AI Models',
+    desc: 'Browse popular AI models and start free trials on their official sites.',
+    search: 'Search model name or provider...',
+    tryFree: 'Try Free',
+    clickHint: 'Click to visit',
+    noResult: 'No models found',
+    all: 'All Models',
   },
 }

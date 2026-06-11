@@ -73,7 +73,38 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
+      <!-- 快速预设（仅添加模式显示） -->
+      <div v-if="!isEdit" class="preset-section">
+        <div class="preset-header" @click="presetOpen = !presetOpen">
+          <span class="preset-title">{{ $t('admin.models.presets') }}</span>
+          <el-icon :class="{ 'preset-arrow-open': presetOpen }"><ArrowRight /></el-icon>
+        </div>
+        <transition name="preset-collapse">
+          <div v-show="presetOpen" class="preset-body">
+            <div
+              v-for="group in presetGroups"
+              :key="group.type"
+              class="preset-group"
+            >
+              <div class="preset-group-label">{{ getTypeLabel(group.type) }}</div>
+              <div class="preset-list">
+                <div
+                  v-for="p in group.items"
+                  :key="p.modelName"
+                  class="preset-item"
+                  :class="{ 'preset-item-active': form.modelName === p.modelName }"
+                  @click="applyPreset(p)"
+                >
+                  <span class="preset-item-name">{{ p.name }}</span>
+                  <span class="preset-item-model">{{ p.modelName }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
+
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
         <el-form-item :label="$t('admin.models.name')" prop="name">
           <el-input v-model="form.name" />
@@ -155,14 +186,37 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowRight } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
 import { getModelTypes } from '../../utils/modelTypes'
+import { modelPresets } from '../../utils/modelPresets'
 
 const { t } = useI18n()
 
 const models = ref([])
 const dialogVisible = ref(false)
+
+// 快速预设
+const presetOpen = ref(false)
+const presetGroups = computed(() => {
+  const map = {}
+  modelPresets.forEach(p => {
+    if (!map[p.type]) map[p.type] = []
+    map[p.type].push(p)
+  })
+  return Object.entries(map).map(([type, items]) => ({ type, items }))
+})
+const applyPreset = (p) => {
+  Object.assign(form, {
+    name: p.name,
+    type: p.type,
+    endpoint: p.endpoint,
+    modelName: p.modelName,
+    apiKey: form.apiKey || '',
+    enabled: p.enabled ?? 1,
+  })
+}
 const dialogTitle = ref(t('admin.models.add'))
 const formRef = ref()
 const isEdit = ref(false)
@@ -401,6 +455,7 @@ const handleRefreshStatus = async () => {
 const handleAdd = () => {
   isEdit.value = false
   dialogTitle.value = t('admin.models.add')
+  presetOpen.value = false
   Object.assign(form, {
     id: null, name: '', type: '', endpoint: '', apiKey: '', modelName: '', enabled: 1
   })
@@ -546,6 +601,107 @@ onMounted(async () => {
   margin-top: 12px;
   color: #f56c6c;
   font-size: 13px;
+}
+
+/* ===== 模型预设 ===== */
+.preset-section {
+  margin-bottom: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.preset-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.preset-header:hover {
+  background: var(--bg-card);
+}
+.preset-title {
+  font-weight: 500;
+}
+.preset-header .el-icon {
+  transition: transform 0.25s;
+  font-size: 14px;
+}
+.preset-arrow-open {
+  transform: rotate(90deg);
+}
+.preset-body {
+  border-top: 1px solid var(--border-color);
+  padding: 12px 14px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.preset-group {
+  margin-bottom: 12px;
+}
+.preset-group:last-child {
+  margin-bottom: 0;
+}
+.preset-group-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.preset-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color-light);
+  border-radius: 8px;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 90px;
+}
+.preset-item:hover {
+  border-color: var(--el-color-primary);
+  background: rgba(64,158,255,0.06);
+  transform: translateY(-1px);
+}
+.preset-item-active {
+  border-color: var(--el-color-primary) !important;
+  background: rgba(64,158,255,0.1) !important;
+}
+.preset-item-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.preset-item-model {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  word-break: break-all;
+}
+.preset-collapse-enter-active,
+.preset-collapse-leave-active {
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+.preset-collapse-enter-from,
+.preset-collapse-leave-to {
+  opacity: 0;
+  max-height: 0 !important;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* ===== Responsive ===== */

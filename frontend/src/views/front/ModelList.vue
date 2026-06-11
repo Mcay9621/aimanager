@@ -24,8 +24,8 @@
       <el-button size="small" @click="handleRefresh()" :loading="refreshing">{{ $t('modelList.refreshStatus') }}</el-button>
     </div>
 
-    <el-row :gutter="20">
-      <el-col :span="8" v-for="model in paginatedModels" :key="model.id">
+    <div class="model-grid">
+      <div v-for="model in paginatedModels" :key="model.id">
         <div class="model-card" :class="{ 'model-offline': model._available === false }">
           <div class="model-card-top">
             <div class="model-type-badge" :style="{ background: getTypeBg(model.type), color: getTypeColor(model.type) }">
@@ -53,8 +53,8 @@
             </el-button>
           </div>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
 
     <div class="pagination-wrapper" v-if="sortedModels.length > pageSize">
       <el-pagination
@@ -228,7 +228,7 @@ onMounted(async () => {
 
 <style scoped>
 .model-list-page {
-  max-width: 1200px;
+  width: 100%;
 }
 .page-title-sm {
   font-size: 20px;
@@ -280,7 +280,6 @@ onMounted(async () => {
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 24px;
-  margin-bottom: 20px;
   backdrop-filter: blur(12px);
   transition: all 0.3s ease;
   display: flex;
@@ -340,15 +339,21 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
 }
+.model-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: 8px;
+  margin-top: 24px;
 }
 
 @media (max-width: 768px) {
-  .el-col {
-    width: 100% !important;
+  .model-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   .model-toolbar {
     flex-direction: column;

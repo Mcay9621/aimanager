@@ -2,6 +2,7 @@ export default {
   nav: {
     dashboard: '仪表盘',
     modelList: 'AI模型',
+    freeModels: '免费体验',
     chat: 'AI对话',
     profile: '个人中心',
     systemAdmin: '系统管理',
@@ -254,6 +255,7 @@ export default {
       importResult: '导入完成: {success} 成功{extra}',
       inputApiKey: '请输入 API 地址和密钥',
       selectTotal: '共 {total} 个模型，已选 {selected} 个',
+      presets: '模型预设',
     },
     audit: {
       title: '审计日志',
@@ -507,5 +509,14 @@ export default {
     zh: '中文',
     en: 'English',
     switch: '语言切换',
+  },
+  freeModels: {
+    title: '免费模型体验',
+    desc: '汇聚主流 AI 大模型，点击卡片直达官方免费体验页面',
+    search: '搜索模型名称或厂商...',
+    tryFree: '免费体验',
+    clickHint: '点击直达',
+    noResult: '未找到匹配的模型',
+    all: '全部模型',
   },
 }

@@ -51,6 +51,12 @@ const routes = [
         meta: { titleKey: 'chat.title', requiresAuth: true }
       },
       {
+        path: 'front/free-models',
+        name: 'FreeModels',
+        component: () => import('../views/front/FreeModels.vue'),
+        meta: { titleKey: 'freeModels.title', requiresAuth: true }
+      },
+      {
         path: 'user/profile',
         name: 'UserProfile',
         component: () => import('../views/user/UserProfile.vue'),

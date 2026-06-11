@@ -31,6 +31,10 @@
             <el-icon><Monitor /></el-icon>
             <span>{{ $t('nav.modelList') }}</span>
           </el-menu-item>
+          <el-menu-item index="/front/free-models">
+            <el-icon><Star /></el-icon>
+            <span>{{ $t('nav.freeModels') }}</span>
+          </el-menu-item>
           <el-menu-item index="/front/chat">
             <el-icon><ChatDotRound /></el-icon>
             <span>{{ $t('nav.chat') }}</span>
@@ -177,6 +181,10 @@
         <el-menu-item index="/front/models">
           <el-icon><Monitor /></el-icon>
           <span>{{ $t('nav.modelList') }}</span>
+        </el-menu-item>
+        <el-menu-item index="/front/free-models">
+          <el-icon><Star /></el-icon>
+          <span>{{ $t('nav.freeModels') }}</span>
         </el-menu-item>
         <el-menu-item index="/front/chat">
           <el-icon><ChatDotRound /></el-icon>
