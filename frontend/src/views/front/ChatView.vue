@@ -3,13 +3,13 @@
     <!-- 左侧会话列表 -->
     <div class="session-panel" :class="{ collapsed: sessionCollapsed }">
       <div class="session-header">
-        <h3>对话历史</h3>
-        <el-button size="small" type="primary" @click="startNewChat" :icon="Plus" round>新建</el-button>
+        <h3>{{ $t('chat.sessionHistory') }}</h3>
+        <el-button size="small" type="primary" @click="startNewChat" :icon="Plus" round>{{ $t('chat.newChat') }}</el-button>
       </div>
       <div class="session-search">
         <el-input
           v-model="sessionSearch"
-          placeholder="搜索会话..."
+          :placeholder="$t('chat.searchSession')"
           size="small"
           clearable
           :prefix-icon="Search"
@@ -30,7 +30,7 @@
           </div>
           <div class="session-info">
             <div class="session-title">
-              <span v-if="editingSessionId !== session.id" @dblclick.stop="startRename(session)">{{ session.title || '新对话' }}</span>
+              <span v-if="editingSessionId !== session.id" @dblclick.stop="startRename(session)">{{ session.title || $t('chat.newChat') }}</span>
               <el-input
                 v-else
                 v-model="renameTitle"
@@ -44,7 +44,7 @@
             <div class="session-meta">
               <span>{{ session.modelName }}</span>
               <span class="dot">·</span>
-              <span>{{ session.messageCount || 0 }}条</span>
+              <span>{{ $t('chat.msgCount', { count: session.messageCount || 0 }) }}</span>
             </div>
           </div>
           <el-button
@@ -56,7 +56,7 @@
             @click.stop="deleteSession(session)"
           />
         </div>
-        <el-empty v-if="!sessionsLoading && filteredSessions.length === 0" description="暂无对话" :image-size="60" />
+        <el-empty v-if="!sessionsLoading && filteredSessions.length === 0" :description="$t('chat.noSession')" :image-size="60" />
       </div>
     </div>
 
@@ -80,10 +80,10 @@
               </svg>
             </div>
           </div>
-          <h3 class="empty-title">开始新的对话</h3>
-          <p class="empty-desc">选择一个 AI 模型，输入你的问题，开启智能对话之旅</p>
+          <h3 class="empty-title">{{ $t('chat.newChatSubtitle') }}</h3>
+          <p class="empty-desc">{{ $t('chat.newChatDesc') }}</p>
           <div class="empty-actions">
-            <el-select v-model="newChatModel" placeholder="选择AI模型" style="width: 260px">
+            <el-select v-model="newChatModel" :placeholder="$t('chat.selectModel')" style="width: 260px">
               <el-option
                 v-for="m in availableModels"
                 :key="m.id"
@@ -92,15 +92,15 @@
                 :disabled="!m.enabled"
               >
                 <span>{{ m.name }}</span>
-                <el-tag v-if="!m.enabled" size="small" type="info">禁用</el-tag>
+                <el-tag v-if="!m.enabled" size="small" type="info">{{ $t('common.disable') }}</el-tag>
               </el-option>
             </el-select>
             <el-button type="primary" :disabled="!newChatModel" @click="startChatWithModel" round>
-              开始对话
+              {{ $t('chat.startChat') }}
             </el-button>
           </div>
           <div class="suggestion-chips" v-if="availableModels.length > 0">
-            <span class="suggestion-label">快速开始：</span>
+            <span class="suggestion-label">{{ $t('chat.quickStart') }}</span>
             <div class="suggestion-list">
               <el-button
                 v-for="q in suggestions"
@@ -122,10 +122,10 @@
         <div class="chat-header">
           <div class="chat-header-info">
             <div class="header-status-dot" :class="sseStatus === 'connected' ? 'status-connected' : sseStatus === 'reconnecting' ? 'status-reconnecting' : 'status-idle'"></div>
-            <strong>{{ currentTitle || '新对话' }}</strong>
+            <strong>{{ currentTitle || $t('chat.newChat') }}</strong>
             <el-tag v-if="currentModelName" size="small" effect="dark">{{ currentModelName }}</el-tag>
-            <el-tag v-if="sseStatus === 'disconnected'" size="small" type="danger" effect="dark">连接断开</el-tag>
-            <el-tag v-else-if="sseStatus === 'reconnecting'" size="small" type="warning" effect="dark">重连中...</el-tag>
+            <el-tag v-if="sseStatus === 'disconnected'" size="small" type="danger" effect="dark">{{ $t('chat.disconnected') }}</el-tag>
+            <el-tag v-else-if="sseStatus === 'reconnecting'" size="small" type="warning" effect="dark">{{ $t('chat.reconnecting') }}</el-tag>
           </div>
           <el-button size="small" text @click="sessionCollapsed = !sessionCollapsed">
             <el-icon><Fold v-if="!sessionCollapsed" /><Expand v-else /></el-icon>
@@ -157,12 +157,12 @@
                   <span class="msg-time">{{ formatTime(msg.createTime) }}</span>
                 </div>
                 <div class="msg-actions">
-                  <el-tooltip content="复制消息" :show-after="300">
+                  <el-tooltip :content="$t('chat.copyMsg')" :show-after="300">
                     <el-button size="small" text @click="copyText(msg.content)">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     </el-button>
                   </el-tooltip>
-                  <el-tooltip content="删除消息" :show-after="300">
+                  <el-tooltip :content="$t('chat.deleteMsg')" :show-after="300">
                     <el-button size="small" text type="danger" @click="deleteMessage(idx)">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </el-button>
@@ -187,7 +187,7 @@
                 <div class="typing-bar">
                   <div class="typing-bar-glow"></div>
                 </div>
-                <span class="typing-text">思考中</span>
+                <span class="typing-text">{{ $t('chat.thinking') }}</span>
               </div>
             </div>
           </div>
@@ -197,15 +197,15 @@
             v-model="inputMessage"
             type="textarea"
             :rows="3"
-            :placeholder="loading ? '正在回复中...' : '输入消息，Ctrl+Enter 发送'"
+            :placeholder="loading ? $t('chat.loadingPlaceholder') : $t('chat.sendWithEnter')"
             :disabled="loading"
             @keyup.enter.ctrl="sendMessage"
             resize="none"
           />
           <div class="input-actions">
-            <span class="input-hint">Ctrl+Enter 发送</span>
+            <span class="input-hint">{{ $t('chat.sendWithEnter') }}</span>
             <el-button type="primary" :loading="loading" @click="sendMessage" :disabled="!inputMessage.trim() || loading" round>
-              发送
+              {{ $t('chat.send') }}
             </el-button>
           </div>
         </div>
@@ -220,6 +220,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Search, Delete, Fold, Expand } from '@element-plus/icons-vue'
 import { useUserStore } from '../../stores/user'
+import { useI18n } from 'vue-i18n'
 import { marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import hljs from 'highlight.js'
@@ -230,6 +231,7 @@ import request from '../../utils/request'
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const { t } = useI18n()
 
 // 状态
 const sessions = ref([])
@@ -311,7 +313,7 @@ const fetchMessages = async (sessionId) => {
   try {
     currentMessages.value = await request.get(`/chat/sessions/${sessionId}/messages`)
   } catch (e) {
-    ElMessage.error('获取消息失败')
+    ElMessage.error(t('chat.fetchMsgFailed'))
   }
 }
 
@@ -320,7 +322,7 @@ const switchSession = async (session) => {
   if (loading.value) return
   cancelStreaming()
   currentSessionId.value = session.id
-  currentTitle.value = session.title || '新对话'
+  currentTitle.value = session.title || t('chat.newChat')
   currentModelName.value = session.modelName || ''
   currentMessages.value = []
   await fetchMessages(session.id)
@@ -331,9 +333,9 @@ const switchSession = async (session) => {
 // 删除会话
 const deleteSession = async (session) => {
   try {
-    await ElMessageBox.confirm('确定删除此对话？', '提示', { type: 'warning' })
+    await ElMessageBox.confirm(t('chat.deleteSessionConfirm'), t('chat.confirmTitle'), { type: 'warning' })
     await request.delete(`/chat/sessions/${session.id}`)
-    ElMessage.success('已删除')
+    ElMessage.success(t('chat.deleteSuccess'))
     if (currentSessionId.value === session.id) {
       currentSessionId.value = null
       currentMessages.value = []
@@ -342,7 +344,7 @@ const deleteSession = async (session) => {
     }
     await fetchSessions()
   } catch (e) {
-    if (e !== 'cancel') ElMessage.error('删除失败')
+    if (e !== 'cancel') ElMessage.error(t('chat.deleteFailed'))
   }
 }
 
@@ -373,7 +375,7 @@ const startChatWithModel = async () => {
       currentTitle.value = session.title
       await fetchSessions()
     } catch (e) {
-      ElMessage.error('创建会话失败')
+      ElMessage.error(t('chat.createSessionFailed'))
     }
   }
 }
@@ -397,7 +399,7 @@ const sendMessage = async () => {
   if (!currentSessionId.value && !newChatModel.value) {
     const enabled = availableModels.value.filter(m => m.enabled)
     if (enabled.length === 0) {
-      ElMessage.warning('没有可用的模型')
+      ElMessage.warning(t('chat.noModel'))
       return
     }
     newChatModel.value = enabled[0].id
@@ -416,7 +418,7 @@ const sendMessage = async () => {
 
   const modelId = getCurrentModelId()
   if (!modelId) {
-    ElMessage.warning('请先选择模型')
+    ElMessage.warning(t('chat.selectModelFirst'))
     loading.value = false
     return
   }
@@ -485,7 +487,7 @@ const streamChat = async (modelId, userMessage, retryCount = 0) => {
             await nextTick()
             scrollToBottom()
           } else if (currentEvent === 'error' && data) {
-            fullContent += '\n\n[错误: ' + data + ']'
+            fullContent += '\n\n[' + t('chat.streamError') + ': ' + data + ']'
             streamingContent.value = fullContent
           }
           currentEvent = ''
@@ -508,16 +510,16 @@ const streamChat = async (modelId, userMessage, retryCount = 0) => {
 
     if (retryCount < MAX_RETRIES) {
       sseStatus.value = 'reconnecting'
-      ElMessage.warning(`连接断开，${MAX_RETRIES - retryCount}秒后重试...`)
+      ElMessage.warning(t('chat.retryIn', { n: MAX_RETRIES - retryCount }))
       await new Promise(resolve => setTimeout(resolve, 2000))
       return streamChat(modelId, userMessage, retryCount + 1)
     }
 
     sseStatus.value = 'disconnected'
     if (streamingContent.value) {
-      currentMessages.value.push({ role: 'assistant', content: streamingContent.value + '\n\n[连接中断]' })
+      currentMessages.value.push({ role: 'assistant', content: streamingContent.value + '\n\n[' + t('chat.connectionInterrupted') + ']' })
     } else {
-      ElMessage.error('网络错误，请重试')
+      ElMessage.error(t('chat.networkError'))
     }
     streamingContent.value = ''
   } finally {
@@ -540,7 +542,7 @@ const cancelStreaming = () => {
 const copyText = async (text) => {
   try {
     await navigator.clipboard.writeText(text)
-    ElMessage.success('已复制')
+    ElMessage.success(t('chat.copySuccess'))
   } catch {
     const ta = document.createElement('textarea')
     ta.value = text
@@ -548,7 +550,7 @@ const copyText = async (text) => {
     ta.select()
     document.execCommand('copy')
     document.body.removeChild(ta)
-    ElMessage.success('已复制')
+    ElMessage.success(t('chat.copySuccess'))
   }
 }
 
@@ -563,14 +565,14 @@ const deleteMessage = async (idx) => {
     await request.delete('/chat/messages/' + msg.id)
     currentMessages.value.splice(idx, 1)
   } catch (e) {
-    ElMessage.error('删除失败')
+    ElMessage.error(t('chat.deleteFailed'))
   }
 }
 
 // 开始重命名会话
 const startRename = (session) => {
   editingSessionId.value = session.id
-  renameTitle.value = session.title || '新对话'
+  renameTitle.value = session.title || t('chat.newChat')
   nextTick(() => {
     const input = document.querySelector('.session-item.active .el-input__inner')
     if (input) {
@@ -582,7 +584,7 @@ const startRename = (session) => {
 
 // 确认重命名
 const confirmRename = async (session) => {
-  const title = renameTitle.value.trim() || '新对话'
+  const title = renameTitle.value.trim() || t('chat.newChat')
   editingSessionId.value = null
   try {
     await request.put(`/chat/sessions/${session.id}`, { title })
@@ -591,7 +593,7 @@ const confirmRename = async (session) => {
       currentTitle.value = title
     }
   } catch {
-    ElMessage.error('重命名失败')
+    ElMessage.error(t('chat.renameFailed'))
   }
 }
 
@@ -611,7 +613,7 @@ const renderMarkdown = (text) => {
   if (!text) return ''
   try {
     const html = marked.parse(text)
-    const withCopyBtn = html.replace(/<pre>/g, '<pre><button class="copy-code-btn" title="复制代码" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>')
+    const withCopyBtn = html.replace(/<pre>/g, '<pre><button class="copy-code-btn" title="' + t('chat.copyCode') + '" type="button"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>')
     return DOMPurify.sanitize(withCopyBtn)
   } catch (e) {
     return DOMPurify.sanitize(text)
@@ -658,9 +660,9 @@ const formatDateLabel = (timeStr) => {
   const td = now.toDateString()
   const yd = new Date(now)
   yd.setDate(yd.getDate() - 1)
-  if (sd === td) return '今天'
-  if (sd === yd.toDateString()) return '昨天'
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
+  if (sd === td) return t('date.today')
+  if (sd === yd.toDateString()) return t('date.yesterday')
+  return t('date.yearMonthDay', { y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() })
 }
 
 const formatTime = (timeStr) => {

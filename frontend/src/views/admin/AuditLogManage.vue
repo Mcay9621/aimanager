@@ -2,46 +2,35 @@
   <div class="page-container">
     <div class="table-card">
       <div class="table-header">
-        <h3>审计日志</h3>
+        <h3>{{ $t('admin.audit.title') }}</h3>
         <div class="filters">
-          <el-select v-model="filterAction" placeholder="操作类型" clearable @change="fetchLogs">
-            <el-option label="全部" value="" />
-            <el-option label="创建" value="CREATE" />
-            <el-option label="更新" value="UPDATE" />
-            <el-option label="删除" value="DELETE" />
-            <el-option label="登录" value="LOGIN" />
-            <el-option label="启动" value="START" />
-            <el-option label="停止" value="STOP" />
-            <el-option label="重启" value="RESTART" />
+          <el-select v-model="filterAction" :placeholder="$t('admin.audit.filterAction')" clearable @change="fetchLogs">
+            <el-option :label="$t('common.all')" value="" />
+            <el-option v-for="a in actionOptions" :key="a.value" :label="a.label" :value="a.value" />
           </el-select>
-          <el-select v-model="filterTarget" placeholder="对象类型" clearable @change="fetchLogs">
-            <el-option label="全部" value="" />
-            <el-option label="用户" value="User" />
-            <el-option label="角色" value="Role" />
-            <el-option label="模型" value="Model" />
-            <el-option label="认证" value="Auth" />
-            <el-option label="云实例" value="CloudInstance" />
-            <el-option label="云账号" value="CloudAccount" />
+          <el-select v-model="filterTarget" :placeholder="$t('admin.audit.filterTarget')" clearable @change="fetchLogs">
+            <el-option :label="$t('common.all')" value="" />
+            <el-option v-for="t in targetOptions" :key="t.value" :label="t.label" :value="t.value" />
           </el-select>
           <el-button @click="fetchLogs" type="primary">
             <el-icon><Refresh /></el-icon>
-            刷新
+            {{ $t('common.refresh') }}
           </el-button>
         </div>
       </div>
       <el-table :data="paginatedData" border stripe v-loading="loading" max-height="calc(100vh - 300px)" element-loading-background="var(--app-loading-bg)">
-        <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="username" label="操作人" width="120" />
-        <el-table-column prop="action" label="操作" width="100">
+        <el-table-column prop="id" :label="$t('admin.audit.id')" width="60" />
+        <el-table-column prop="username" :label="$t('admin.audit.operator')" width="120" />
+        <el-table-column :label="$t('admin.audit.action')" width="100">
           <template #default="{ row }">
             <el-tag :type="actionType(row.action)" size="small">{{ actionLabel(row.action) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="target" label="对象" width="80" />
-        <el-table-column prop="targetId" label="对象ID" width="80" />
-        <el-table-column prop="detail" label="详情" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="ip" label="IP" width="140" />
-        <el-table-column prop="createTime" label="时间" width="180" />
+        <el-table-column prop="target" :label="$t('admin.audit.target')" width="80" />
+        <el-table-column prop="targetId" :label="$t('admin.audit.targetId')" width="80" />
+        <el-table-column prop="detail" :label="$t('admin.audit.detail')" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="ip" :label="$t('admin.audit.ip')" width="140" />
+        <el-table-column prop="createTime" :label="$t('admin.audit.time')" width="180" />
       </el-table>
       <div class="pagination-wrapper" v-if="logs.length > 0">
         <el-pagination
@@ -60,14 +49,36 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { Refresh } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
 
+const { t } = useI18n()
 const logs = ref([])
 const loading = ref(false)
 const filterAction = ref('')
 const filterTarget = ref('')
 const currentPage = ref(1)
 const pageSize = ref(10)
+
+const actionOptions = [
+  { value: 'CREATE', label: t('admin.audit.actions.CREATE') },
+  { value: 'UPDATE', label: t('admin.audit.actions.UPDATE') },
+  { value: 'DELETE', label: t('admin.audit.actions.DELETE') },
+  { value: 'LOGIN', label: t('admin.audit.actions.LOGIN') },
+  { value: 'START', label: t('admin.audit.actions.START') },
+  { value: 'STOP', label: t('admin.audit.actions.STOP') },
+  { value: 'RESTART', label: t('admin.audit.actions.RESTART') },
+]
+
+const targetOptions = [
+  { value: 'User', label: t('admin.audit.targets.User') },
+  { value: 'Role', label: t('admin.audit.targets.Role') },
+  { value: 'Model', label: t('admin.audit.targets.Model') },
+  { value: 'Auth', label: t('admin.audit.targets.Auth') },
+  { value: 'CloudInstance', label: t('admin.audit.targets.CloudInstance') },
+  { value: 'CloudAccount', label: t('admin.audit.targets.CloudAccount') },
+]
+
 const paginatedData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
   return logs.value.slice(start, start + pageSize.value)
@@ -83,15 +94,11 @@ const actionType = (action) => ({
   RESTART: 'warning'
 }[action] || 'info')
 
-const actionLabel = (action) => ({
-  CREATE: '创建',
-  UPDATE: '更新',
-  DELETE: '删除',
-  LOGIN: '登录',
-  START: '启动',
-  STOP: '停止',
-  RESTART: '重启'
-}[action] || action)
+const actionLabel = (action) => {
+  const key = `admin.audit.actions.${action}`
+  const label = t(key)
+  return label !== key ? label : action
+}
 
 const fetchLogs = async () => {
   loading.value = true

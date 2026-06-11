@@ -20,17 +20,17 @@
           </svg>
         </div>
         <h1 class="brand-title"><span class="accent-gradient-text">AI</span> Manager</h1>
-        <p class="brand-subtitle">创建您的账户</p>
+        <p class="brand-subtitle">{{ $t('register.subtitle') }}</p>
       </div>
 
       <div class="register-card">
-        <h2 class="card-title">用户注册</h2>
-        <p class="card-desc">注册账户以开始使用</p>
+        <h2 class="card-title">{{ $t('register.title') }}</h2>
+        <p class="card-desc">{{ $t('register.cardDesc') }}</p>
         <el-form :model="registerForm" :rules="rules" ref="registerFormRef" class="register-form">
           <el-form-item prop="username">
             <el-input
               v-model="registerForm.username"
-              placeholder="用户名"
+              :placeholder="$t('register.username')"
               size="large"
               :prefix-icon="User"
             />
@@ -39,7 +39,7 @@
             <el-input
               v-model="registerForm.password"
               type="password"
-              placeholder="密码"
+              :placeholder="$t('register.password')"
               size="large"
               :prefix-icon="Lock"
               show-password
@@ -48,7 +48,7 @@
           <el-form-item prop="email">
             <el-input
               v-model="registerForm.email"
-              placeholder="邮箱"
+              :placeholder="$t('register.email')"
               size="large"
               :prefix-icon="Message"
             />
@@ -56,23 +56,23 @@
           <el-form-item prop="phone">
             <el-input
               v-model="registerForm.phone"
-              placeholder="手机号"
+              :placeholder="$t('register.phone')"
               size="large"
               :prefix-icon="Phone"
             />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="large" class="register-btn" :loading="loading" @click="handleRegister">
-              注 册
+              {{ $t('register.registerBtn') }}
             </el-button>
           </el-form-item>
         </el-form>
         <div class="register-footer">
-          <el-link type="primary" :underline="false" @click="$router.push('/login')">已有账号？立即登录</el-link>
+          <el-link type="primary" :underline="false" @click="$router.push('/login')">{{ $t('register.haveAccountImmediate') }}</el-link>
         </div>
       </div>
 
-      <p class="copyright">© 2024 AI Manager</p>
+      <p class="copyright">{{ $t('login.copyright', { appName: 'AI Manager' }) }}</p>
     </div>
   </div>
 </template>
@@ -81,9 +81,11 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { User, Lock, Message, Phone } from '@element-plus/icons-vue'
 import request from '../../utils/request'
 
+const { t } = useI18n()
 const router = useRouter()
 const registerFormRef = ref()
 const loading = ref(false)
@@ -96,8 +98,8 @@ const registerForm = reactive({
 })
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  username: [{ required: true, message: t('login.usernameRequired'), trigger: 'blur' }],
+  password: [{ required: true, message: t('login.passwordRequired'), trigger: 'blur' }],
   email: [
     { required: true, message: '请输入邮箱', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
@@ -110,7 +112,7 @@ const handleRegister = async () => {
   loading.value = true
   try {
     await request.post('/auth/register', registerForm)
-    ElMessage.success('注册成功，请登录')
+    ElMessage.success(t('register.registerSuccess'))
     router.push('/login')
   } catch (error) {
     console.error(error)

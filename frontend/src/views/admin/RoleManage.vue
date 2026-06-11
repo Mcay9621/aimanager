@@ -2,18 +2,18 @@
   <div class="page-container">
     <div class="table-card">
       <div class="table-header">
-        <h3>角色列表</h3>
-        <el-button type="primary" @click="handleAdd">添加角色</el-button>
+        <h3>{{ $t('admin.roles.title') }}</h3>
+        <el-button type="primary" @click="handleAdd">{{ $t('admin.roles.addRole') }}</el-button>
       </div>
       <el-table :data="paginatedData" border stripe element-loading-background="var(--app-loading-bg)">
-        <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="name" label="角色名称" />
-        <el-table-column prop="code" label="角色编码" />
-        <el-table-column prop="description" label="描述" />
-        <el-table-column label="操作" width="150">
+        <el-table-column prop="id" :label="$t('admin.audit.id')" width="60" />
+        <el-table-column prop="name" :label="$t('admin.roles.name')" />
+        <el-table-column prop="code" :label="$t('admin.roles.code')" />
+        <el-table-column prop="description" :label="$t('admin.roles.description')" />
+        <el-table-column :label="$t('common.action')" width="150">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
+            <el-button type="primary" size="small" @click="handleEdit(row)">{{ $t('common.edit') }}</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(row.id)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -32,19 +32,19 @@
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
-        <el-form-item label="角色名称" prop="name">
+        <el-form-item :label="$t('admin.roles.name')" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="角色编码" prop="code">
+        <el-form-item :label="$t('admin.roles.code')" prop="code">
           <el-input v-model="form.code" />
         </el-form-item>
-        <el-form-item label="描述" prop="description">
+        <el-form-item :label="$t('admin.roles.description')" prop="description">
           <el-input v-model="form.description" type="textarea" :rows="3" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -53,11 +53,14 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
+
+const { t } = useI18n()
 
 const roles = ref([])
 const dialogVisible = ref(false)
-const dialogTitle = ref('添加角色')
+const dialogTitle = ref(t('admin.roles.addRole'))
 const formRef = ref()
 const isEdit = ref(false)
 
@@ -73,8 +76,8 @@ const form = reactive({
 })
 
 const rules = {
-  name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }]
+  name: [{ required: true, message: t('admin.roles.nameRequired'), trigger: 'blur' }],
+  code: [{ required: true, message: t('admin.roles.codeRequired'), trigger: 'blur' }]
 }
 
 const fetchRoles = async () => {
@@ -84,14 +87,14 @@ const fetchRoles = async () => {
 
 const handleAdd = () => {
   isEdit.value = false
-  dialogTitle.value = '添加角色'
+  dialogTitle.value = t('admin.roles.addRole')
   Object.assign(form, { id: null, name: '', code: '', description: '' })
   dialogVisible.value = true
 }
 
 const handleEdit = (row) => {
   isEdit.value = true
-  dialogTitle.value = '编辑角色'
+  dialogTitle.value = t('admin.roles.editRole')
   Object.assign(form, row)
   dialogVisible.value = true
 }
@@ -101,15 +104,15 @@ const handleSubmit = async () => {
   const api = isEdit.value ? `/admin/roles/${form.id}` : '/admin/roles'
   const method = isEdit.value ? 'put' : 'post'
   await request[method](api, form)
-  ElMessage.success(isEdit.value ? '更新成功' : '添加成功')
+  ElMessage.success(isEdit.value ? t('common.operationSuccess') : t('common.operationSuccess'))
   dialogVisible.value = false
   fetchRoles()
 }
 
 const handleDelete = async (id) => {
-  await ElMessageBox.confirm('确认删除该角色？', '提示', { type: 'warning' })
+  await ElMessageBox.confirm(t('admin.roles.deleteConfirm'), t('chat.confirmTitle'), { type: 'warning' })
   await request.delete(`/admin/roles/${id}`)
-  ElMessage.success('删除成功')
+  ElMessage.success(t('common.deleteSuccess'))
   fetchRoles()
 }
 

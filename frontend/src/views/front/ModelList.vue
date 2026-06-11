@@ -1,12 +1,12 @@
 <template>
   <div class="model-list-page">
-    <h2 class="page-title-sm">AI 模型列表</h2>
-    <p class="page-desc">选择模型以开始智能对话</p>
+    <h2 class="page-title-sm">{{ $t('modelList.title') }}</h2>
+    <p class="page-desc">{{ $t('modelList.detail') }}</p>
 
     <div class="model-toolbar">
       <el-input
         v-model="searchQuery"
-        placeholder="搜索模型名称或标识..."
+        :placeholder="$t('modelList.search')"
         clearable
         :prefix-icon="Search"
         size="default"
@@ -19,9 +19,9 @@
           :type="statusFilter === f.value ? f.type : 'default'"
           size="small"
           @click="statusFilter = f.value"
-        >{{ f.label }}</el-button>
+        >{{ $t(f.labelKey) }}</el-button>
       </div>
-      <el-button size="small" @click="handleRefresh()" :loading="refreshing">刷新状态</el-button>
+      <el-button size="small" @click="handleRefresh()" :loading="refreshing">{{ $t('modelList.refreshStatus') }}</el-button>
     </div>
 
     <el-row :gutter="20">
@@ -31,9 +31,9 @@
             <div class="model-type-badge" :style="{ background: getTypeBg(model.type), color: getTypeColor(model.type) }">
               {{ getTypeName(model.type) }}
             </div>
-            <el-tag v-if="model._available === true" type="success" size="small" effect="dark">在线</el-tag>
-            <el-tag v-else-if="model._available === false" type="danger" size="small" effect="dark">离线</el-tag>
-            <el-tag v-else type="info" size="small" effect="dark">未检测</el-tag>
+            <el-tag v-if="model._available === true" type="success" size="small" effect="dark">{{ $t('common.online') }}</el-tag>
+            <el-tag v-else-if="model._available === false" type="danger" size="small" effect="dark">{{ $t('common.offline') }}</el-tag>
+            <el-tag v-else type="info" size="small" effect="dark">{{ $t('common.unknown') }}</el-tag>
           </div>
           <h3 class="model-name">{{ model.name }}</h3>
           <p class="model-id">{{ model.modelName }}</p>
@@ -46,7 +46,7 @@
               @click="useModel(model)"
               round
             >
-              {{ model._available === false ? '暂不可用' : '使用模型' }}
+              {{ model._available === false ? $t('modelList.unavailable') : $t('modelList.useModel') }}
             </el-button>
             <el-button size="small" @click="handleRefresh(model)" :loading="model._pinging" circle>
               <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M17.65 6.35A7.96 7.96 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -74,9 +74,11 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
 import { getModelTypes } from '../../utils/modelTypes'
 
+const { t } = useI18n()
 const router = useRouter()
 const models = ref([])
 const loading = ref(false)
@@ -86,10 +88,10 @@ const searchQuery = ref('')
 const refreshing = ref(false)
 const statusFilter = ref('all')
 const filterOptions = [
-  { label: '全部', value: 'all', type: 'primary' },
-  { label: '在线', value: 'online', type: 'success' },
-  { label: '离线', value: 'offline', type: 'danger' },
-  { label: '未检测', value: 'unknown', type: 'info' }
+  { label: '全部', value: 'all', type: 'primary', labelKey: 'modelList.filterAll' },
+  { label: '在线', value: 'online', type: 'success', labelKey: 'modelList.filterOnline' },
+  { label: '离线', value: 'offline', type: 'danger', labelKey: 'modelList.filterOffline' },
+  { label: '未检测', value: 'unknown', type: 'info', labelKey: 'modelList.filterUnknown' }
 ]
 
 // 动态模型类型
@@ -146,7 +148,7 @@ const fetchModels = async () => {
       _pinging: false
     }))
   } catch {
-    ElMessage.warning('获取模型列表失败')
+    ElMessage.warning(t('modelList.noModels'))
   }
   loading.value = false
 
@@ -197,7 +199,7 @@ const handleRefresh = async (model) => {
       })
     }
   } catch {
-    ElMessage.warning('刷新失败')
+    ElMessage.warning(t('modelList.noModels'))
   } finally {
     refreshing.value = false
   }

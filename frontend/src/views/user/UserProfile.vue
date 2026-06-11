@@ -5,20 +5,20 @@
         <div class="card-header-icon">
           <el-icon :size="20"><User /></el-icon>
         </div>
-        <span>个人信息</span>
+        <span>{{ $t('user.personalInfo') }}</span>
       </div>
-      <el-form :model="profile" label-width="100px" v-loading="loading" element-loading-background="var(--app-loading-bg)">
-        <el-form-item label="用户名">
+      <el-form :model="profile" :label-width="labelWidth" v-loading="loading" element-loading-background="var(--app-loading-bg)">
+        <el-form-item :label="$t('user.username')">
           <el-input v-model="profile.username" disabled />
         </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="profile.email" placeholder="请输入邮箱" />
+        <el-form-item :label="$t('user.email')">
+          <el-input v-model="profile.email" :placeholder="$t('user.email')" />
         </el-form-item>
-        <el-form-item label="手机号">
-          <el-input v-model="profile.phone" placeholder="请输入手机号" />
+        <el-form-item :label="$t('user.phone')">
+          <el-input v-model="profile.phone" :placeholder="$t('user.phone')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :loading="saving" @click="saveProfile" round>保存修改</el-button>
+          <el-button type="primary" :loading="saving" @click="saveProfile" round>{{ $t('user.saveProfile') }}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -28,20 +28,20 @@
         <div class="card-header-icon lock-icon">
           <el-icon :size="20"><Lock /></el-icon>
         </div>
-        <span>修改密码</span>
+        <span>{{ $t('user.changePwd') }}</span>
       </div>
-      <el-form :model="passwordForm" label-width="100px" :rules="passwordRules" ref="passwordFormRef">
-        <el-form-item label="旧密码" prop="oldPassword">
+      <el-form :model="passwordForm" :label-width="labelWidth" :rules="passwordRules" ref="passwordFormRef">
+        <el-form-item :label="$t('user.oldPassword')" prop="oldPassword">
           <el-input v-model="passwordForm.oldPassword" type="password" show-password />
         </el-form-item>
-        <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="passwordForm.newPassword" type="password" show-password placeholder="至少6位" />
+        <el-form-item :label="$t('user.newPassword')" prop="newPassword">
+          <el-input v-model="passwordForm.newPassword" type="password" show-password :placeholder="$t('user.passwordMin')" />
         </el-form-item>
-        <el-form-item label="确认密码" prop="confirmPassword">
+        <el-form-item :label="$t('user.confirmPassword')" prop="confirmPassword">
           <el-input v-model="passwordForm.confirmPassword" type="password" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :loading="changingPassword" @click="changePassword" round>修改密码</el-button>
+          <el-button type="primary" :loading="changingPassword" @click="changePassword" round>{{ $t('user.changePwd') }}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -49,14 +49,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { User, Lock } from '@element-plus/icons-vue'
+import { useResponsive } from '../../composables/useResponsive'
 import request from '../../utils/request'
 
+const { t } = useI18n()
+const { isMobile } = useResponsive()
 const loading = ref(false)
 const saving = ref(false)
 const changingPassword = ref(false)
+const labelWidth = computed(() => isMobile.value ? '100%' : '100px')
 const profile = reactive({
   username: '',
   email: '',
@@ -70,17 +75,17 @@ const passwordForm = reactive({
 const passwordFormRef = ref(null)
 
 const passwordRules = {
-  oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],
+  oldPassword: [{ required: true, message: t('user.oldPasswordRequired'), trigger: 'blur' }],
   newPassword: [
-    { required: true, message: '请输入新密码', trigger: 'blur' },
-    { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+    { required: true, message: t('user.newPasswordRequired'), trigger: 'blur' },
+    { min: 6, message: t('user.passwordMin'), trigger: 'blur' }
   ],
   confirmPassword: [
-    { required: true, message: '请确认新密码', trigger: 'blur' },
+    { required: true, message: t('user.confirmPasswordRequired'), trigger: 'blur' },
     {
       validator: (rule, value, callback) => {
         if (value !== passwordForm.newPassword) {
-          callback(new Error('两次密码输入不一致'))
+          callback(new Error(t('user.passwordMismatch')))
         } else {
           callback()
         }
@@ -98,7 +103,7 @@ const fetchProfile = async () => {
     profile.email = data.email || ''
     profile.phone = data.phone || ''
   } catch (e) {
-    ElMessage.error('获取个人信息失败')
+    ElMessage.error(t('common.operationFailed'))
   } finally {
     loading.value = false
   }
@@ -111,9 +116,9 @@ const saveProfile = async () => {
       email: profile.email,
       phone: profile.phone
     })
-    ElMessage.success('保存成功')
+    ElMessage.success(t('common.saveSuccess'))
   } catch (e) {
-    ElMessage.error(e.response?.data?.message || '保存失败')
+    ElMessage.error(e.response?.data?.message || t('common.operationFailed'))
   } finally {
     saving.value = false
   }
@@ -134,12 +139,12 @@ const changePassword = async () => {
       newPassword: passwordForm.newPassword,
       confirmPassword: passwordForm.confirmPassword
     })
-    ElMessage.success('密码修改成功')
+    ElMessage.success(t('common.saveSuccess'))
     passwordForm.oldPassword = ''
     passwordForm.newPassword = ''
     passwordForm.confirmPassword = ''
   } catch (e) {
-    ElMessage.error(e.response?.data?.message || '修改失败')
+    ElMessage.error(e.response?.data?.message || t('common.operationFailed'))
   } finally {
     changingPassword.value = false
   }

@@ -1,21 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '../stores/user'
+import i18n from '../i18n'
+
+const { t } = i18n.global
 
 const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/auth/Login.vue')
+    component: () => import('../views/auth/Login.vue'),
+    meta: { titleKey: 'login.frontLogin' }
   },
   {
     path: '/admin/login',
     name: 'AdminLogin',
-    component: () => import('../views/auth/AdminLogin.vue')
+    component: () => import('../views/auth/AdminLogin.vue'),
+    meta: { titleKey: 'login.adminLogin' }
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('../views/auth/Register.vue')
+    component: () => import('../views/auth/Register.vue'),
+    meta: { titleKey: 'register.title' }
   },
   {
     path: '/',
@@ -30,55 +36,61 @@ const routes = [
         path: 'admin',
         name: 'Dashboard',
         component: () => import('../views/admin/Dashboard.vue'),
-        meta: { title: '仪表盘', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'dashboard.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'front/models',
         name: 'ModelList',
         component: () => import('../views/front/ModelList.vue'),
-        meta: { title: 'AI模型', requiresAuth: true }
+        meta: { titleKey: 'modelList.title', requiresAuth: true }
       },
       {
         path: 'front/chat',
         name: 'ChatView',
         component: () => import('../views/front/ChatView.vue'),
-        meta: { title: 'AI对话', requiresAuth: true }
+        meta: { titleKey: 'chat.title', requiresAuth: true }
       },
       {
         path: 'user/profile',
         name: 'UserProfile',
         component: () => import('../views/user/UserProfile.vue'),
-        meta: { title: '个人中心', requiresAuth: true }
+        meta: { titleKey: 'user.profile', requiresAuth: true }
       },
       {
         path: 'admin/users',
         name: 'UserManage',
         component: () => import('../views/admin/UserManage.vue'),
-        meta: { title: '用户管理', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.users.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'admin/roles',
         name: 'RoleManage',
         component: () => import('../views/admin/RoleManage.vue'),
-        meta: { title: '角色管理', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.roles.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'admin/models',
         name: 'ModelManage',
         component: () => import('../views/admin/ModelManage.vue'),
-        meta: { title: '模型管理', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.models.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'admin/audit-logs',
         name: 'AuditLogManage',
         component: () => import('../views/admin/AuditLogManage.vue'),
-        meta: { title: '审计日志', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.audit.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'admin/models/usage',
         name: 'ModelUsage',
         component: () => import('../views/admin/ModelUsage.vue'),
-        meta: { title: '模型用量', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.usage.title', requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'admin/settings',
+        name: 'AdminSettings',
+        component: () => import('../views/admin/AdminSettings.vue'),
+        meta: { titleKey: 'admin.settings.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'admin/cloud',
@@ -88,26 +100,26 @@ const routes = [
         path: 'admin/cloud/resources',
         name: 'CloudResources',
         component: () => import('../views/admin/CloudResources.vue'),
-        meta: { title: '云资源总览', requiresAuth: true }
+        meta: { titleKey: 'admin.cloud.resources.title', requiresAuth: true }
       },
       {
         path: 'admin/cloud/resources/:resourceType',
         name: 'CloudResourceType',
         component: () => import('../views/admin/CloudResourceTypePage.vue'),
         props: true,
-        meta: { title: '云资源', requiresAuth: true }
+        meta: { titleKey: 'admin.cloud.resources.title', requiresAuth: true }
       },
       {
         path: 'admin/cloud/accounts',
         name: 'CloudAccounts',
         component: () => import('../views/admin/CloudAccounts.vue'),
-        meta: { title: '云账号管理', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.cloud.accounts.title', requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'admin/cloud/topology',
         name: 'CloudTopology',
         component: () => import('../views/admin/CloudTopology.vue'),
-        meta: { title: '资源拓扑', requiresAuth: true, requiresAdmin: true }
+        meta: { titleKey: 'admin.cloud.topology.title', requiresAuth: true, requiresAdmin: true }
       }
     ]
   }
@@ -118,9 +130,15 @@ const router = createRouter({
   routes
 })
 
+// Update document title on each navigation
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
   const token = userStore.token || localStorage.getItem('token')
+
+  // Set document title from titleKey
+  if (to.meta.titleKey) {
+    document.title = `${t(to.meta.titleKey)} - ${t('login.title')}`
+  }
 
   // 已登录管理员访问后台登录 -> 跳管理后台
   if (to.path === '/admin/login' && token && userStore.isAdmin) {

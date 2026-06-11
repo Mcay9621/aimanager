@@ -3,11 +3,11 @@
     <!-- 欢迎头部 -->
     <div class="dash-header">
       <div class="dash-header-text">
-        <h2>管理控制台</h2>
-        <p>{{ greeting }}，{{ userStore.userInfo?.username || '管理员' }}</p>
+        <h2>{{ $t('dashboard.console') }}</h2>
+        <p>{{ greeting }}，{{ userStore.userInfo?.username || $t('common.adminName') }}</p>
       </div>
       <div class="dash-header-badge">
-        <el-tag size="small" effect="dark" type="info">总览</el-tag>
+        <el-tag size="small" effect="dark" type="info">{{ $t('common.overview') }}</el-tag>
       </div>
     </div>
     <!-- 统计卡片 -->
@@ -17,7 +17,7 @@
         <div class="stat-icon-wrap"><el-icon :size="24"><User /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.userCount }}</span>
-          <span class="stat-label">用户总数</span>
+          <span class="stat-label">{{ $t('dashboard.userCount') }}</span>
         </div>
       </div>
       <div class="stat-card stat-models">
@@ -25,8 +25,8 @@
         <div class="stat-icon-wrap"><el-icon :size="24"><Grid /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.modelCount }}</span>
-          <span class="stat-label">模型总数</span>
-          <span class="stat-sub">启用 {{ stats.enabledModelCount }}</span>
+          <span class="stat-label">{{ $t('dashboard.modelCount') }}</span>
+          <span class="stat-sub">{{ $t('common.enable') }} {{ stats.enabledModelCount }}</span>
         </div>
       </div>
       <div class="stat-card stat-chat">
@@ -34,8 +34,8 @@
         <div class="stat-icon-wrap"><el-icon :size="24"><ChatDotSquare /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.sessionCount || 0 }}</span>
-          <span class="stat-label">对话会话</span>
-          <span class="stat-sub">{{ stats.messageCount || 0 }} 条消息</span>
+          <span class="stat-label">{{ $t('dashboard.todayChats') }}</span>
+          <span class="stat-sub">{{ stats.messageCount || 0 }} {{ $t('chat.msgCount', { count: '' }).trim() }}</span>
         </div>
       </div>
       <div class="stat-card stat-cloud">
@@ -43,8 +43,8 @@
         <div class="stat-icon-wrap"><el-icon :size="24"><Cloudy /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.cloudAccountCount || 0 }}</span>
-          <span class="stat-label">云账号</span>
-          <span class="stat-sub">启用 {{ stats.enabledCloudAccountCount || 0 }}</span>
+          <span class="stat-label">{{ $t('dashboard.activeUsers') }}</span>
+          <span class="stat-sub">{{ $t('common.enable') }} {{ stats.enabledCloudAccountCount || 0 }}</span>
         </div>
       </div>
       <div class="stat-card stat-logs">
@@ -52,8 +52,8 @@
         <div class="stat-icon-wrap"><el-icon :size="24"><Document /></el-icon></div>
         <div class="stat-info">
           <span class="stat-value">{{ stats.auditLogCount }}</span>
-          <span class="stat-label">操作日志</span>
-          <span class="stat-sub">今日 {{ stats.todayLogCount }}</span>
+          <span class="stat-label">{{ $t('admin.audit.title') }}</span>
+          <span class="stat-sub">{{ $t('dashboard.todayChats') }} {{ stats.todayLogCount }}</span>
         </div>
       </div>
     </div>
@@ -63,48 +63,48 @@
       <div class="chart-card-wrapper">
         <div class="chart-card-header">
           <el-icon><PieChart /></el-icon>
-          <span>模型使用分布</span>
+          <span>{{ $t('dashboard.modelUsageDist') }}</span>
         </div>
         <div class="chart-card-body">
           <div ref="pieChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="var(--app-loading-bg)"></div>
-          <el-empty v-if="!chartLoading && modelUsage.length === 0" description="暂无对话数据" :image-size="50" />
+          <el-empty v-if="!chartLoading && modelUsage.length === 0" :description="$t('dashboard.noChartData')" :image-size="50" />
         </div>
       </div>
       <div class="chart-card-wrapper">
         <div class="chart-card-header">
           <el-icon><TrendCharts /></el-icon>
-          <span>最近7天消息趋势</span>
+          <span>{{ $t('dashboard.weeklyTrend') }}</span>
         </div>
         <div class="chart-card-body">
           <div ref="lineChartRef" class="chart-container" v-loading="chartLoading" element-loading-background="var(--app-loading-bg)"></div>
-          <el-empty v-if="!chartLoading && activityData.length === 0" description="暂无消息数据" :image-size="50" />
+          <el-empty v-if="!chartLoading && activityData.length === 0" :description="$t('dashboard.noMsgData')" :image-size="50" />
         </div>
       </div>
     </div>
 
     <!-- 快捷入口 -->
     <div class="quick-links">
-      <h3>快捷入口</h3>
+      <h3>{{ $t('dashboard.quickActions') }}</h3>
       <div class="links-grid">
         <div class="link-card link-users" @click="$router.push('/admin/users')">
           <div class="link-icon"><el-icon :size="22"><User /></el-icon></div>
-          <span>用户管理</span>
+          <span>{{ $t('nav.userManage') }}</span>
         </div>
         <div class="link-card link-roles" @click="$router.push('/admin/roles')">
           <div class="link-icon"><el-icon :size="22"><Avatar /></el-icon></div>
-          <span>角色管理</span>
+          <span>{{ $t('nav.roleManage') }}</span>
         </div>
         <div class="link-card link-models" @click="$router.push('/admin/models')">
           <div class="link-icon"><el-icon :size="22"><Grid /></el-icon></div>
-          <span>模型管理</span>
+          <span>{{ $t('nav.modelManage') }}</span>
         </div>
         <div class="link-card link-cloud" @click="$router.push('/admin/cloud/resources')">
           <div class="link-icon"><el-icon :size="22"><Cloudy /></el-icon></div>
-          <span>云资源总览</span>
+          <span>{{ $t('nav.cloudResources') }}</span>
         </div>
         <div class="link-card link-logs" @click="$router.push('/admin/audit-logs')">
           <div class="link-icon"><el-icon :size="22"><Document /></el-icon></div>
-          <span>审计日志</span>
+          <span>{{ $t('nav.auditLog') }}</span>
         </div>
       </div>
     </div>
@@ -113,12 +113,14 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, onBeforeUnmount, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
 import { useUserStore } from '../../stores/user'
 import { useTheme } from '../../composables/useTheme'
 import { getEChartsTheme } from '../../utils/echartsTheme'
 import * as echarts from 'echarts'
 
+const { t } = useI18n()
 const userStore = useUserStore()
 const { isDark } = useTheme()
 const chartTheme = computed(() => getEChartsTheme(isDark.value))
@@ -132,11 +134,11 @@ const stats = ref({
 })
 const greeting = computed(() => {
   const h = new Date().getHours()
-  if (h < 6) return '夜深了'
-  if (h < 12) return '早上好'
-  if (h < 14) return '中午好'
-  if (h < 18) return '下午好'
-  return '晚上好'
+  if (h < 6) return t('dashboard.greetingLate')
+  if (h < 12) return t('dashboard.greetingMorning')
+  if (h < 14) return t('dashboard.greetingNoon')
+  if (h < 18) return t('dashboard.greetingAfternoon')
+  return t('dashboard.greetingEvening')
 })
 const modelUsage = ref([])
 const activityData = ref([])

@@ -3,49 +3,49 @@
     <!-- 余额/状态概览 -->
     <div class="table-card">
       <div class="table-header">
-        <h3>模型余额与状态</h3>
+        <h3>{{ $t('admin.usage.balanceTitle') }}</h3>
         <div class="table-actions">
           <el-tag v-if="lastRefresh" type="info" effect="plain" size="small">
-            上次刷新: {{ lastRefresh }}
+            {{ $t('admin.usage.lastRefresh') }}: {{ lastRefresh }}
           </el-tag>
-          <el-button size="small" @click="fetchBalances" :loading="loading">刷新状态</el-button>
+          <el-button size="small" @click="fetchBalances" :loading="loading">{{ $t('admin.usage.refreshStatus') }}</el-button>
         </div>
       </div>
       <div class="filter-bar">
-        <el-input v-model="searchQuery" placeholder="搜索模型名称..." clearable size="small" style="width:200px" />
-        <el-select v-model="typeFilter" placeholder="厂商" clearable size="small" style="width:120px">
+        <el-input v-model="searchQuery" :placeholder="$t('admin.usage.searchModel')" clearable size="small" style="width:200px" />
+        <el-select v-model="typeFilter" :placeholder="$t('admin.usage.filterProvider')" clearable size="small" style="width:120px">
           <el-option v-for="t in modelTypes" :key="t.key" :label="t.label" :value="t.key" />
         </el-select>
-        <el-select v-model="statusFilter" placeholder="状态" clearable size="small" style="width:110px">
-          <el-option label="在线" value="online" />
-          <el-option label="离线" value="offline" />
+        <el-select v-model="statusFilter" :placeholder="$t('admin.usage.filterStatus')" clearable size="small" style="width:110px">
+          <el-option :label="$t('admin.usage.online')" value="online" />
+          <el-option :label="$t('admin.usage.offline')" value="offline" />
         </el-select>
       </div>
       <el-table :data="filteredBalances" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)">
-        <el-table-column prop="name" label="模型名称" width="140" />
-        <el-table-column label="类型" width="100">
+        <el-table-column prop="name" :label="$t('admin.usage.modelName')" width="140" />
+        <el-table-column :label="$t('admin.usage.type')" width="100">
           <template #default="{ row }">
             <span class="type-badge" :style="{ background: getTypeBg(row.type), color: getTypeColor(row.type) }">
               {{ getTypeLabel(row.type) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="100">
+        <el-table-column :label="$t('admin.usage.filterStatus')" width="100">
           <template #default="{ row }">
-            <el-tag v-if="row.available === true" type="success" size="small">{{ row.latency }}ms</el-tag>
-            <el-tag v-else-if="row.available === false" type="danger" size="small">离线</el-tag>
-            <el-tag v-else type="warning" size="small">检测中</el-tag>
+            <el-tag v-if="row.available === true" type="success" size="small">{{ $t('admin.usage.latencyUnit', { latency: row.latency }) }}</el-tag>
+            <el-tag v-else-if="row.available === false" type="danger" size="small">{{ $t('admin.usage.offline') }}</el-tag>
+            <el-tag v-else type="warning" size="small">{{ $t('admin.usage.checking') }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="sessionCount" label="会话数" width="80" align="center" />
-        <el-table-column prop="messageCount" label="消息数" width="80" align="center" />
-        <el-table-column label="总 Tokens" width="110" align="center">
+        <el-table-column prop="sessionCount" :label="$t('admin.usage.sessionCount')" width="80" align="center" />
+        <el-table-column prop="messageCount" :label="$t('admin.usage.msgCount')" width="80" align="center" />
+        <el-table-column :label="$t('admin.usage.totalTokens')" width="110" align="center">
           <template #default="{ row }">{{ formatTokens(row.totalTokens) }}</template>
         </el-table-column>
-        <el-table-column label="最后使用" width="160">
+        <el-table-column :label="$t('admin.usage.lastUsed')" width="160">
           <template #default="{ row }">{{ row.lastUsed ? formatTime(row.lastUsed) : '-' }}</template>
         </el-table-column>
-        <el-table-column label="余额" min-width="160">
+        <el-table-column :label="$t('admin.usage.balance')" min-width="160">
           <template #default="{ row }">
             <div v-if="row.balance?.supported" class="balance-cell">
               <span class="balance-amount" :class="balanceClass(row.balance?.total)">
@@ -55,7 +55,7 @@
             <div v-else class="balance-cell">
               <span class="balance-hint">{{ row.balance?.message || '-' }}</span>
               <el-link type="primary" :href="getConsoleUrl(row.type)" target="_blank" :underline="false" size="small">
-                前往控制台
+                {{ $t('admin.usage.goConsole') }}
               </el-link>
             </div>
           </template>
@@ -77,11 +77,11 @@
     <!-- 用量统计 -->
     <div class="stats-section">
       <div class="section-header">
-        <h3>用量分析</h3>
+        <h3>{{ $t('admin.usage.usageAnalysis') }}</h3>
         <el-radio-group v-model="usageDays" size="small" @change="fetchUsage">
-          <el-radio-button :value="7">7 天</el-radio-button>
-          <el-radio-button :value="30">30 天</el-radio-button>
-          <el-radio-button :value="90">90 天</el-radio-button>
+          <el-radio-button :value="7">{{ $t('admin.usage.day7') }}</el-radio-button>
+          <el-radio-button :value="30">{{ $t('admin.usage.day30') }}</el-radio-button>
+          <el-radio-button :value="90">{{ $t('admin.usage.day90') }}</el-radio-button>
         </el-radio-group>
       </div>
 
@@ -90,25 +90,25 @@
         <el-col :span="6">
           <div class="stat-card">
             <div class="stat-value">{{ formatTokens(summary.totalTokens) }}</div>
-            <div class="stat-label">总 Tokens</div>
+            <div class="stat-label">{{ $t('admin.usage.totalTokens') }}</div>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="stat-card">
             <div class="stat-value">{{ summary.totalMessages }}</div>
-            <div class="stat-label">总消息数</div>
+            <div class="stat-label">{{ $t('admin.usage.totalMessages') }}</div>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="stat-card">
             <div class="stat-value">{{ summary.totalSessions }}</div>
-            <div class="stat-label">总会话数</div>
+            <div class="stat-label">{{ $t('admin.usage.totalSessions') }}</div>
           </div>
         </el-col>
         <el-col :span="6">
           <div class="stat-card">
             <div class="stat-value">{{ summary.activeModels }}</div>
-            <div class="stat-label">活跃模型数</div>
+            <div class="stat-label">{{ $t('admin.usage.activeModels') }}</div>
           </div>
         </el-col>
       </el-row>
@@ -117,13 +117,13 @@
       <el-row :gutter="16">
         <el-col :span="16">
           <div class="chart-card">
-            <h4>Token 使用趋势</h4>
+            <h4>{{ $t('admin.usage.tokenTrend') }}</h4>
             <div ref="trendChartRef" class="chart-container"></div>
           </div>
         </el-col>
         <el-col :span="8">
           <div class="chart-card">
-            <h4>模型 Top 排行榜</h4>
+            <h4>{{ $t('admin.usage.topModels') }}</h4>
             <div ref="topChartRef" class="chart-container"></div>
           </div>
         </el-col>
@@ -131,20 +131,20 @@
 
       <!-- DeepSeek 用量 -->
       <div v-if="deepseekUsage.hasDeepSeek" class="chart-card deepseek-card">
-        <h4>DeepSeek 用量 <span class="subtitle">(本地数据库统计)</span></h4>
+        <h4>{{ $t('admin.usage.deepseekTitle') }} <span class="subtitle">{{ $t('admin.usage.deepseekSubtitle') }}</span></h4>
         <div v-if="deepseekUsage.error" class="ds-error">{{ deepseekUsage.error }}</div>
         <div v-else>
           <el-row :gutter="16" class="ds-summary">
             <el-col :span="12">
               <div class="ds-stat">
                 <span class="ds-stat-value">{{ deepseekUsage.totalApiCalls }}</span>
-                <span class="ds-stat-label">API 调用次数</span>
+                <span class="ds-stat-label">{{ $t('admin.usage.apiCalls') }}</span>
               </div>
             </el-col>
             <el-col :span="12">
               <div class="ds-stat">
                 <span class="ds-stat-value">{{ formatTokens(deepseekUsage.totalTokens) }}</span>
-                <span class="ds-stat-label">总 Tokens</span>
+                <span class="ds-stat-label">{{ $t('admin.usage.totalTokensChart') }}</span>
               </div>
             </el-col>
           </el-row>
@@ -158,10 +158,13 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
 import { getModelTypes } from '../../utils/modelTypes'
 import { useTheme } from '../../composables/useTheme'
 import { getEChartsTheme } from '../../utils/echartsTheme'
+
+const { t } = useI18n()
 
 const { isDark } = useTheme()
 const chartTheme = computed(() => getEChartsTheme(isDark.value))
@@ -237,14 +240,14 @@ const formatTokens = (val) => {
   return n.toLocaleString()
 }
 
-const formatTime = (t) => {
-  if (!t) return '-'
-  const d = new Date(t)
+const formatTime = (ts) => {
+  if (!ts) return '-'
+  const d = new Date(ts)
   const now = new Date()
   const diff = now - d
-  if (diff < 60000) return '刚刚'
-  if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前'
-  if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前'
+  if (diff < 60000) return t('time.justNow')
+  if (diff < 3600000) return t('time.minutesAgo', { n: Math.floor(diff / 60000) })
+  if (diff < 86400000) return t('time.hoursAgo', { n: Math.floor(diff / 3600000) })
   const y = d.getFullYear()
   const m = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
@@ -360,7 +363,7 @@ const renderCharts = () => {
       xAxis: { type: 'value', axisLabel: { color: t.axisLabelColor, fontSize: 10, formatter: v => v >= 1000 ? (v/1000).toFixed(0)+'K' : v }, splitLine: { lineStyle: { color: t.splitLineColor } } },
       yAxis: {
         type: 'category',
-        data: top10.map(m => m.modelName || '未知').reverse(),
+        data: top10.map(m => m.modelName || t('common.unknown')).reverse(),
         axisLabel: { color: t.barCategoryColor, fontSize: 10 },
         axisLine: { show: false },
         axisTick: { show: false }

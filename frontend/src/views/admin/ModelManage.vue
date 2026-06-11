@@ -2,61 +2,61 @@
   <div class="page-container">
     <div class="table-card">
       <div class="table-header">
-        <h3>模型列表</h3>
+        <h3>{{ $t('admin.models.title') }}</h3>
         <div>
-          <el-button @click="handleRefreshStatus" :loading="refreshing">检测连通性</el-button>
-          <el-button @click="handleSync">同步模型</el-button>
-          <el-button type="primary" @click="handleAdd">添加模型</el-button>
+          <el-button @click="handleRefreshStatus" :loading="refreshing">{{ $t('admin.models.refreshStatus') }}</el-button>
+          <el-button @click="handleSync">{{ $t('admin.models.sync') }}</el-button>
+          <el-button type="primary" @click="handleAdd">{{ $t('admin.models.add') }}</el-button>
         </div>
       </div>
       <div class="filter-bar">
-        <el-input v-model="filterName" placeholder="模型名称" clearable size="small" style="width:140px" />
-        <el-select v-model="filterType" placeholder="类型" clearable size="small" style="width:110px">
+        <el-input v-model="filterName" :placeholder="$t('admin.models.filterName')" clearable size="small" style="width:140px" />
+        <el-select v-model="filterType" :placeholder="$t('admin.models.filterType')" clearable size="small" style="width:110px">
           <el-option v-for="t in modelTypes" :key="t.key" :label="t.label" :value="t.key" />
         </el-select>
-        <el-input v-model="filterModelName" placeholder="模型标识" clearable size="small" style="width:130px" />
-        <el-input v-model="filterEndpoint" placeholder="API地址" clearable size="small" style="width:160px" />
-        <el-select v-model="filterEnabled" placeholder="状态" clearable size="small" style="width:90px">
-          <el-option label="启用" :value="1" />
-          <el-option label="禁用" :value="0" />
+        <el-input v-model="filterModelName" :placeholder="$t('admin.models.filterModelName')" clearable size="small" style="width:130px" />
+        <el-input v-model="filterEndpoint" :placeholder="$t('admin.models.filterEndpoint')" clearable size="small" style="width:160px" />
+        <el-select v-model="filterEnabled" :placeholder="$t('admin.models.filterStatus')" clearable size="small" style="width:90px">
+          <el-option :label="$t('common.enable')" :value="1" />
+          <el-option :label="$t('common.disable')" :value="0" />
         </el-select>
-        <el-select v-model="filterAvailable" placeholder="可用性" clearable size="small" style="width:100px">
-          <el-option label="在线" value="online" />
-          <el-option label="离线" value="offline" />
-          <el-option label="未检测" value="unknown" />
+        <el-select v-model="filterAvailable" :placeholder="$t('admin.models.filterAvailability')" clearable size="small" style="width:100px">
+          <el-option :label="$t('common.online')" value="online" />
+          <el-option :label="$t('common.offline')" value="offline" />
+          <el-option :label="$t('common.unknown')" value="unknown" />
         </el-select>
       </div>
       <el-table :data="paginatedData" border stripe element-loading-background="var(--app-loading-bg)">
-        <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="name" label="模型名称" />
-        <el-table-column prop="type" label="类型" width="100">
+        <el-table-column prop="id" :label="$t('admin.audit.id')" width="60" />
+        <el-table-column prop="name" :label="$t('admin.models.name')" />
+        <el-table-column prop="type" :label="$t('admin.models.type')" width="100">
           <template #default="{ row }">
             <span class="type-badge" :style="{ background: getTypeBg(row.type), color: getTypeColor(row.type) }">
               {{ getTypeLabel(row.type) }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="modelName" label="模型标识" />
-        <el-table-column prop="endpoint" label="API地址" show-overflow-tooltip />
-        <el-table-column prop="enabled" label="状态" width="80">
+        <el-table-column prop="modelName" :label="$t('admin.models.modelName')" />
+        <el-table-column prop="endpoint" :label="$t('admin.models.endpoint')" show-overflow-tooltip />
+        <el-table-column prop="enabled" :label="$t('admin.models.status')" width="80">
           <template #default="{ row }">
             <el-tag :type="row.enabled ? 'success' : 'info'">
-              {{ row.enabled ? '启用' : '禁用' }}
+              {{ row.enabled ? $t('common.enable') : $t('common.disable') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="可用性" width="90">
+        <el-table-column :label="$t('admin.models.availability')" width="90">
           <template #default="{ row }">
-            <el-tag v-if="row._available === true" type="success" size="small">在线</el-tag>
-            <el-tag v-else-if="row._available === false" type="danger" size="small">离线</el-tag>
-            <el-tag v-else type="info" size="small">未检测</el-tag>
+            <el-tag v-if="row._available === true" type="success" size="small">{{ $t('common.online') }}</el-tag>
+            <el-tag v-else-if="row._available === false" type="danger" size="small">{{ $t('common.offline') }}</el-tag>
+            <el-tag v-else type="info" size="small">{{ $t('common.unknown') }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="280">
+        <el-table-column :label="$t('common.action')" width="280">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click="handleEdit(row)">编辑</el-button>
-            <el-button size="small" @click="handleTest(row)" :loading="testingId === row.id">测试</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(row.id)">删除</el-button>
+            <el-button type="primary" size="small" @click="handleEdit(row)">{{ $t('common.edit') }}</el-button>
+            <el-button size="small" @click="handleTest(row)" :loading="testingId === row.id">{{ $t('admin.models.test') }}</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(row.id)">{{ $t('common.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -75,56 +75,56 @@
 
     <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
-        <el-form-item label="模型名称" prop="name">
+        <el-form-item :label="$t('admin.models.name')" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择类型">
+        <el-form-item :label="$t('admin.models.type')" prop="type">
+          <el-select v-model="form.type" :placeholder="$t('admin.models.typeRequired')">
             <el-option v-for="t in modelTypes" :key="t.key" :label="t.label" :value="t.key" />
           </el-select>
         </el-form-item>
-        <el-form-item label="API地址" prop="endpoint">
+        <el-form-item :label="$t('admin.models.endpoint')" prop="endpoint">
           <el-input v-model="form.endpoint" />
         </el-form-item>
-        <el-form-item label="API密钥" prop="apiKey">
+        <el-form-item :label="$t('admin.models.apiKey')" prop="apiKey">
           <el-input v-model="form.apiKey" type="password" show-password />
         </el-form-item>
-        <el-form-item label="模型标识" prop="modelName">
+        <el-form-item :label="$t('admin.models.modelName')" prop="modelName">
           <el-input v-model="form.modelName" />
         </el-form-item>
-        <el-form-item label="状态" prop="enabled">
+        <el-form-item :label="$t('admin.models.status')" prop="enabled">
           <el-switch v-model="form.enabled" :active-value="1" :inactive-value="0" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmit">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSubmit">{{ $t('common.confirm') }}</el-button>
       </template>
     </el-dialog>
 
     <!-- 同步模型对话框 -->
-    <el-dialog v-model="syncVisible" title="同步模型列表" width="640px">
+    <el-dialog v-model="syncVisible" :title="$t('admin.models.syncTitle')" width="640px">
       <el-form :model="syncForm" label-width="100px">
-        <el-form-item label="API地址" prop="endpoint">
+        <el-form-item :label="$t('admin.models.endpoint')" prop="endpoint">
           <el-input v-model="syncForm.endpoint" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1" />
         </el-form-item>
-        <el-form-item label="API密钥" prop="apiKey">
+        <el-form-item :label="$t('admin.models.apiKey')" prop="apiKey">
           <el-input v-model="syncForm.apiKey" type="password" show-password placeholder="sk-..." />
         </el-form-item>
-        <el-form-item label="模型类型">
+        <el-form-item :label="$t('admin.models.type')">
           <el-select v-model="syncForm.modelType">
             <el-option v-for="t in modelTypes" :key="t.key" :label="t.label" :value="t.key" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleFetch" :loading="syncing">获取列表</el-button>
+          <el-button type="primary" @click="handleFetch" :loading="syncing">{{ $t('admin.models.syncFetch') }}</el-button>
         </el-form-item>
       </el-form>
 
       <div v-if="syncModels.length > 0" class="sync-result">
         <div class="sync-count">
           <el-checkbox v-model="syncAllChecked" :indeterminate="syncIndeterminate" @change="handleSyncAllChange" />
-          共 {{ syncModels.length }} 个模型，已选 {{ syncSelected.length }} 个
+          {{ $t('admin.models.selectTotal', { total: syncModels.length, selected: syncSelected.length }) }}
         </div>
         <div class="sync-list">
           <div
@@ -143,9 +143,9 @@
       <div v-if="syncError" class="sync-error">{{ syncError }}</div>
 
       <template #footer>
-        <el-button @click="syncVisible = false">关闭</el-button>
+        <el-button @click="syncVisible = false">{{ $t('admin.models.syncClose') }}</el-button>
         <el-button type="primary" :disabled="syncSelected.length === 0" :loading="importing" @click="handleImport">
-          导入选中 ({{ syncSelected.length }})
+          {{ $t('admin.models.syncImport', { count: syncSelected.length }) }}
         </el-button>
       </template>
     </el-dialog>
@@ -155,12 +155,15 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
 import { getModelTypes } from '../../utils/modelTypes'
 
+const { t } = useI18n()
+
 const models = ref([])
 const dialogVisible = ref(false)
-const dialogTitle = ref('添加模型')
+const dialogTitle = ref(t('admin.models.add'))
 const formRef = ref()
 const isEdit = ref(false)
 const testingId = ref(null)
@@ -240,7 +243,7 @@ const handleSync = () => {
 
 const handleFetch = async () => {
   if (!syncForm.endpoint || !syncForm.apiKey) {
-    ElMessage.warning('请输入 API 地址和密钥')
+    ElMessage.warning(t('admin.models.inputApiKey'))
     return
   }
   syncing.value = true
@@ -256,7 +259,7 @@ const handleFetch = async () => {
     })
     syncModels.value = data || []
     if (syncModels.value.length === 0) {
-      ElMessage.info('未获取到模型')
+      ElMessage.info(t('admin.models.noFetchResult'))
     }
   } catch (e) {
     syncError.value = e.message || '获取失败'
@@ -314,7 +317,8 @@ const handleImport = async () => {
   }
 
   importing.value = false
-  ElMessage.success(`导入完成: ${success} 成功${fail ? `, ${fail} 失败` : ''}`)
+  const extra = fail ? (', ' + fail + ' 失败') : ''
+  ElMessage.success(t('admin.models.importResult', { success, extra }))
   if (fail === 0) {
     syncVisible.value = false
     fetchModels()
@@ -332,9 +336,9 @@ const form = reactive({
 })
 
 const rules = {
-  name: [{ required: true, message: '请输入模型名称', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择类型', trigger: 'change' }],
-  modelName: [{ required: true, message: '请输入模型标识', trigger: 'blur' }]
+  name: [{ required: true, message: t('admin.models.nameRequired'), trigger: 'blur' }],
+  type: [{ required: true, message: t('admin.models.typeRequired'), trigger: 'change' }],
+  modelName: [{ required: true, message: t('admin.models.modelNameRequired'), trigger: 'blur' }]
 }
 
 // 类型辅助函数
@@ -351,7 +355,7 @@ const fetchModels = async () => {
       _latency: m._latency
     }))
   } catch (e) {
-    ElMessage.error('获取模型列表失败: ' + (e.message || '网络错误'))
+    ElMessage.error(t('admin.models.fetchModelsFailed') + ': ' + (e.message || '网络错误'))
     return
   }
 
@@ -386,9 +390,9 @@ const handleRefreshStatus = async () => {
         if (s) { m._available = s.available; m._latency = s.latency }
       })
     }
-    ElMessage.success('连通性检测完成')
+    ElMessage.success(t('admin.models.refreshSuccess'))
   } catch {
-    ElMessage.warning('检测失败')
+    ElMessage.warning(t('admin.models.refreshWarning'))
   } finally {
     refreshing.value = false
   }
@@ -396,7 +400,7 @@ const handleRefreshStatus = async () => {
 
 const handleAdd = () => {
   isEdit.value = false
-  dialogTitle.value = '添加模型'
+  dialogTitle.value = t('admin.models.add')
   Object.assign(form, {
     id: null, name: '', type: '', endpoint: '', apiKey: '', modelName: '', enabled: 1
   })
@@ -405,7 +409,7 @@ const handleAdd = () => {
 
 const handleEdit = (row) => {
   isEdit.value = true
-  dialogTitle.value = '编辑模型'
+  dialogTitle.value = t('admin.models.edit')
   Object.assign(form, { ...row, apiKey: row.apiKey ? '••••••••' : '' })
   dialogVisible.value = true
 }
@@ -419,7 +423,7 @@ const handleSubmit = async () => {
   const api = isEdit.value ? `/admin/models/${form.id}` : '/admin/models'
   const method = isEdit.value ? 'put' : 'post'
   await request[method](api, submitData)
-  ElMessage.success(isEdit.value ? '更新成功' : '添加成功')
+  ElMessage.success(isEdit.value ? t('admin.models.updateSuccess') : t('admin.models.addSuccess'))
   dialogVisible.value = false
   fetchModels()
 }
@@ -429,21 +433,21 @@ const handleTest = async (row) => {
   try {
     const res = await request.post(`/admin/models/${row.id}/test`)
     if (res.connected) {
-      ElMessage.success(`${row.name} 连接成功`)
+      ElMessage.success(t('admin.models.connectSuccess', { name: row.name }))
     } else {
-      ElMessage.warning(res.message || `${row.name} 连接失败`)
+      ElMessage.warning(res.message || t('admin.models.connectFailed', { name: row.name }))
     }
   } catch (e) {
-    ElMessage.error('测试请求失败')
+    ElMessage.error(t('admin.models.testRequestFailed'))
   } finally {
     testingId.value = null
   }
 }
 
 const handleDelete = async (id) => {
-  await ElMessageBox.confirm('确认删除该模型？', '提示', { type: 'warning' })
+  await ElMessageBox.confirm(t('admin.models.confirmDelete'), t('chat.confirmTitle'), { type: 'warning' })
   await request.delete(`/admin/models/${id}`)
-  ElMessage.success('删除成功')
+  ElMessage.success(t('common.deleteSuccess'))
   fetchModels()
 }
 

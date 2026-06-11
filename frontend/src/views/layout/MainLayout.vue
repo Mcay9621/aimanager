@@ -18,7 +18,7 @@
             </defs>
           </svg>
         </div>
-        <span class="logo-text">AI Manager</span>
+        <span class="logo-text">{{ brandStore.config.appName }}</span>
       </div>
       <div v-if="!isMobile" class="topbar-menu-wrap">
         <el-menu
@@ -29,95 +29,96 @@
         >
           <el-menu-item index="/front/models">
             <el-icon><Monitor /></el-icon>
-            <span>AI模型</span>
+            <span>{{ $t('nav.modelList') }}</span>
           </el-menu-item>
           <el-menu-item index="/front/chat">
             <el-icon><ChatDotRound /></el-icon>
-            <span>AI对话</span>
+            <span>{{ $t('nav.chat') }}</span>
           </el-menu-item>
           <el-menu-item v-if="userStore.isAdmin" index="/admin">
             <el-icon><DataAnalysis /></el-icon>
-            <span>仪表盘</span>
+            <span>{{ $t('nav.dashboard') }}</span>
           </el-menu-item>
           <el-sub-menu v-if="userStore.hasCloudAccess" index="cloud">
             <template #title>
               <el-icon><Cloudy /></el-icon>
-              <span>多云管理</span>
+              <span>{{ $t('nav.cloudResources') }}</span>
             </template>
-            <el-menu-item index="/admin/cloud/resources">云资源总览</el-menu-item>
-            <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/topology">资源拓扑</el-menu-item>
-            <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/accounts">云账号管理</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources">{{ $t('nav.cloudResources') }}</el-menu-item>
+            <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/topology">{{ $t('nav.cloudTopology') }}</el-menu-item>
+            <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/accounts">{{ $t('nav.cloudAccounts') }}</el-menu-item>
             <el-sub-menu index="cloud-compute">
-              <template #title>计算资源</template>
-              <el-menu-item index="/admin/cloud/resources/cvm">CVM 云服务器</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/bms">BMS 裸金属</el-menu-item>
+              <template #title>{{ $t('nav.cloudCompute') }}</template>
+              <el-menu-item index="/admin/cloud/resources/cvm">{{ $t('nav.cvm') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/bms">{{ $t('nav.bms') }}</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="cloud-storage">
-              <template #title>存储资源</template>
-              <el-menu-item index="/admin/cloud/resources/cbs">CBS 云硬盘</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/cfs">CFS 文件存储</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/cos">COS 对象存储</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/snapshot">快照</el-menu-item>
+              <template #title>{{ $t('nav.cloudStorage') }}</template>
+              <el-menu-item index="/admin/cloud/resources/cbs">{{ $t('nav.cbs') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/cfs">{{ $t('nav.cfs') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/cos">{{ $t('nav.cos') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/snapshot">{{ $t('nav.snapshot') }}</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="cloud-database">
-              <template #title>数据库</template>
-              <el-menu-item index="/admin/cloud/resources/mysql">MySQL</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/oracle">Oracle</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/redis">Redis</el-menu-item>
+              <template #title>{{ $t('nav.cloudDatabase') }}</template>
+              <el-menu-item index="/admin/cloud/resources/mysql">{{ $t('nav.mysql') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/oracle">{{ $t('nav.oracle') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/redis">{{ $t('nav.redis') }}</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="cloud-network">
-              <template #title>网络资源</template>
-              <el-menu-item index="/admin/cloud/resources/vpc">VPC</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/vpn">VPN</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/nat">NAT 网关</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/eip">EIP</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/clb">CLB</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/cdn">CDN</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/subnet">子网</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/sg">安全组</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/route_table">路由表</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/dc">物理专线</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/ldc">逻辑专线</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/dc_tunnel">专线通道</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/peering">对等连接</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/eni">弹性网卡</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/dc_gateway">专线网关</el-menu-item>
+              <template #title>{{ $t('nav.cloudNetwork') }}</template>
+              <el-menu-item index="/admin/cloud/resources/vpc">{{ $t('nav.vpc') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/vpn">{{ $t('nav.vpn') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/nat">{{ $t('nav.nat') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/eip">{{ $t('nav.eip') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/clb">{{ $t('nav.clb') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/cdn">{{ $t('nav.cdn') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/subnet">{{ $t('nav.subnet') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/sg">{{ $t('nav.sg') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/route_table">{{ $t('nav.routeTable') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/dc">{{ $t('nav.dc') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/ldc">{{ $t('nav.ldc') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/dc_tunnel">{{ $t('nav.dcTunnel') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/peering">{{ $t('nav.peering') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/eni">{{ $t('nav.eni') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/dc_gateway">{{ $t('nav.dcGateway') }}</el-menu-item>
             </el-sub-menu>
-            <el-menu-item index="/admin/cloud/resources/bastion">堡垒机</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/bastion">{{ $t('nav.bastion') }}</el-menu-item>
             <el-sub-menu index="cloud-security">
-              <template #title>安全资源</template>
-              <el-menu-item index="/admin/cloud/resources/waf">WAF 防火墙</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/ddos">DDoS 防护</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/ssl">SSL 证书</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/kms">KMS 密钥管理</el-menu-item>
+              <template #title>{{ $t('nav.cloudSecurity') }}</template>
+              <el-menu-item index="/admin/cloud/resources/waf">{{ $t('nav.waf') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/ddos">{{ $t('nav.ddos') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/ssl">{{ $t('nav.ssl') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/kms">{{ $t('nav.kms') }}</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="cloud-container">
-              <template #title>容器与中间件</template>
-              <el-menu-item index="/admin/cloud/resources/tke">容器服务 TKE</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/image_registry">镜像仓库</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/function">函数计算</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/mq">消息队列</el-menu-item>
+              <template #title>{{ $t('nav.cloudContainer') }}</template>
+              <el-menu-item index="/admin/cloud/resources/tke">{{ $t('nav.tke') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/image_registry">{{ $t('nav.imageRegistry') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/function">{{ $t('nav.functionCompute') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/mq">{{ $t('nav.messageQueue') }}</el-menu-item>
             </el-sub-menu>
             <el-sub-menu index="cloud-others">
-              <template #title>其他服务</template>
-              <el-menu-item index="/admin/cloud/resources/dns">DNS 解析</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/log_service">日志服务</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/cloud_monitor">云监控</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/as">弹性伸缩 AS</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/global_acceleration">全球加速</el-menu-item>
-              <el-menu-item index="/admin/cloud/resources/dts">DTS 数据传输</el-menu-item>
+              <template #title>{{ $t('nav.cloudOther') }}</template>
+              <el-menu-item index="/admin/cloud/resources/dns">{{ $t('nav.dns') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/log_service">{{ $t('nav.logService') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/cloud_monitor">{{ $t('nav.cloudMonitor') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/as">{{ $t('nav.autoScaling') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/global_acceleration">{{ $t('nav.globalAcceleration') }}</el-menu-item>
+              <el-menu-item index="/admin/cloud/resources/dts">{{ $t('nav.dts') }}</el-menu-item>
             </el-sub-menu>
           </el-sub-menu>
           <el-sub-menu v-if="userStore.isAdmin" index="admin">
             <template #title>
               <el-icon><Setting /></el-icon>
-              <span>系统管理</span>
+              <span>{{ $t('nav.systemAdmin') }}</span>
             </template>
-            <el-menu-item index="/admin/users">用户管理</el-menu-item>
-            <el-menu-item index="/admin/roles">角色管理</el-menu-item>
-            <el-menu-item index="/admin/models">模型管理</el-menu-item>
-            <el-menu-item index="/admin/models/usage">模型用量</el-menu-item>
-            <el-menu-item index="/admin/audit-logs">审计日志</el-menu-item>
+            <el-menu-item index="/admin/users">{{ $t('nav.userManage') }}</el-menu-item>
+            <el-menu-item index="/admin/roles">{{ $t('nav.roleManage') }}</el-menu-item>
+            <el-menu-item index="/admin/models">{{ $t('nav.modelManage') }}</el-menu-item>
+            <el-menu-item index="/admin/models/usage">{{ $t('nav.modelUsage') }}</el-menu-item>
+            <el-menu-item index="/admin/audit-logs">{{ $t('nav.auditLog') }}</el-menu-item>
+            <el-menu-item index="/admin/settings">{{ $t('nav.adminSettings') }}</el-menu-item>
           </el-sub-menu>
         </el-menu>
       </div>
@@ -131,10 +132,13 @@
             <span class="user-role">{{ roleText }}</span>
           </div>
         </div>
-        <el-button text size="default" class="theme-btn" @click="toggleTheme" :title="isDark ? '切换到亮色模式' : '切换到深色模式'">
+        <el-button text size="default" class="lang-btn" @click="toggleLang" :title="$t('lang.switch')">
+          <span class="lang-label">{{ localeStore.isZhCN ? 'EN' : '中' }}</span>
+        </el-button>
+        <el-button text size="default" class="theme-btn" @click="toggleTheme" :title="isDark ? $t('theme.light') : $t('theme.dark')">
           <el-icon><Sunny v-if="isDark" /><Moon v-else /></el-icon>
         </el-button>
-        <el-button text size="default" class="logout-btn" @click="handleLogout" title="退出登录">
+        <el-button text size="default" class="logout-btn" @click="handleLogout" :title="$t('nav.logout')">
           <el-icon><SwitchButton /></el-icon>
         </el-button>
       </div>
@@ -161,7 +165,7 @@
               </linearGradient>
             </defs>
           </svg>
-          <span>AI Manager</span>
+          <span>{{ brandStore.config.appName }}</span>
         </div>
       </div>
       <el-menu
@@ -172,102 +176,103 @@
       >
         <el-menu-item index="/front/models">
           <el-icon><Monitor /></el-icon>
-          <span>AI模型</span>
+          <span>{{ $t('nav.modelList') }}</span>
         </el-menu-item>
         <el-menu-item index="/front/chat">
           <el-icon><ChatDotRound /></el-icon>
-          <span>AI对话</span>
+          <span>{{ $t('nav.chat') }}</span>
         </el-menu-item>
         <el-menu-item v-if="userStore.isAdmin" index="/admin">
           <el-icon><DataAnalysis /></el-icon>
-          <span>仪表盘</span>
+          <span>{{ $t('nav.dashboard') }}</span>
         </el-menu-item>
         <el-sub-menu v-if="userStore.hasCloudAccess" index="cloud">
           <template #title>
             <el-icon><Cloudy /></el-icon>
-            <span>多云管理</span>
+            <span>{{ $t('nav.cloudResources') }}</span>
           </template>
-          <el-menu-item index="/admin/cloud/resources">云资源总览</el-menu-item>
-          <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/topology">资源拓扑</el-menu-item>
-          <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/accounts">云账号管理</el-menu-item>
+          <el-menu-item index="/admin/cloud/resources">{{ $t('nav.cloudResources') }}</el-menu-item>
+          <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/topology">{{ $t('nav.cloudTopology') }}</el-menu-item>
+          <el-menu-item v-if="userStore.isAdmin" index="/admin/cloud/accounts">{{ $t('nav.cloudAccounts') }}</el-menu-item>
           <el-sub-menu index="cloud-compute">
-            <template #title>计算资源</template>
-            <el-menu-item index="/admin/cloud/resources/cvm">CVM 云服务器</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/bms">BMS 裸金属</el-menu-item>
+            <template #title>{{ $t('nav.cloudCompute') }}</template>
+            <el-menu-item index="/admin/cloud/resources/cvm">{{ $t('nav.cvm') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/bms">{{ $t('nav.bms') }}</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="cloud-storage">
-            <template #title>存储资源</template>
-            <el-menu-item index="/admin/cloud/resources/cbs">CBS 云硬盘</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/cfs">CFS 文件存储</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/cos">COS 对象存储</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/snapshot">快照</el-menu-item>
+            <template #title>{{ $t('nav.cloudStorage') }}</template>
+            <el-menu-item index="/admin/cloud/resources/cbs">{{ $t('nav.cbs') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cfs">{{ $t('nav.cfs') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cos">{{ $t('nav.cos') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/snapshot">{{ $t('nav.snapshot') }}</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="cloud-database">
-            <template #title>数据库</template>
-            <el-menu-item index="/admin/cloud/resources/mysql">MySQL</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/oracle">Oracle</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/redis">Redis</el-menu-item>
+            <template #title>{{ $t('nav.cloudDatabase') }}</template>
+            <el-menu-item index="/admin/cloud/resources/mysql">{{ $t('nav.mysql') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/oracle">{{ $t('nav.oracle') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/redis">{{ $t('nav.redis') }}</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="cloud-network">
-            <template #title>网络资源</template>
-            <el-menu-item index="/admin/cloud/resources/vpc">VPC</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/vpn">VPN</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/nat">NAT 网关</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/eip">EIP</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/clb">CLB</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/cdn">CDN</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/subnet">子网</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/sg">安全组</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/route_table">路由表</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/dc">物理专线</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/ldc">逻辑专线</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/dc_tunnel">专线通道</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/peering">对等连接</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/eni">弹性网卡</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/dc_gateway">专线网关</el-menu-item>
+            <template #title>{{ $t('nav.cloudNetwork') }}</template>
+            <el-menu-item index="/admin/cloud/resources/vpc">{{ $t('nav.vpc') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/vpn">{{ $t('nav.vpn') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/nat">{{ $t('nav.nat') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/eip">{{ $t('nav.eip') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/clb">{{ $t('nav.clb') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cdn">{{ $t('nav.cdn') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/subnet">{{ $t('nav.subnet') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/sg">{{ $t('nav.sg') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/route_table">{{ $t('nav.routeTable') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dc">{{ $t('nav.dc') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/ldc">{{ $t('nav.ldc') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dc_tunnel">{{ $t('nav.dcTunnel') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/peering">{{ $t('nav.peering') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/eni">{{ $t('nav.eni') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dc_gateway">{{ $t('nav.dcGateway') }}</el-menu-item>
           </el-sub-menu>
-          <el-menu-item index="/admin/cloud/resources/bastion">堡垒机</el-menu-item>
+          <el-menu-item index="/admin/cloud/resources/bastion">{{ $t('nav.bastion') }}</el-menu-item>
           <el-sub-menu index="cloud-security">
-            <template #title>安全资源</template>
-            <el-menu-item index="/admin/cloud/resources/waf">WAF 防火墙</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/ddos">DDoS 防护</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/ssl">SSL 证书</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/kms">KMS 密钥管理</el-menu-item>
+            <template #title>{{ $t('nav.cloudSecurity') }}</template>
+            <el-menu-item index="/admin/cloud/resources/waf">{{ $t('nav.waf') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/ddos">{{ $t('nav.ddos') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/ssl">{{ $t('nav.ssl') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/kms">{{ $t('nav.kms') }}</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="cloud-container">
-            <template #title>容器与中间件</template>
-            <el-menu-item index="/admin/cloud/resources/tke">容器服务 TKE</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/image_registry">镜像仓库</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/function">函数计算</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/mq">消息队列</el-menu-item>
+            <template #title>{{ $t('nav.cloudContainer') }}</template>
+            <el-menu-item index="/admin/cloud/resources/tke">{{ $t('nav.tke') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/image_registry">{{ $t('nav.imageRegistry') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/function">{{ $t('nav.functionCompute') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/mq">{{ $t('nav.messageQueue') }}</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="cloud-others">
-            <template #title>其他服务</template>
-            <el-menu-item index="/admin/cloud/resources/dns">DNS 解析</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/log_service">日志服务</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/cloud_monitor">云监控</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/as">弹性伸缩 AS</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/global_acceleration">全球加速</el-menu-item>
-            <el-menu-item index="/admin/cloud/resources/dts">DTS 数据传输</el-menu-item>
+            <template #title>{{ $t('nav.cloudOther') }}</template>
+            <el-menu-item index="/admin/cloud/resources/dns">{{ $t('nav.dns') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/log_service">{{ $t('nav.logService') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/cloud_monitor">{{ $t('nav.cloudMonitor') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/as">{{ $t('nav.autoScaling') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/global_acceleration">{{ $t('nav.globalAcceleration') }}</el-menu-item>
+            <el-menu-item index="/admin/cloud/resources/dts">{{ $t('nav.dts') }}</el-menu-item>
           </el-sub-menu>
         </el-sub-menu>
         <el-sub-menu v-if="userStore.isAdmin" index="admin">
           <template #title>
             <el-icon><Setting /></el-icon>
-            <span>系统管理</span>
+            <span>{{ $t('nav.systemAdmin') }}</span>
           </template>
-          <el-menu-item index="/admin/users">用户管理</el-menu-item>
-          <el-menu-item index="/admin/roles">角色管理</el-menu-item>
-          <el-menu-item index="/admin/models">模型管理</el-menu-item>
-          <el-menu-item index="/admin/models/usage">模型用量</el-menu-item>
-          <el-menu-item index="/admin/audit-logs">审计日志</el-menu-item>
+          <el-menu-item index="/admin/users">{{ $t('nav.userManage') }}</el-menu-item>
+          <el-menu-item index="/admin/roles">{{ $t('nav.roleManage') }}</el-menu-item>
+          <el-menu-item index="/admin/models">{{ $t('nav.modelManage') }}</el-menu-item>
+          <el-menu-item index="/admin/models/usage">{{ $t('nav.modelUsage') }}</el-menu-item>
+          <el-menu-item index="/admin/audit-logs">{{ $t('nav.auditLog') }}</el-menu-item>
+          <el-menu-item index="/admin/settings">{{ $t('nav.adminSettings') }}</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-drawer>
 
     <div class="main-area">
-      <div class="page-header" v-if="pageTitle">
-        <h2 class="page-title">{{ pageTitle }}</h2>
+      <div class="page-header" v-if="route.meta.titleKey">
+        <h2 class="page-title">{{ $t(route.meta.titleKey) }}</h2>
       </div>
       <div class="main-content">
         <router-view v-slot="{ Component }">
@@ -286,30 +291,36 @@ import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../../stores/user'
 import { useTheme } from '../../composables/useTheme'
 import { useResponsive } from '../../composables/useResponsive'
+import { useLocaleStore } from '../../stores/locale'
+import { useBrandingStore } from '../../stores/branding'
+import { useI18n } from 'vue-i18n'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const localeStore = useLocaleStore()
+const brandStore = useBrandingStore()
 const { toggleTheme, isDark } = useTheme()
 const { isMobile, isSmallMobile } = useResponsive()
+const { t } = useI18n()
 const drawerOpen = ref(false)
 
 const activeMenu = computed(() => {
   return route.path
 })
 
-const pageTitle = computed(() => {
-  return route.meta?.title || ''
-})
-
 const roleText = computed(() => {
   const roleMap = {
-    'SUPER_ADMIN': '超级管理员',
-    'ADMIN': '管理员',
-    'USER': '用户'
+    'SUPER_ADMIN': t('admin.roles.name') + '(SUPER)',
+    'ADMIN': t('admin.roles.name'),
+    'USER': t('user.role')
   }
-  return roleMap[userStore.userRole] || '用户'
+  return roleMap[userStore.userRole] || t('common.noData')
 })
+
+const toggleLang = () => {
+  localeStore.toggleLocale()
+}
 
 onMounted(() => {
   userStore.fetchUserInfo()
@@ -489,6 +500,21 @@ const handleLogout = () => {
 .user-detail .user-role {
   color: var(--app-topbar-role-text);
   font-size: 11px;
+}
+
+.lang-btn {
+  color: var(--app-topbar-text-secondary) !important;
+  font-size: 13px;
+  padding: 4px 8px !important;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.lang-btn:hover {
+  color: var(--app-topbar-menu-active) !important;
+  background: var(--app-menu-hover-bg) !important;
+}
+.lang-label {
+  margin-left: 2px;
 }
 
 .theme-btn {

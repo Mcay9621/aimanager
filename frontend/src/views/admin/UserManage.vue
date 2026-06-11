@@ -2,33 +2,33 @@
   <div class="page-container">
     <div class="table-card">
       <el-table :data="paginatedData" border stripe v-loading="loading" element-loading-background="var(--app-loading-bg)">
-        <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="username" label="用户名" min-width="120" />
-        <el-table-column prop="email" label="邮箱" min-width="160" />
-        <el-table-column prop="phone" label="手机号" width="130" />
-        <el-table-column label="所属主账号" width="150">
+        <el-table-column prop="id" :label="$t('admin.audit.id')" width="60" />
+        <el-table-column prop="username" :label="$t('admin.users.username')" min-width="120" />
+        <el-table-column prop="email" :label="$t('admin.users.email')" min-width="160" />
+        <el-table-column prop="phone" :label="$t('admin.users.phone')" width="130" />
+        <el-table-column :label="$t('admin.users.masterAccount')" width="150">
           <template #default="{ row }">
             <span>{{ masterName(row.masterAccountId) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="80">
+        <el-table-column prop="status" :label="$t('admin.users.status')" width="80">
           <template #default="{ row }">
             <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '正常' : '禁用' }}
+              {{ row.status === 1 ? $t('admin.users.statusNormal') : $t('admin.users.statusDisabled') }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="170" />
-        <el-table-column label="操作" width="280">
+        <el-table-column prop="createTime" :label="$t('admin.users.createTime')" width="170" />
+        <el-table-column :label="$t('common.action')" width="280">
           <template #default="{ row }">
-            <el-button size="small" @click="handleAssignMaster(row)">绑定主账号</el-button>
-            <el-button type="primary" size="small" @click="handleAssignRole(row)">分配角色</el-button>
+            <el-button size="small" @click="handleAssignMaster(row)">{{ $t('admin.users.bindMaster') }}</el-button>
+            <el-button type="primary" size="small" @click="handleAssignRole(row)">{{ $t('admin.users.assignRole') }}</el-button>
             <el-button
               :type="row.status === 1 ? 'danger' : 'success'"
               size="small"
               @click="handleToggleStatus(row)"
             >
-              {{ row.status === 1 ? '禁用' : '启用' }}
+              {{ row.status === 1 ? $t('admin.users.statusDisabled') : $t('admin.users.statusNormal') }}
             </el-button>
           </template>
         </el-table-column>
@@ -46,32 +46,32 @@
       </div>
     </div>
 
-    <el-dialog v-model="roleDialogVisible" title="分配角色" width="400px">
+    <el-dialog v-model="roleDialogVisible" :title="$t('admin.users.assignRole')" width="400px">
       <el-checkbox-group v-model="selectedRoleIds">
         <el-checkbox v-for="role in roles" :key="role.id" :label="role.id" border>
           {{ role.name }} ({{ role.code }})
         </el-checkbox>
       </el-checkbox-group>
       <template #footer>
-        <el-button @click="roleDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSaveRoles" :loading="saving">保存</el-button>
+        <el-button @click="roleDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSaveRoles" :loading="saving">{{ $t('common.save') }}</el-button>
       </template>
     </el-dialog>
 
-    <el-dialog v-model="masterDialogVisible" title="绑定主账号" width="400px">
+    <el-dialog v-model="masterDialogVisible" :title="$t('admin.users.bindMaster')" width="400px">
       <el-form label-width="100px">
-        <el-form-item label="用户">
+        <el-form-item :label="$t('admin.users.userLabel')">
           <span style="color: var(--text-secondary)">{{ masterUser?.username }}</span>
         </el-form-item>
-        <el-form-item label="主账号">
-          <el-select v-model="selectedMasterId" placeholder="选择主账号" clearable style="width:100%">
+        <el-form-item :label="$t('admin.users.masterLabel')">
+          <el-select v-model="selectedMasterId" :placeholder="$t('admin.users.bindMaster')" clearable style="width:100%">
             <el-option v-for="m in masters" :key="m.id" :label="m.aliasName" :value="m.id" />
           </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="masterDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSaveMaster" :loading="saving">保存</el-button>
+        <el-button @click="masterDialogVisible = false">{{ $t('common.cancel') }}</el-button>
+        <el-button type="primary" @click="handleSaveMaster" :loading="saving">{{ $t('common.save') }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -80,7 +80,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import request from '../../utils/request'
+
+const { t } = useI18n()
 
 const users = ref([])
 const roles = ref([])
@@ -104,7 +107,7 @@ const paginatedData = computed(() => {
 const masterName = (id) => {
   if (!id) return '—'
   const m = masters.value.find(x => x.id === id)
-  return m ? m.aliasName : '未知'
+  return m ? m.aliasName : t('admin.users.masterUnknown')
 }
 
 const fetchMasters = async () => {
@@ -126,10 +129,10 @@ const handleSaveMaster = async () => {
       masterAccountId: selectedMasterId.value
     })
     masterUser.value.masterAccountId = selectedMasterId.value
-    ElMessage.success('主账号分配成功')
+    ElMessage.success(t('admin.users.masterSaveSuccess'))
     masterDialogVisible.value = false
   } catch (e) {
-    ElMessage.error('分配失败')
+    ElMessage.error(t('admin.users.masterSaveFailed'))
   } finally {
     saving.value = false
   }
@@ -168,7 +171,7 @@ const handleSaveRoles = async () => {
     await request.put(`/admin/users/${currentUser.value.id}/roles`, {
       roleIds: selectedRoleIds.value
     })
-    ElMessage.success('角色分配更新成功')
+    ElMessage.success(t('admin.users.roleSaveSuccess'))
     roleDialogVisible.value = false
   } catch (e) {
     console.error(e)
@@ -180,7 +183,7 @@ const handleSaveRoles = async () => {
 const handleToggleStatus = async (row) => {
   try {
     await request.put(`/admin/users/${row.id}/status`)
-    ElMessage.success('状态更新成功')
+    ElMessage.success(t('admin.users.statusUpdateSuccess'))
     row.status = row.status === 1 ? 0 : 1
   } catch (error) {
     console.error(error)

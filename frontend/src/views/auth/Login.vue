@@ -20,17 +20,17 @@
           </svg>
         </div>
         <h1 class="brand-title"><span class="accent-gradient-text">AI</span> Manager</h1>
-        <p class="brand-subtitle">智能大模型管理平台</p>
+        <p class="brand-subtitle">{{ $t('login.subtitle') }}</p>
       </div>
 
       <div class="login-card">
-        <h2 class="card-title">欢迎回来</h2>
-        <p class="card-desc">登录您的账户以继续</p>
+        <h2 class="card-title">{{ $t('login.welcomeBack') }}</h2>
+        <p class="card-desc">{{ $t('login.cardDesc') }}</p>
         <el-form :model="loginForm" :rules="rules" ref="loginFormRef" class="login-form">
           <el-form-item prop="username">
             <el-input
               v-model="loginForm.username"
-              placeholder="用户名"
+              :placeholder="$t('login.usernamePlaceholder')"
               size="large"
               :prefix-icon="User"
             />
@@ -39,7 +39,7 @@
             <el-input
               v-model="loginForm.password"
               type="password"
-              placeholder="密码"
+              :placeholder="$t('login.passwordPlaceholder')"
               size="large"
               :prefix-icon="Lock"
               show-password
@@ -48,18 +48,18 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="large" class="login-btn" :loading="loading" @click="handleLogin">
-              登 录
+              {{ $t('login.loginBtn') }}
             </el-button>
           </el-form-item>
         </el-form>
         <div class="login-footer">
-          <el-link type="primary" :underline="false" @click="$router.push('/register')">创建账户</el-link>
+          <el-link type="primary" :underline="false" @click="$router.push('/register')">{{ $t('login.createAccount') }}</el-link>
           <span class="divider">|</span>
-          <el-link type="primary" :underline="false" @click="$router.push('/admin/login')">管理员登录</el-link>
+          <el-link type="primary" :underline="false" @click="$router.push('/admin/login')">{{ $t('login.adminLogin') }}</el-link>
         </div>
       </div>
 
-      <p class="copyright">© 2024 AI Manager</p>
+      <p class="copyright">{{ $t('login.copyright', { appName: 'AI Manager' }) }}</p>
     </div>
   </div>
 </template>
@@ -68,10 +68,12 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { User, Lock } from '@element-plus/icons-vue'
 import { useUserStore } from '../../stores/user'
 import request from '../../utils/request'
 
+const { t } = useI18n()
 const router = useRouter()
 const userStore = useUserStore()
 
@@ -84,8 +86,8 @@ const loginForm = reactive({
 })
 
 const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  username: [{ required: true, message: t('login.usernameRequired'), trigger: 'blur' }],
+  password: [{ required: true, message: t('login.passwordRequired'), trigger: 'blur' }]
 }
 
 const handleLogin = async () => {
@@ -100,7 +102,7 @@ const handleLogin = async () => {
       localStorage.setItem('refreshToken', response.refreshToken)
     }
     await userStore.fetchUserInfo()
-    ElMessage.success('登录成功')
+    ElMessage.success(t('login.loginSuccess'))
     router.push('/front/models')
   } catch (error) {
     console.error(error)
