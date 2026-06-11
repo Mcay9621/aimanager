@@ -147,11 +147,10 @@ onMounted(fetchLogs)
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .table-card { padding: 14px; }
+  .table-card { padding: 14px; overflow-x: auto; }
   .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .filters { flex-wrap: wrap; width: 100%; }
   .filters .el-select { width: 100% !important; }
-  :deep(.el-table) { min-width: 700px; }
-  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  :deep(.el-table) { min-width: 1000px; }
 }
 </style>

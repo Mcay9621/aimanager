@@ -221,9 +221,8 @@ onMounted(() => {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .table-card { padding: 14px; }
-  :deep(.el-table) { min-width: 700px; }
-  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  .table-card { padding: 14px; overflow-x: auto; }
+  :deep(.el-table) { min-width: 1200px; }
   :deep(.el-pagination .el-pagination__sizes) { display: none; }
 }
 </style>

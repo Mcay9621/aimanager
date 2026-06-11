@@ -546,13 +546,12 @@ onMounted(async () => {
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .table-card { padding: 14px; }
+  .table-card { padding: 14px; overflow-x: auto; }
   .table-header { flex-direction: column; align-items: flex-start; gap: 8px; }
   .filter-bar { flex-direction: column; }
   .filter-bar .el-input,
   .filter-bar .el-select { width: 100% !important; }
-  :deep(.el-table) { min-width: 800px; }
-  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  :deep(.el-table) { min-width: 1000px; }
   :deep(.el-pagination .el-pagination__sizes) { display: none; }
 }
 </style>

@@ -414,13 +414,12 @@ onMounted(() => { fetchRegions(); fetchAll() })
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .cloud-accounts { padding: 14px; }
+  .cloud-accounts { padding: 14px; overflow-x: auto; }
   .page-toolbar { flex-direction: column; align-items: flex-start; }
   .toolbar-left { flex-wrap: wrap; }
   .filter-bar { flex-direction: column; }
   .filter-bar .el-input,
   .filter-bar .el-select { width: 100% !important; }
-  :deep(.el-table) { min-width: 700px; }
-  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  :deep(.el-table) { min-width: 1100px; }
 }
 </style>

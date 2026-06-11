@@ -216,12 +216,11 @@ watch(() => props.resourceType, fetchData)
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .cloud-type-page { padding: 14px; }
+  .cloud-type-page { padding: 14px; overflow-x: auto; }
   .top-bar { flex-direction: column; align-items: flex-start; }
   .top-bar-left { width: 100%; }
   .top-bar-left .el-input,
   .top-bar-left .el-select { width: 100% !important; }
-  :deep(.el-table) { min-width: 600px; }
-  :deep(.el-table__body-wrapper) { overflow-x: auto; }
+  :deep(.el-table) { min-width: 900px; }
 }
 </style>
