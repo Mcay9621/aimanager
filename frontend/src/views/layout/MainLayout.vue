@@ -291,11 +291,7 @@
         <h2 class="page-title">{{ $t(route.meta.titleKey) }}</h2>
       </div>
       <div class="main-content">
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
+        <router-view :key="$route.fullPath" />
       </div>
     </div>
   </div>
@@ -415,8 +411,14 @@ const handleLogout = () => {
 
 .topbar-menu-wrap {
   flex: 1;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   display: flex;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.topbar-menu-wrap::-webkit-scrollbar {
+  display: none;
 }
 
 /* ===== Horizontal Menu ===== */

@@ -723,7 +723,7 @@ onUnmounted(() => {
 /* ===== 基础布局 ===== */
 .chat-view {
   display: flex;
-  height: calc(100vh - 140px);
+  height: 100%;
   gap: 16px;
 }
 
@@ -1348,7 +1348,6 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .chat-view {
     flex-direction: column;
-    height: calc(100vh - 120px);
     gap: 8px;
   }
   .session-panel {

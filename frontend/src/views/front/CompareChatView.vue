@@ -362,7 +362,7 @@ onMounted(async () => {
 .compare-view {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 140px);
+  height: 100%;
   gap: 12px;
 }
 
@@ -686,7 +686,7 @@ onMounted(async () => {
 /* ===== 响应式 ===== */
 @media (max-width: 768px) {
   .compare-view {
-    height: calc(100vh - 120px);
+    height: 100%;
   }
   .model-selector {
     flex-direction: column;
