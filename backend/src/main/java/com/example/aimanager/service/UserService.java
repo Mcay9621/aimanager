@@ -96,4 +96,20 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
     public boolean existsByEmail(String email) {
         return this.count(new LambdaQueryWrapper<User>().eq(User::getEmail, email)) > 0;
     }
+
+    public Long getUserIdByUsername(String username) {
+        User user = this.getOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, username)
+                .select(User::getId));
+        return user != null ? user.getId() : null;
+    }
+
+    public List<String> getUserRoleCodes(Long userId) {
+        List<UserRole> userRoles = userRoleMapper.selectList(
+                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId));
+        if (userRoles.isEmpty()) return List.of("ROLE_USER");
+        List<Long> roleIds = userRoles.stream().map(UserRole::getRoleId).toList();
+        List<Role> roles = roleMapper.selectBatchIds(roleIds);
+        return roles.stream().map(r -> "ROLE_" + r.getCode()).toList();
+    }
 }

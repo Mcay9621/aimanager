@@ -34,6 +34,12 @@ app:
   api-key-secret: ${API_KEY_SECRET}
   sse:
     timeout: 120000
+  quota:
+    default-daily-limit: 20
+    role-limits:
+      'ROLE_USER': 20
+      'ROLE_ADMIN': 999999
+      'ROLE_SUPER_ADMIN': 999999
   security:
     public-paths:
       - /api/auth/login

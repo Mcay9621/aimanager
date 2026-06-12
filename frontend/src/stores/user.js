@@ -5,6 +5,7 @@ import axios from 'axios'
 export const useUserStore = defineStore('user', () => {
   const token = ref(localStorage.getItem('token') || '')
   const userInfo = ref(null)
+  const quota = ref({ used: 0, limit: 20, remaining: 20 })
 
   const isAdmin = computed(() => {
     if (!userInfo.value) return false
@@ -64,11 +65,28 @@ export const useUserStore = defineStore('user', () => {
     delete axios.defaults.headers.common['Authorization']
   }
 
+  async function fetchQuota() {
+    if (!token.value) return
+    try {
+      const res = await axios.get('/api/user/quota')
+      const data = res.data
+      if (data.code === 200) {
+        quota.value = data.data
+      }
+    } catch { /* ignore */ }
+  }
+
+  function decrementQuota(cost = 1) {
+    quota.value.used += cost
+    quota.value.remaining = Math.max(0, quota.value.limit - quota.value.used)
+  }
+
   axios.defaults.headers.common['Authorization'] = token.value ? `Bearer ${token.value}` : ''
 
   return {
     token,
     userInfo,
+    quota,
     isAdmin,
     isSuperAdmin,
     userRole,
@@ -78,6 +96,8 @@ export const useUserStore = defineStore('user', () => {
     setToken,
     setUserInfo,
     fetchUserInfo,
+    fetchQuota,
+    decrementQuota,
     logout
   }
 })

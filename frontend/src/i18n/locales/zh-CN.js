@@ -519,6 +519,13 @@ export default {
     noResult: '未找到匹配的模型',
     all: '全部模型',
   },
+  quota: {
+    remaining: '今日剩余 {n} 次',
+    exceededTitle: '今日额度已用完',
+    exceededDesc: '升级会员可享无限次对话',
+    upgrade: '了解会员',
+    comingSoon: '即将上线',
+  },
   compareChat: {
     title: '多模型对比',
     selectModels: '选择模型（2-4 个）',

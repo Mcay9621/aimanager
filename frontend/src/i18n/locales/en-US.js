@@ -519,6 +519,13 @@ export default {
     noResult: 'No models found',
     all: 'All Models',
   },
+  quota: {
+    remaining: '{n} remaining today',
+    exceededTitle: 'Daily Limit Reached',
+    exceededDesc: 'Upgrade to premium for unlimited conversations',
+    upgrade: 'Learn More',
+    comingSoon: 'Coming Soon',
+  },
   compareChat: {
     title: 'Multi-Model Comparison',
     selectModels: 'Select models (2-4)',

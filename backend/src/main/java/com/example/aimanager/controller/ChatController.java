@@ -16,6 +16,8 @@ import com.example.aimanager.service.AiChatService;
 import com.example.aimanager.service.AiModelService;
 import com.example.aimanager.service.ChatMessageService;
 import com.example.aimanager.service.ChatSessionService;
+import com.example.aimanager.service.QuotaService;
+import com.example.aimanager.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,21 +36,28 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final AiModelService aiModelService;
     private final SseProperties sseProperties;
+    private final QuotaService quotaService;
+    private final UserService userService;
 
     public ChatController(AiChatService aiChatService, ChatSessionService chatSessionService,
                           ChatMessageService chatMessageService, AiModelService aiModelService,
-                          SseProperties sseProperties) {
+                          SseProperties sseProperties, QuotaService quotaService, UserService userService) {
         this.aiChatService = aiChatService;
         this.chatSessionService = chatSessionService;
         this.chatMessageService = chatMessageService;
         this.aiModelService = aiModelService;
         this.sseProperties = sseProperties;
+        this.quotaService = quotaService;
+        this.userService = userService;
     }
 
     // ==================== 同步聊天（向后兼容） ====================
 
     @PostMapping
-    public ResponseEntity<?> chat(@Valid @RequestBody ChatRequest request) {
+    public ResponseEntity<?> chat(@Valid @RequestBody ChatRequest request, Authentication auth) {
+        if (!checkQuota(auth, 1)) {
+            return ResponseEntity.status(429).body(Result.error(429, "今日免费额度已用完"));
+        }
         try {
             Map<String, Object> result = aiChatService.chat(request.getModelId(), request.getMessage());
             return ResponseEntity.ok(Result.success(result));
@@ -61,6 +70,10 @@ public class ChatController {
 
     @PostMapping("/compare")
     public ResponseEntity<?> compareChat(@Valid @RequestBody CompareChatRequest request, Authentication auth) {
+        int cost = request.getModelIds() != null ? request.getModelIds().size() : 1;
+        if (!checkQuota(auth, cost)) {
+            return ResponseEntity.status(429).body(Result.error(429, "今日免费额度已用完"));
+        }
         try {
             String username = auth != null ? auth.getName() : "anonymous";
             CompareChatResponse response = aiChatService.compareChat(request, username);
@@ -77,6 +90,10 @@ public class ChatController {
         SseEmitter emitter = new SseEmitter(sseProperties.getTimeout());
 
         String username = auth != null ? auth.getName() : "anonymous";
+        if (!checkQuota(auth, 1)) {
+            sendError(emitter, "今日免费额度已用完");
+            return emitter;
+        }
 
         // 校验 sessionId（如果提供）
         Long existingSessionId = null;
@@ -331,5 +348,15 @@ public class ChatController {
         if (text == null) return "新对话";
         String clean = text.replaceAll("\\s+", " ");
         return clean.length() > 50 ? clean.substring(0, 50) + "..." : clean;
+    }
+
+    /**
+     * 检查用户配额，认证通过且未超限则扣减
+     */
+    private boolean checkQuota(Authentication auth, int cost) {
+        if (auth == null) return true; // 匿名用户暂不限制
+        Long userId = userService.getUserIdByUsername(auth.getName());
+        if (userId == null) return true;
+        return quotaService.checkAndIncrement(userId, cost);
     }
 }

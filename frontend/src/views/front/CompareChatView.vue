@@ -129,13 +129,33 @@
         resize="none"
       />
       <div class="input-actions">
-        <span class="input-hint">{{ $t('chat.sendWithEnter') }}</span>
+        <div class="input-left">
+          <span v-if="userStore.quota.limit < 999999" class="quota-display" :class="{ 'quota-low': userStore.quota.remaining <= 5 }">
+            {{ $t('quota.remaining', { n: userStore.quota.remaining }) }}
+          </span>
+          <span class="input-hint">{{ $t('chat.sendWithEnter') }}</span>
+        </div>
         <el-button type="primary" :loading="loading" :disabled="!canSend" @click="sendCompare" round>
           {{ $t('compareChat.send') }}
         </el-button>
       </div>
     </div>
   </div>
+
+  <!-- 额度用尽弹窗 -->
+  <el-dialog v-model="quotaExceededVisible" :title="$t('quota.exceededTitle')" width="360px" center>
+    <div class="quota-exceeded-body">
+      <div class="quota-exceeded-icon">
+        <el-icon :size="48"><WarningFilled /></el-icon>
+      </div>
+      <p>{{ $t('quota.exceededDesc') }}</p>
+    </div>
+    <template #footer>
+      <el-button type="primary" @click="quotaExceededVisible = false" round>
+        {{ $t('common.confirm') }}
+      </el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -143,6 +163,7 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Delete, WarningFilled } from '@element-plus/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { useUserStore } from '../../stores/user'
 import { marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import hljs from 'highlight.js'
@@ -151,8 +172,10 @@ import DOMPurify from 'dompurify'
 import request from '../../utils/request'
 
 const { t } = useI18n()
+const userStore = useUserStore()
 
 // 状态
+const quotaExceededVisible = ref(false)
 const availableModels = ref([])
 const selectedModelIds = ref([])
 const inputMessage = ref('')
@@ -289,9 +312,14 @@ const sendCompare = async () => {
     })
     results.value = res.results || []
     currentSessionId.value = res.sessionId
+    userStore.decrementQuota(selectedModelIds.value.length)
     await fetchCompareSessions()
   } catch (e) {
-    ElMessage.error(e.message || t('compareChat.error'))
+    if (e.response?.status === 429) {
+      quotaExceededVisible.value = true
+    } else {
+      ElMessage.error(e.message || t('compareChat.error'))
+    }
   } finally {
     loading.value = false
   }
@@ -326,6 +354,7 @@ const renderMarkdown = (text) => {
 onMounted(async () => {
   await fetchModels()
   await fetchCompareSessions()
+  userStore.fetchQuota()
 })
 </script>
 
@@ -615,6 +644,39 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
+}
+.input-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.quota-display {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: rgba(74, 111, 165, 0.06);
+  padding: 2px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(74, 111, 165, 0.08);
+  font-weight: 500;
+}
+.quota-display.quota-low {
+  color: #e6a23c;
+  background: rgba(230, 162, 60, 0.08);
+  border-color: rgba(230, 162, 60, 0.15);
+}
+.quota-exceeded-body {
+  text-align: center;
+  padding: 8px 0;
+}
+.quota-exceeded-icon {
+  margin-bottom: 16px;
+  color: #e6a23c;
+}
+.quota-exceeded-body p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
 }
 .input-hint {
   font-size: 12px;

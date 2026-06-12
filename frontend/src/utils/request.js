@@ -107,7 +107,11 @@ request.interceptors.response.use(
 
     // 非 401 错误或刷新失败
     const message = response?.data?.message || error.message || '请求失败'
-    ElMessage.error(message)
+
+    // 429 额度超限，由组件自行处理
+    if (response?.status !== 429) {
+      ElMessage.error(message)
+    }
     return Promise.reject(error)
   }
 )

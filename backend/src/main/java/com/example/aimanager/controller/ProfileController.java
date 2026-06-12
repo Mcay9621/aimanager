@@ -5,6 +5,7 @@ import com.example.aimanager.common.Result;
 import com.example.aimanager.dto.PasswordChangeRequest;
 import com.example.aimanager.dto.ProfileUpdateRequest;
 import com.example.aimanager.entity.User;
+import com.example.aimanager.service.QuotaService;
 import com.example.aimanager.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,12 @@ public class ProfileController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final QuotaService quotaService;
 
-    public ProfileController(UserService userService, PasswordEncoder passwordEncoder) {
+    public ProfileController(UserService userService, PasswordEncoder passwordEncoder, QuotaService quotaService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.quotaService = quotaService;
     }
 
     @GetMapping("/profile")
@@ -82,5 +85,15 @@ public class ProfileController {
         userService.updateById(user);
 
         return ResponseEntity.ok(Result.success(Map.of("message", "密码修改成功")));
+    }
+
+    @GetMapping("/quota")
+    public ResponseEntity<?> getQuota(Authentication auth) {
+        User user = userService.getOne(
+                new LambdaQueryWrapper<User>().eq(User::getUsername, auth.getName()));
+        if (user == null) {
+            return ResponseEntity.status(404).body(Result.notFound("用户不存在"));
+        }
+        return ResponseEntity.ok(Result.success(quotaService.getRemaining(user.getId())));
     }
 }
