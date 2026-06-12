@@ -6,6 +6,8 @@ import com.example.aimanager.dto.CreateSessionRequest;
 import com.example.aimanager.dto.StreamChatRequest;
 import com.example.aimanager.dto.UpdateSessionRequest;
 import com.example.aimanager.dto.ChatRequest;
+import com.example.aimanager.dto.CompareChatRequest;
+import com.example.aimanager.dto.CompareChatResponse;
 import com.example.aimanager.common.Result;
 import com.example.aimanager.entity.ChatMessage;
 import com.example.aimanager.entity.ChatSession;
@@ -50,6 +52,19 @@ public class ChatController {
         try {
             Map<String, Object> result = aiChatService.chat(request.getModelId(), request.getMessage());
             return ResponseEntity.ok(Result.success(result));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Result.badRequest(e.getMessage()));
+        }
+    }
+
+    // ==================== 多模型对比 ====================
+
+    @PostMapping("/compare")
+    public ResponseEntity<?> compareChat(@Valid @RequestBody CompareChatRequest request, Authentication auth) {
+        try {
+            String username = auth != null ? auth.getName() : "anonymous";
+            CompareChatResponse response = aiChatService.compareChat(request, username);
+            return ResponseEntity.ok(Result.success(response));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Result.badRequest(e.getMessage()));
         }

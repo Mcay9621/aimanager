@@ -57,6 +57,12 @@ const routes = [
         meta: { titleKey: 'freeModels.title', requiresAuth: true }
       },
       {
+        path: 'front/compare',
+        name: 'CompareChat',
+        component: () => import('../views/front/CompareChatView.vue'),
+        meta: { titleKey: 'compareChat.title', requiresAuth: true }
+      },
+      {
         path: 'user/profile',
         name: 'UserProfile',
         component: () => import('../views/user/UserProfile.vue'),

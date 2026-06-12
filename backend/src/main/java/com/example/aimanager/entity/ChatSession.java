@@ -20,6 +20,7 @@ public class ChatSession {
     private String username;
     @TableField(exist = false)
     private Long userId;
+    private String sessionType;
     private Integer messageCount;
     @TableLogic
     private Integer deleted;

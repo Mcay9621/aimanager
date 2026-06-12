@@ -15,6 +15,7 @@ public class ChatMessage {
     private Long sessionId;
     private String role;
     private String content;
+    private String modelName;
     private Integer promptTokens;
     private Integer completionTokens;
     private Integer totalTokens;
